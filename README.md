@@ -2,10 +2,10 @@
 
 ## Description
 
-Creap.js is a plug-in for playing createjs content built by animateCC.<br>
+Creap.js is a plug-in for playing createjs content built by animateCC.<br />
 By using webGL rendering you can render faster than regular createjs content.
 
-<span style="color:red">There are many unimplemented processes for most classes, especially the MovieClip class.</span>
+There are many unimplemented processes for most classes, especially the MovieClip class.<br />
 Therefore it may not work with complicated createjs content.</span>
 
 大半のクラス、特にMovieClipクラスについて、未実装の処理が多く存在します。
@@ -27,13 +27,13 @@ Therefore it may not work with complicated createjs content.</span>
 <script src="dist/Creap.min.js"></script>
 ```
 or
-```js:
+```html
 <script src="dist/Creap.all.min.js"></script>
 ```
 
 ### 2. Setup content
 
-```js:
+```html
 <script src="test.js"></script>
 <script>
 	var test = new Creap.Content('lib', 'test', 'images', 'ss');
@@ -42,7 +42,7 @@ or
 
 ### 3. If uses sprite sheet in content
 
-```js:
+```html
 <script>
 	// This process generates a json file corresponding to the sprite sheet.
 	// Use only in development environment.
@@ -52,7 +52,7 @@ or
 
 ### 4. Start Creap.js
 
-```js:
+```html
 <script>
 	new Creap.Application(test, document.body, {
 		width: window.innerWidth
