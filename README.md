@@ -2,14 +2,20 @@
 
 ## Description
 
-Creap.js is a plug-in for playing createjs content built by animateCC.<br />
+Creap.js is a plug-in for playing createjs content built by "Adobe Animate CC".<br />
 By using webGL rendering you can render faster than regular createjs content.
 
-There are many unimplemented processes for most classes, especially the MovieClip class.<br />
-Therefore it may not work with complicated createjs content.</span>
+## Features
+- Can use the createjs content built by "Adobe Animate CC" as it is.
+- Can use sprite sheet.
+- Variables replacement/definition system
+- Images replacement/definition system
+- Sounds replacement/definition system
+- DisplayObjects replacement system
 
-大半のクラス、特にMovieClipクラスについて、未実装の処理が多く存在します。
-そのため、複雑なcreatejsコンテンツでは動作しない可能性があります。
+## Caution
+There are many unimplemented processes for most classes, especially the MovieClip class.<br />
+Therefore it may not work with complicated createjs content.
 
 ## Required libraries
 - [pixi.js](http://www.pixijs.com/) v4.4.3 | 4.5.1

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>Documentation Index</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.cosmo.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top ">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">Documentation</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Creap.html">Creap</a></li><li><a href="createjs.html">createjs</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="Creap.Application.html">Creap.Application</a></li><li><a href="Creap.Content.html">Creap.Content</a></li><li><a href="Creap.Event.html">Creap.Event</a></li><li><a href="Creap.ReplaceData.html">Creap.ReplaceData</a></li><li><a href="createjs.Bitmap.html">createjs.Bitmap</a></li><li><a href="createjs.Event.html">createjs.Event</a></li><li><a href="createjs.Graphics.html">createjs.Graphics</a></li><li><a href="createjs.MovieClip.html">createjs.MovieClip</a></li><li><a href="createjs.Rectangle.html">createjs.Rectangle</a></li><li><a href="createjs.Shape.html">createjs.Shape</a></li><li><a href="createjs.Sound.html">createjs.Sound</a></li><li><a href="createjs.Sprite.html">createjs.Sprite</a></li><li><a href="createjs.Text.html">createjs.Text</a></li><li><a href="createjs.Touch.html">createjs.Touch</a></li><li><a href="createjs.Tween.html">createjs.Tween</a></li><li><a href="createjs-DisplayObject.html">createjs~DisplayObject</a></li><li><a href="Emitter.html">Emitter</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#playSound">playSound</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+        
+            <div class="col-sm-3 col-md-3">
+                <form class="navbar-form" role="search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                        <div class="input-group-btn">
+                            <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-8">
+	
+		<div id="main">
+			
+
+	
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+
+
+
+
+
+    <section class="readme-section">
+        <article><h1>Creap.js</h1><h2>Description</h2><p>Creap.js is a plug-in for playing createjs content built by &quot;Adobe Animate CC&quot;.<br />
+By using webGL rendering you can render faster than regular createjs content.</p>
+<h2>Features</h2><ul>
+<li>Can use the createjs content built by &quot;Adobe Animate CC&quot; as it is.</li>
+<li>Can use sprite sheet.</li>
+<li>Variables replacement/definition system</li>
+<li>Images replacement/definition system</li>
+<li>Sounds replacement/definition system</li>
+<li>DisplayObjects replacement system</li>
+</ul>
+<h2>Caution</h2><p>There are many unimplemented processes for most classes, especially the MovieClip class.<br />
+Therefore it may not work with complicated createjs content.</p>
+<h2>Required libraries</h2><ul>
+<li><a href="http://www.pixijs.com/">pixi.js</a> v4.4.3 | 4.5.1</li>
+<li><a href="https://howlerjs.com/">howler.js</a> v2.0.1</li>
+<li><a href="http://www.createjs.com/">Ease.js</a>(module of Tween.js)</li>
+</ul>
+<h2>Usage</h2><h3>1. Load plugins</h3><pre class="prettyprint source lang-js:"><code>&lt;script src=&quot;lib/pixi.4.5.1.min.js&quot;>&lt;/script>
+&lt;script src=&quot;lib/Ease.js&quot;>&lt;/script>
+&lt;script src=&quot;lib/howler.core.js&quot;>&lt;/script>
+&lt;script src=&quot;dist/Creap.min.js&quot;>&lt;/script></code></pre><p>or</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;dist/Creap.all.min.js&quot;>&lt;/script></code></pre><h3>2. Setup content</h3><pre class="prettyprint source lang-html"><code>&lt;script src=&quot;test.js&quot;>&lt;/script>
+&lt;script>
+    var test = new Creap.Content('lib', 'test', 'images', 'ss');
+&lt;/script></code></pre><h3>3. If uses sprite sheet in content</h3><pre class="prettyprint source lang-html"><code>&lt;script>
+    // This process generates a json file corresponding to the sprite sheet.
+    // Use only in development environment.
+    test.createJson();
+&lt;/script></code></pre><h3>4. Start Creap.js</h3><pre class="prettyprint source lang-html"><code>&lt;script>
+    new Creap.Application(test, document.body, {
+        width: window.innerWidth
+    }).on(Creap.Event.Initialized, function() {
+        this.fullScreen();
+        this.start();
+    });
+&lt;/script></code></pre></article>
+    </section>
+
+
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+		<div class="col-md-3">
+			<div id="toc" class="col-md-3 hidden-xs hidden-sm hidden-md"></div>
+		</div>
+	
+
+</div>
+</div>
+
+
+    <div class="modal fade" id="searchResults">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Search results</h4>
+          </div>
+          <div class="modal-body"></div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div>
+
+
+<footer>
+
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
+	
+		on July 5th 2017, 6:47:24 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+
+    <script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre, pre.prettyprint.source" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            SearcherDisplay.init();
+        });
+    </script>
+
+
+</body>
+</html>
