@@ -866,7 +866,6 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 				
 				Emitter.call(this);
 				if (!(options instanceof Option)) {
-					console.log(options)
 					options = options || {};
 					options = new Option(options.width, options.usePreRender, options.useWebGL, options.isAccurateTarget);
 				}
