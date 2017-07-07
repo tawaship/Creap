@@ -37,11 +37,7 @@ lib.ssMetadata = [
 	// timeline functions:
 	this.frame_0 = function() {
 		var a = exportRoot.colorNum;
-		if (a) {
-			this.gotoAndStop(a);
-		} else {
-			this.stop();
-		}
+		this.gotoAndStop(a);
 	}
 
 	// actions tween:
@@ -98,7 +94,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/rep_atlas_.png?1499324521439", id:"rep_atlas_"}
+		{src:"images/rep_atlas_.png?1499411051068", id:"rep_atlas_"}
 	],
 	preloads: []
 };

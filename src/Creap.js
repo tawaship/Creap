@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.0.1
+ * Creap.js - v1.0.2
  * 
  * @requires pixi.js v4.4.3 | 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,7 +11,7 @@
 
 var createjs, Creap, playSound, exportRoot, stage;
 
-console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData;
@@ -1630,6 +1630,7 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 							if (this._creap.empty) {
 								this._creap.targetParent._creap.removeLayer(this);
 							} else {
+								this._creap.reset();
 								this._creap.targetParent._creap.addLayerAt(this, this._creap.depthOffset);
 							}
 						}
@@ -2051,23 +2052,23 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 					this.totalFrames = 0;
 					this.currentFrame = -1;
 					this.preFrame = -1;
-					this.isPlay = true;
 					this.isGoto = false;
 					this.isDone = false;
 					this.preDefines = [];
 					this.onLayerCount = 0;
 					this.masks = [];
+					this.prevScriptFrame = -1;
+					this.isAttached = false;
 				}).prototype = Object.defineProperties(Object.create(DisplayObjectCreapData.prototype), {
 					reset: {
 						value: function() {
 							this.currentFrame = -1;
-							this.isPlay = true;
+							this.target.paused = false;
 						}
 					},
 					addLayerAt: {
 						value: function(child, offset) {
 							this.removeLayer(child);
-							child._creap.reset();
 							child._creap.emit(CREAP_EVENT.attach);
 							for (var i = 0; i < child._creap.targetParent.children.length; i++) {
 								if (offset > child._creap.targetParent.children[i]._creap.depthOffset) {
@@ -2092,7 +2093,7 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 						value: function(v, isPlay) {
 							v = isNaN(v) ? (this.target.labels[v] || this.currentFrame) : v;
 							
-							this.isPlay = isPlay;
+							this.target.paused = !isPlay;
 							this.preFrame = v;
 							this.isGoto = true;
 							this.exec();
@@ -2103,6 +2104,8 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 							var s; //shortcut
 							this.isDone = false;
 							this.preFrame = -1;
+							this.isGoto = false;
+							//this.prevScriptFrame = -1;
 							s = this.target.children;
 							for (var i = 0; i < s.length; i++) {
 								if (s[i] instanceof MovieClip) {
@@ -2119,43 +2122,45 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 							if (!this.target.tickEnabled) {
 								return;
 							}
-							
+							//isNew = (this.currentFrame === -1 || this._off) && this.isLayer;
+							/*
 							if (isNew = (this.currentFrame === -1 || this._off) && this.isLayer) {
-								this.isPlay = true;
+								this.target.paused = false;
 							}
-							
+							*/
 							isGoto = this.isGoto;
-							this.isGoto = false;
+							//
 							
 							if (isGoto) {
-								if (isNew) {
-									if (this.preFrame in this.target._creapProto.scripts._creap.frames) {
+								/*if (isNew) {
+									if (this.preFrame in this.target._creapProto.scripts._creap.frames && this.prevScriptFrame !== this.preFrame) {
+										this.prevScriptFrame = this.preFrame;
 										this.target._creapProto.scripts._creap.frames[this.preFrame].call(this.target);
 									}
-								} else {
-									if (this.currentFrame === this.preFrame) {
+								} else {*/
+									if (this.currentFrame === this.preFrame && this.isAttached) {
 										return;
 									}
 									
-									this.currentFrame = this.preFrame - 1;
+									this.currentFrame = this.preFrame;
 									this.preFrame = -1;
-									if (++this.currentFrame >= this.totalFrames) {
+									if (this.currentFrame >= this.totalFrames) {
 										this.currentFrame = 0;
 									}
 									
 									if (this.totalFrames < 2) {
-										this.isPlay = false;
+										this.target.paused = true;
 									}
 									
-									if (this.currentFrame in this.target._creapProto.scripts._creap.frames) {
+									this.isGoto = false;
+									
+									if (this.currentFrame in this.target._creapProto.scripts._creap.frames && this.prevScriptFrame !== this.currentFrame) {
+										this.prevScriptFrame = this.currentFrame;
 										this.target._creapProto.scripts._creap.frames[this.currentFrame].call(this.target);
 									}
 									
 									for (i = 0; i < this.target.timeline._creap.tweens.length; i++) {
-										if ((item = this.target.timeline._creap.tweens[i]._creap.frames[this.currentFrame]).keep && !isGoto) {
-											continue;
-										}
-										
+										item = this.target.timeline._creap.tweens[i]._creap.frames[this.currentFrame];
 										instance = this.target.timeline._creap.tweens[i]._creap.target;
 										
 										if (instance._creap.depthOffset !== item.depth && !item.props._off) {
@@ -2184,31 +2189,38 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 										}
 									}
 									
+									if (!this.isDone) {
+										return;
+									}
+									
 									for (i = 0; i < this.target.children.length; i++) {
 										instance = this.target.children[i];
 										if (instance instanceof MovieClip) {
 											instance._creap.exec();
 										}
 									}
-								}
+								//}
 							} else {
-								if (this.isPlay && !this.isDone) {
+								if (!this.target.paused && !this.isDone) {
 									if (++this.currentFrame >= this.totalFrames) {
 										this.currentFrame = 0;
 									}
 									
 									if (this.totalFrames < 2) {
-										this.isPlay = false;
+										this.target.paused = true;
 									}
 									
-									this.isDone = true;
-									
-									if (this.currentFrame in this.target._creapProto.scripts._creap.frames) {
+									if (this.currentFrame in this.target._creapProto.scripts._creap.frames && this.prevScriptFrame !== this.currentFrame) {
+										this.prevScriptFrame = this.currentFrame;
 										this.target._creapProto.scripts._creap.frames[this.currentFrame].call(this.target);
 									}
 									
+									if (this.isGoto) {
+										return;
+									}
+									
 									for (i = 0; i < this.target.timeline._creap.tweens.length; i++) {
-										if ((item = this.target.timeline._creap.tweens[i]._creap.frames[this.currentFrame]).keep && !isGoto) {
+										if ((item = this.target.timeline._creap.tweens[i]._creap.frames[this.currentFrame]).keep) {
 											continue;
 										}
 										
@@ -2247,6 +2259,9 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 										instance._creap.exec();
 									}
 								}
+								
+								this.isDone = true;
+								this.isAttached = true;
 							}
 						}
 					}
@@ -2284,6 +2299,7 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 							this.labels = labels;
 							this.timeline = new Timeline(this);
 							this.tickEnabled = true;
+							this.paused = false;
 							currentDefiner = this;
 						}
 					},
@@ -2403,7 +2419,7 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 					 */
 					stop: {
 						value: function() {
-							this._creap.isPlay = false;
+							this.paused = true;
 						}
 					},
 					/**
@@ -2413,7 +2429,7 @@ console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: 
 					 */
 					play: {
 						value: function() {
-							this._creap.isPlay = true;
+							this.paused = false;
 						}
 					},
 					/**
