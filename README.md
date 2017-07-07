@@ -17,6 +17,8 @@ By using webGL rendering you can render faster than regular createjs content.
 There are many unimplemented processes for most classes, especially the MovieClip class.<br />
 Therefore it may not work with complicated createjs content.
 
+Since compression of shapes is not supported, please disable "Shape Compact" from publish settings.
+
 ## Required libraries
 - [pixi.js](http://www.pixijs.com/) v4.4.3 | 4.5.1
 - [howler.js](https://howlerjs.com/) v2.0.1
