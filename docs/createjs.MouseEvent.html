@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Class: Content</title>
+	<title>Documentation Class: MouseEvent</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -86,18 +86,18 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Content</h1>
+	<h1 class="page-title">Class: MouseEvent</h1>
 <section>
 
 <header>
     
         <h2>
-            <span class="ancestors"><a href="Creap.html">Creap</a>.</span>
+            <span class="ancestors"><a href="createjs.html">createjs</a>.</span>
         
-        Content
+        MouseEvent
         </h2>
         
-            <div class="class-description"><p>Class related to content data for Creap.js.</p></div>
+            <div class="class-description"><p>Class related to mouse event.</p></div>
         
     
 </header>
@@ -109,16 +109,12 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Content"><span class="type-signature"></span>new Content(lib, root, images, ss)</h4>
+    <h4 class="name" id="MouseEvent"><span class="type-signature"></span>new MouseEvent(type)</h4>
     
     
 </dt>
 <dd>
 
-    
-    <div class="description">
-        <p>Create content data from js file built by animate CC.</p>
-    </div>
     
 
     
@@ -152,7 +148,7 @@
 
         <tr>
             
-                <td class="name"><code>lib</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
@@ -169,79 +165,7 @@
 
             
 
-            <td class="description last"><p>Name of library object. (Maybe, named 'lib')</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>root</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of the root object in library object.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>images</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of images object. (Maybe, named 'images')</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ss</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of sprite sheet object. (Maybe, named 'ss')</p></td>
+            <td class="description last"><p>Name of event type.</p></td>
         </tr>
 
     
@@ -256,6 +180,13 @@
 
 	
 
+	
+	<dt class="tag-since method-doc-label method-doc-details-label">Since:</dt>
+	<dd class="tag-since">
+		<ul class="dummy">
+			<li>1.0.1</li>
+		</ul>
+	</dd>
 	
 
 	
@@ -286,7 +217,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-469">line 469</a>
+				 <a href="Creap.js.html#sunlight-1-line-3624">line 3624</a>
 			</li>
 		</ul>
 	</dd>
@@ -319,6 +250,15 @@
     </div>
 
     
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li><a href="createjs.Event.html">createjs.Event</a></li>
+    </ul>
+
 
     
 
@@ -331,32 +271,34 @@
     
 
     
-        <h3 class="subsection-title">Methods</h3>
+        <h3 class="subsection-title">Members</h3>
 
         <dl>
             
 <hr>
-<dt>
-    <h4 class="name" id="createJson"><span class="type-signature"></span>createJson()</h4>
-    
+<dt class="name" id="currentTarget">
+    <h4 id="currentTarget"><span class="type-signature"></span>currentTarget<span class="type-signature"> :<a href="createjs-DisplayObject.html">createjs~DisplayObject</a></span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>Create json file for sprite sheet image.<br />
-This json file is like a created by SpritePacker.<br />
-<span style="color: #F00;">This function uses XMLHttpRequest to load './ssJsonMaker.php'.</span><br />
-<span style="color: #F00;">This function runs synchronously. In other words, it stops processing until all the json files are created.</span></p>
+        <p>Object that added the event listener.</p>
     </div>
     
 
     
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="createjs-DisplayObject.html">createjs~DisplayObject</a></span>
 
-    
 
-    
+
+            </li>
+        </ul>
     
 
     
@@ -367,6 +309,15 @@ This json file is like a created by SpritePacker.<br />
 
 	
 
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="createjs.Event.html#currentTarget">createjs.Event#currentTarget</a>
+			</li>
+		</ul>
+	</dd>
 	
 
     
@@ -395,7 +346,7 @@ This json file is like a created by SpritePacker.<br />
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-521">line 521</a>
+				 <a href="Creap.js.html#sunlight-1-line-3575">line 3575</a>
 			</li>
 		</ul>
 	</dd>
@@ -410,117 +361,30 @@ This json file is like a created by SpritePacker.<br />
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Return a itself (can use method chaining).</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Creap.Content.html">Creap.Content</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
 </dd>
 
         
             
 <hr>
-<dt>
-    <h4 class="name" id="defineImages"><span class="type-signature"></span>defineImages(obj)</h4>
-    
+<dt class="name" id="rawX">
+    <h4 id="rawX"><span class="type-signature"></span>rawX<span class="type-signature"> :number</span></h4>
+
     
 </dt>
 <dd>
-
-    
-    <div class="description">
-        <p>Define images to the content.<br />
-If already defined, replace that definition.</p>
-    </div>
     
 
     
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type">object.&lt;string, string></span>
+<span class="param-type">number</span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>key: Value of 'id' in object that is registered lib.properies.manifest.<br >
-    value: Images URL.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+            </li>
+        </ul>
     
 
     
@@ -550,6 +414,13 @@ If already defined, replace that definition.</p>
 	
 
 	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>0</li>
+		</ul>
+	</dd>
+	
 
 
 
@@ -559,7 +430,7 @@ If already defined, replace that definition.</p>
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-586">line 586</a>
+				 <a href="Creap.js.html#sunlight-1-line-3646">line 3646</a>
 			</li>
 		</ul>
 	</dd>
@@ -574,117 +445,30 @@ If already defined, replace that definition.</p>
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Return a itself (can use method chaining).</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Creap.Content.html">Creap.Content</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
 </dd>
 
         
             
 <hr>
-<dt>
-    <h4 class="name" id="defineSounds"><span class="type-signature"></span>defineSounds(obj)</h4>
-    
+<dt class="name" id="rawY">
+    <h4 id="rawY"><span class="type-signature"></span>rawY<span class="type-signature"> :number</span></h4>
+
     
 </dt>
 <dd>
-
-    
-    <div class="description">
-        <p>Define sounds to the content.<br />
-If already defined, replace that definition.</p>
-    </div>
     
 
     
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type">object.&lt;string, string></span>
+<span class="param-type">number</span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>key: Value of 'id' in object that is registered lib.properies.manifest.<br >
-    value: Sound URL.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+            </li>
+        </ul>
     
 
     
@@ -714,6 +498,13 @@ If already defined, replace that definition.</p>
 	
 
 	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>0</li>
+		</ul>
+	</dd>
+	
 
 
 
@@ -723,7 +514,7 @@ If already defined, replace that definition.</p>
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-610">line 610</a>
+				 <a href="Creap.js.html#sunlight-1-line-3652">line 3652</a>
 			</li>
 		</ul>
 	</dd>
@@ -738,117 +529,30 @@ If already defined, replace that definition.</p>
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Return a itself (can use method chaining).</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Creap.Content.html">Creap.Content</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
 </dd>
 
         
             
 <hr>
-<dt>
-    <h4 class="name" id="defineVars"><span class="type-signature"></span>defineVars(obj)</h4>
-    
+<dt class="name" id="stageX">
+    <h4 id="stageX"><span class="type-signature"></span>stageX<span class="type-signature"> :number</span></h4>
+
     
 </dt>
 <dd>
-
-    
-    <div class="description">
-        <p>Define variables to instance of root object.<br />
-Timing of definition is when this content passed to constructor of Creap.Application.</p>
-    </div>
     
 
     
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type">object.&lt;string, *></span>
+<span class="param-type">number</span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>key: Name of variable.<br >
-    value: Value of variable.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+            </li>
+        </ul>
     
 
     
@@ -878,6 +582,13 @@ Timing of definition is when this content passed to constructor of Creap.Applica
 	
 
 	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>0</li>
+		</ul>
+	</dd>
+	
 
 
 
@@ -887,7 +598,7 @@ Timing of definition is when this content passed to constructor of Creap.Applica
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-566">line 566</a>
+				 <a href="Creap.js.html#sunlight-1-line-3634">line 3634</a>
 			</li>
 		</ul>
 	</dd>
@@ -902,40 +613,88 @@ Timing of definition is when this content passed to constructor of Creap.Applica
 
 
     
+</dd>
 
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Return a itself (can use method chaining).</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
         
-<span class="param-type"><a href="Creap.Content.html">Creap.Content</a></span>
+            
+<hr>
+<dt class="name" id="stageY">
+    <h4 id="stageY"><span class="type-signature"></span>stageY<span class="type-signature"> :number</span></h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
 
 
 
-    </dd>
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>0</li>
+		</ul>
+	</dd>
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-3640">line 3640</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
 </dl>
 
-
-        
 
     
 </dd>
@@ -943,75 +702,25 @@ Timing of definition is when this content passed to constructor of Creap.Applica
         
             
 <hr>
-<dt>
-    <h4 class="name" id="disabledImages"><span class="type-signature"></span>disabledImages(list)</h4>
-    
+<dt class="name" id="stopPropagation">
+    <h4 id="stopPropagation"><span class="type-signature"></span>stopPropagation<span class="type-signature"> :function</span></h4>
+
     
 </dt>
 <dd>
-
-    
-    <div class="description">
-        <p>Unregister images in the content.<br />
-Used when there is an unnecessary image as a result of executing replaceMovieClip.</p>
-    </div>
     
 
     
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>list</code></td>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type">array.&lt;string></span>
+<span class="param-type">function</span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Values of 'id' in object that is registered lib.properies.manifest.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+            </li>
+        </ul>
     
 
     
@@ -1050,7 +759,97 @@ Used when there is an unnecessary image as a result of executing replaceMovieCli
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-544">line 544</a>
+				 <a href="Creap.js.html#sunlight-1-line-3658">line 3658</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="target">
+    <h4 id="target"><span class="type-signature"></span>target<span class="type-signature"> :<a href="createjs-DisplayObject.html">createjs~DisplayObject</a></span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Object that fired the event.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type"><a href="createjs-DisplayObject.html">createjs~DisplayObject</a></span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="createjs.Event.html#target">createjs.Event#target</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-3567">line 3567</a>
 			</li>
 		</ul>
 	</dd>
@@ -1062,7 +861,7 @@ Used when there is an unnecessary image as a result of executing replaceMovieCli
 	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
 	<dd class="tag-see">
 		<ul>
-			<li><a href="Creap.Content.html#replaceClips">Creap.Content#replaceClips</a></li>
+			<li><a href="Creap.Option.html#isAccurateTarget">Creap.Option#isAccurateTarget</a></li>
 			</ul>
 	</dd>
 	
@@ -1072,116 +871,34 @@ Used when there is an unnecessary image as a result of executing replaceMovieCli
 
 
     
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Return a itself (can use method chaining).</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Creap.Content.html">Creap.Content</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
 </dd>
 
         
             
 <hr>
-<dt>
-    <h4 class="name" id="replaceClips"><span class="type-signature"></span>replaceClips(obj)</h4>
-    
+<dt class="name" id="timeStamp">
+    <h4 id="timeStamp"><span class="type-signature"></span>timeStamp<span class="type-signature"> :number</span></h4>
+
     
 </dt>
 <dd>
-
     
     <div class="description">
-        <p>Replace definitions in the content to one in other content.</p>
+        <p>Unixtime when event was created.</p>
     </div>
     
 
     
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>obj</code></td>
-            
-
-            <td class="type">
-            
+        <h5>Type:</h5>
+        <ul>
+            <li>
                 
-<span class="param-type">object.&lt;string, <a href="Creap.ReplaceData.html">Creap.ReplaceData</a>></span>
+<span class="param-type">number</span>
 
 
 
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>key: Name of definition to change in content.<br />
-    value: Data related to replace in other content.<br /></p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
+            </li>
+        </ul>
     
 
     
@@ -1192,6 +909,15 @@ Used when there is an unnecessary image as a result of executing replaceMovieCli
 
 	
 
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="createjs.Event.html#timeStamp">createjs.Event#timeStamp</a>
+			</li>
+		</ul>
+	</dd>
 	
 
     
@@ -1220,7 +946,7 @@ Used when there is an unnecessary image as a result of executing replaceMovieCli
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-630">line 630</a>
+				 <a href="Creap.js.html#sunlight-1-line-3560">line 3560</a>
 			</li>
 		</ul>
 	</dd>
@@ -1229,58 +955,114 @@ Used when there is an unnecessary image as a result of executing replaceMovieCli
 	
 
 	
-	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
-	<dd class="tag-see">
-		<ul>
-			<li><a href="Creap.ReplaceData.html">Creap.ReplaceData</a></li>
-			</ul>
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="type">
+    <h4 id="type"><span class="type-signature"></span>type<span class="type-signature"> :string</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Name of event type.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">string</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+	<dt class="inherited-from method-doc-label method-doc-details-label">Inherited From:</dt>
+	<dd class="inherited-from">
+		<ul class="dummy">
+			<li>
+				<a href="createjs.Event.html#type">createjs.Event#type</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>''</li>
+		</ul>
+	</dd>
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-3552">line 3552</a>
+			</li>
+		</ul>
 	</dd>
 	
 
 	
+
+	
+
+	
 </dl>
 
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Return a itself (can use method chaining).</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Creap.Content.html">Creap.Content</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
 
     
 </dd>
 
         </dl>
+    
+
     
 
     

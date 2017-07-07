@@ -60,9 +60,8 @@ or
 
 ```html
 <script>
-	new Creap.Application(test, document.body, {
-		width: window.innerWidth
-	}).on(Creap.Event.Initialized, function() {
+	new Creap.Application(test, document.body)
+	.on(Creap.Event.Initialized, function() {
 		this.fullScreen();
 		this.start();
 	});

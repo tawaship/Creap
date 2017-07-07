@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.0.0
+ * Creap.js - v1.0.1
  * 
  * @requires pixi.js v4.4.3 | 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,33 +11,89 @@
 
 var createjs, Creap, playSound, exportRoot, stage;
 
-console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.0.1  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData;
+	var isAccurateTarget = true;
 	var isAndroid = navigator.userAgent.match(/Android/i) !== null;
 	var isIos = navigator.userAgent.match(/iPhone/i) !== null || navigator.userAgent.match(/iPad/i) !== null || navigator.userAgent.match(/iPod/i) !== null;
 	var isMobile = isAndroid || isIos;
 	var windowWidth = window.innerWidth;
 	var windowHeight = window.innerHeight;
 	var CPJSON = '.cp.json';
+	var DEFAULT_COLOR = '#000000';
 	var EVENT = {
-		MouseDown: 'mousedown',
-		PressUp: 'pressup',
-		PressMove: 'pressmove',
-		PointerDown: 'pointerdown',
-		PointerUp: 'pointerup',
-		PointerMove: 'pointermove',
-		PointerUpOutside: 'pointerupoutside',
-		Click: 'click',
-		Complete: 'complete',
-		End: 'end',
-		UserInputEvent: isMobile ? 'touchend' : 'mousedown',
+		/**
+		 * Fires when mousedown or touchstart, on the instance.
+		 * @event createjs~DisplayObject.mousedown
+		 */
+		mousedown: 'mousedown',
+		/**
+		 * Fires when mouseup or touchend, after createjs~DisplayObject.mousedown fires.
+		 * @event createjs~DisplayObject.pressup
+		 */
+		pressup: 'pressup',
+		/**
+		 * Fires when mousemove or touchmove, after createjs~DisplayObject.mousedown fires.
+		 * @event createjs~DisplayObject.pressmove
+		 */
+		pressmove: 'pressmove',
+		pointerdown: 'pointerdown',
+		pointerup: 'pointerup',
+		pointermove: 'pointermove',
+		pointerupoutside: 'pointerupoutside',
+		/**
+		 * Fires when click on the instance.
+		 * @event createjs~DisplayObject.click
+		 */
+		click: 'click',
+		/**
+		 * Fires when the loop of sound finishes.
+		 * @event createjs.Sounc.complete
+		 */
+		complete: 'complete',
+		/**
+		 * Fires when the sound is played to the end.
+		 * @event createjs.Sounc.end
+		 */
+		end: 'end',
+		/*!
+		 * Fires when the instance get on the display list.
+		 * @event createjs~DisplayObject.added
+		 */
+		//added: 'added'
 	};
+	
 	var TAG_OFF = '_off';
 	var TAG_PX = 'px';
 	var TAG_COLOR = '#';
 	var TAG_COMMA = ',';
+	
+	var CREAP_EVENT = {
+		/*!
+		 * Fires when the instance first get on the display list.
+		 * @event Creap.attach
+		 */
+		attach: 'attach',
+		/**
+		 * Fires when call new Creap().
+		 * @event Creap.initialized
+		 */
+		initialized: 'initialized',
+		/**
+		 * Fires when call Creap#start.
+		 * @event Creap.started
+		 */
+		started: 'started'
+	};
+	
+	var PRE_MOUSE_EVENT = {
+		mousedown: '_' + EVENT.mousedown,
+		pressup: '_' + EVENT.pressup,
+		pressmove: '_' + EVENT.pressmove,
+		click: '_' + EVENT.click
+	};
 	
 	/**
 	 * Play sound.
@@ -83,18 +139,13 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 		
 		/*!
 		 * @function  Emitter~fire
-		 * @param e {string|createjs.Event|Creap.Event} Event type or Event object.
+		 * @param e {string|createjs.Event} Event type or Event object.
 		 */
 		function fire(events, e) {
-			var list, type, f;
+			var list;
 			
-			if (e instanceof createjs.Event || e instanceof Creap.Event) {
-				e.target = this;
-				e.currentTarget = this;
-			} else {
+			if (!(e instanceof createjs.Event)) {
 				e = new createjs.Event(e);
-				e.target = this;
-				e.currentTarget = this;
 			}
 			
 			list = events[e.type] || [];
@@ -286,7 +337,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 	 * @namespace Creap
 	 */
 	Creap = (function() {
-		var Creap, Application, Content, ReplaceData, Event, SsJsonParser;
+		var Creap, Option, Application, Content, ReplaceData, SsJsonParser;
 		
 		/*
 		var TextureView;
@@ -606,7 +657,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 			/*!
 			 * @function Creap.Application~initialize
 			 * @this Creap.Application
-			 * @fires Creap.Event.Initialized
+			 * @fires Creap.initialized
 			 * @param p {Creap.Content} Target content.
 			 * @param c {DOMElement} The parent element of the canvas that displays the content.
 			 * @param w {number} Canvas width.
@@ -706,7 +757,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 									if (h.prototype instanceof createjs.Sprite || h.prototype instanceof createjs.Bitmap) {
 										h = new s._lib[j]();
 										h.x = 99999;
-										h._creap.emit(Event.Attach);
+										h._creap.emit(CREAP_EVENT.attach);
 										stage.addChild(h);
 									}
 								}
@@ -714,15 +765,88 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 						}
 						
 						app.ticker.update();
-						this.emit(Event.Initialized);
+						this.emit(CREAP_EVENT.initialized);
 					}).bind(this));
 				} else {
 					app.ticker.update();
 					setTimeout((function() {
-						this.emit(Event.Initialized);
+						this.emit(CREAP_EVENT.initialized);
 					}).bind(this), 100);
 				}
 			}
+			
+			/**
+			 * @constructor Creap.Option
+			 * @classdesc Class related to data of creap option.
+			 * @param [width=Value of "lib.properties.width"] {number} Canvas width.
+			 * @param [usePreRender=true] {bool} Whether render bitmaps before starting the content.
+			 * @param [useWebGL=true] {bool} Whether use webGL render.
+			 * @param [isAccurateTarget=true] {bool} Whether set accurate target when fires mouse/touch event.
+			 */
+			(Option = function(width, usePreRender, useWebGL, isAccurateTarget) {
+				/**
+				 * Canvas width.
+				 * 
+				 * @member Creap.Option#width {number}
+				 * @default Value of "lib.properties.width"
+				 */
+				this.width = width || 0;
+				
+				/**
+				 * Whether render bitmaps before starting the content.
+				 * 
+				 * @member Creap.Option#usePreRender {bool}
+				 * @default true
+				 */
+				this.usePreRender = usePreRender === false ? false : true;
+				
+				/**
+				 * Whether use webGL render.
+				 * 
+				 * @member Creap.Option#useWebGL {bool}
+				 * @default true
+				 */
+				this.useWebGL = useWebGL === false ? false : true;
+				
+				/**
+				 * Whether set accurate target when fires mouse/touch event.<br />
+				 * <br />
+				 * When code like the following...
+				 * ```js
+				 * exportRoot.addEventListener("mousedown", function(e) {
+				 *     console.log(e.currentTarget);
+				 *     console.log(e.target);
+				 * })
+				 * ```
+				 * <li>isAccurateTarget = true;</li>
+				 * <img src="../img/accurateTrue.jpg" />
+				 * ```js
+				 * console.log(e.currentTarget); // exportRoot
+				 * console.log(e.target); // Bitmap
+				 * ```
+				 * This specification is the same as createjs, but performance tends to decline instead.<br />
+				 * It is especially noticeable when many mousemove event fires on the browser for PC.<br />
+				 * 
+				 * <li>isAccurateTarget = false;</li>
+				 * <img src="../img/accurateFalse.jpg" />
+				 * ```js
+				 * console.log(e.currentTarget); // exportRoot
+				 * console.log(e.target); // exportRoot
+				 * ```
+				 * If you don't need an accurate target, please use this setting.<br />
+				 * <br />
+				 * In createjs, the conditions under which pressmove, pressup events can fire.<br />
+				 * <li>"e.currentTarget" that when the mousedown event fires. ( = instance with the event listener)</li>
+				 * <li>"e.target" that when the mousedown event fires.</li>
+				 * <li>Instance containing "e.target" when the mousedown event fires.</li>
+				 * <br />
+				 * Therefore, if isAccurateTarget is false, please be aware that pressmove and pressup may not behave as expected.
+				 * 
+				 * @member Creap.Option#isAccurateTarget {bool}
+				 * @default true
+				 */
+				this.isAccurateTarget = isAccurateTarget === false ? false : true;
+			});
 			
 			/**
 			 * Create an application from instance of Creap.Content.
@@ -730,13 +854,10 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @constructor Creap.Application
 			 * @classdesc Plug-in created using pixi.js for playing createjs content built by animate CC.
 			 * @extends Emitter
-			 * @fires Creap.Event.Initialized
+			 * @fires Creap.initialized
 			 * @param content {Creap.Content} Target content.
-			 * @param container {DOMElement} The parent element of the canvas that displays the content.
-			 * @param {object} [options={width: content.lib.properties.width, usePreRender: true, useWebGL: true}]
-			 *     width: Canvas width.<br />
-			 *     usePreRender: Whether render bitmaps before starting the content.<br />
-			 *     useWebGL: Whether use webGL render.
+			 * @param [container=document.body] {DOMElement} The parent element of the canvas that displays the content.
+			 * @param [options=new Creap.Option()] {object|Creap.Option} Object that like instance of Creap.Option, or instance of Creap.Option.
 			 */
 			(Application = function(content, container, options) {
 				if (!(this instanceof Application)) {
@@ -744,17 +865,22 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 				}
 				
 				Emitter.call(this);
-				options = options || {};
+				if (!(options instanceof Option)) {
+					console.log(options)
+					options = options || {};
+					options = new Option(options.width, options.usePreRender, options.useWebGL, options.isAccurateTarget);
+				}
 				
 				this.isStarted = false;
+				isAccurateTarget = options.isAccurateTarget;
 				
 				initialize.call(
 					this,
 					content,
-					container,
-					options.width || content._lib.properties.width || 800,
-					options.usePreRender === false ? false : true,
-					options.useWebGL === false ? false : true
+					container || document.body,
+					options.width || content._lib.properties.width,
+					options.usePreRender,
+					options.useWebGL
 				);
 			}).prototype = Object.defineProperties(Object.create(Emitter.prototype), {
 				constructor: {
@@ -764,10 +890,13 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 				 * Build and start the content.
 				 * 
 				 * @function Creap.Application#start
-				 * @fires Creap.Event.Started
+				 * @fires Creap.started
 				 */
 				start: {
 					value: function() {
+						var f;
+						var tappedList;
+						
 						if (this.isStarted) {
 							return;
 						}
@@ -796,14 +925,60 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 						
 						stage.interactive = true;
 						
-						stage.on(EVENT.PointerDown, function(e) {
-							this.mouseX = e.stageX;
-							this.mouseY = e.stageY;
+						tappedList = [];
+						stage.on(EVENT.pointerdown, function(e) {
+							var ne;
+							var t = e.target;
+							
+							this.mouseX = e.data.global.x;
+							this.mouseY = e.data.global.y;
+							while (true) {
+								
+								e.currentTarget = t;
+								ne = createjs.MouseEvent._creapStatic.ref(EVENT.mousedown.o, e);
+								tappedList.push(t);
+								t.emit(PRE_MOUSE_EVENT.mousedown, ne);
+								if (t._creap.empty || t.parent === this || ne.stopped) {
+									break;
+								}
+								
+								t = t.parent;
+							}
 						});
-						stage.on(EVENT.PointerMove, function(e) {
-							this.mouseX = e.stageX;
-							this.mouseY = e.stageY;
+						
+						stage.on(EVENT.pointermove, function(e) {
+							var ne, t;
+							
+							this.mouseX = e.data.global.x;
+							this.mouseY = e.data.global.y;
+							
+							for (var i = 0; i < tappedList.length; i++) {
+								t = tappedList[i];
+								if (t._creap.empty) {
+									continue;
+								}
+								e.currentTarget = t;
+								ne = createjs.MouseEvent._creapStatic.ref(EVENT.pressmove.o, e);
+								t.emit(PRE_MOUSE_EVENT.pressmove, ne);
+							}
 						});
+						
+						stage.on(EVENT.pointerup, f = function(e) {
+							var ne, t;
+							for (var i = 0; i < tappedList.length; i++) {
+								t = tappedList[i];
+								if (t._creap.empty) {
+									continue;
+								}
+								e.currentTarget = t;
+								ne = createjs.MouseEvent._creapStatic.ref(EVENT.pressmove.o, e);
+								t.emit(PRE_MOUSE_EVENT.pressup, ne);
+							}
+							
+							tappedList = [];
+						});
+						
+						stage.on(EVENT.pointerupoutside, f);
 						
 						for (var i in this.content._defineVars) {
 							this.root[i] = this.content._defineVars[i];
@@ -825,7 +1000,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 						}).bind(this));
 						
 						this.app.start();
-						this.emit(Event.Started);
+						this.emit(CREAP_EVENT.started);
 					}
 				},
 				/**
@@ -877,23 +1052,6 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 		(ReplaceData = function(content, name) {
 			this._content = content;
 			this._name = name;
-		});
-		
-		/**
-		 * @constructor Creap.Event
-		 * @classdesc Class related to events for Creap.
-		 */
-		Object.defineProperties((Event = function() {
-		}), {
-			Attach: {
-				value: 'attach'
-			},
-			Initialized: {
-				value: 'initialized'
-			},
-			Started: {
-				value: 'started'
-			}
 		});
 		
 		(function() {
@@ -997,9 +1155,6 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 			},
 			ReplaceData: {
 				value: ReplaceData
-			},
-			Event: {
-				value: Event
 			}
 		});
 	})();
@@ -1010,27 +1165,32 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 	 * @namespace createjs
 	 */
 	createjs = (function() {
-		var Timeline, DisplayObject, Sprite, MovieClip, Shape, Graphics, Bitmap, Rectangle, Tween, MultiTween, MaskTween, ScriptTween, Sound, Text, Event, Touch, Prop, BindProp, PropFunctions;
+		var Timeline, DisplayObject, Sprite, MovieClip, Shape, Graphics, Bitmap, Rectangle, Tween, MultiTween, MaskTween, ScriptTween, Sound, Text, Event, MouseEvent, Touch, Prop, BindProp, PropFunctions;
 		
 		var TO_RAD = Math.PI / 180;
 		var TO_DEG = 180 / Math.PI;
 		var NONE_EASE = createjs.Ease.get(0);
 		
-		var CJS_EVENT = {
-			mousedown: EVENT.MouseDown,
-			pressup: EVENT.PressUp,
-			pressmove: EVENT.PressMove,
-			click: EVENT.Click
+		var CJS_MOUSE_EVENT = {
+			mousedown: {
+				o: EVENT.mousedown,
+				p: EVENT.pointerdown
+			},
+			pressup: {
+				o: EVENT.pressup,
+				p: EVENT.pointerup
+			},
+			pressmove: {
+				o: EVENT.pressmove,
+				p: EVENT.pointermove
+			},
+			click: {
+				o: EVENT.click,
+				p: EVENT.click
+			}
 		};
 		
-		var PRE_EVENT = {
-			mousedown: '_' + EVENT.MouseDown,
-			pressup: '_' + EVENT.PressUp,
-			pressmove: '_' + EVENT.PressMove,
-			click: '_' + EVENT.Click
-		};
-		
-		var PIXI_EVENT = {
+		var SYSTEM_EVENT = {
 			pointerdown: EVENT.PointerDown,
 			pointerup: EVENT.PointerUp,
 			pointermove: EVENT.PointerMove,
@@ -1293,44 +1453,95 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 					this._creap = this._creap || new DisplayObjectCreapData(this);
 					PIXI.Container.call(this);
 					
-					this.on(PIXI_EVENT.pointerdown, function(e) {
+					/*
+					this.on("pointerdown", function(e) {
+						e.stopPropagation();
+						console.log(e.currentTarget, e.target)
+					})
+					
+					this.on("pointermove", function(e) {
+						e.stopPropagation();
+					//	console.log(e.currentTarget, e.target)
+					})*/
+					/*
+					this.on(EVENT.pointerdown, function(e) {
 						this._creap.tapped = e.target;
-						e.type = CJS_EVENT.mousedown;
+						e.type = EVENT.mousedown;
 						e.timeStamp = Date.now();
-						this.emit(PRE_EVENT.mousedown, e);
+						this.emit(PRE_MOUSE_EVENT.mousedown, e);
 					});
 					
-					this.on(PIXI_EVENT.pointermove, function(e) {
+					this.on(EVENT.pointermove, function(e) {
 						if (!this._creap.tapped) {
 							return;
 						}
 						
 						e.target = this._creap.tapped;
-						e.type = CJS_EVENT.pressmove;
+						e.type = EVENT.pressmove;
 						e.timeStamp = Date.now();
-						this.emit(PRE_EVENT.pressmove, e);
+						this.emit(PRE_MOUSE_EVENT.pressmove, e);
 					});
 					
-					this.on(PIXI_EVENT.pointerup, f = function(e) {
+					this.on(EVENT.pointerup, f = function(e) {
 						var t = e.target;
 						if (!this._creap.tapped) {
 							return;
 						}
 						
 						if (e.target === this._creap.tapped) {
-							e.type = CJS_EVENT.click;
-							this.emit(PRE_EVENT.click, e);
+							e.type = EVENT.click;
+							this.emit(PRE_MOUSE_EVENT.click, e);
 						}
 						
 						e.target = this._creap.tapped;
-						e.type = CJS_EVENT.pressup;
+						e.type = EVENT.pressup;
 						e.timeStamp = Date.now();
-						this.emit(PRE_EVENT.pressup, e);
+						this.emit(PRE_MOUSE_EVENT.pressup, e);
 						this._creap.tapped = null;
 						e.target = t;
 					});
+					*/
 					
-					this.on(PIXI_EVENT.pointerupoutside, f);
+					/*
+					this.on(CJS_MOUSE_EVENT.mousedown.p, function(e) {
+						var ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+						this._creap.tapped = e.target;
+						this.emit(PRE_MOUSE_EVENT.mousedown, ne);
+					});
+					
+					this.on(CJS_MOUSE_EVENT.pressmove.p, function(e) {
+						var ne;
+						
+						if (!this._creap.tapped) {
+							return;
+						}
+						
+						ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+						ne.target = this._creap.tapped;
+						this.emit(PRE_MOUSE_EVENT.pressmove, ne);
+					});
+					
+					this.on(CJS_MOUSE_EVENT.pressup.p, f = function(e) {
+						var ne, n;
+						
+						if (!this._creap.tapped) {
+							return;
+						}
+						
+						if (e.target === this._creap.tapped) {
+							n = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+							this.emit(PRE_MOUSE_EVENT.click, n);
+						}
+						
+						ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+						ne.target = this._creap.tapped;
+						this.emit(PRE_MOUSE_EVENT.pressup, ne);
+						this._creap.tapped = null;
+					});
+					
+					this.on(EVENT.pointerupoutside, f);
+					
+					this.interactive = true;*/
 				}).prototype = Object.defineProperties(Object.create(PIXI.Container.prototype), {
 					constructor: {
 						value: DisplayObject
@@ -1432,9 +1643,13 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 					 */
 					dispatchEvent: {
 						value: function(e) {
+							if (!(e instanceof createjs.Event)) {
+								e = new createjs.Event(e);
+							}
 							e.target = this;
 							e.currentTarget = this;
-							this.emit(PRE_EVENT[e.type] || e.type || e);
+							
+							this.emit(PRE_MOUSE_EVENT[e.type] || e.type, e);
 						}
 					},
 					/**
@@ -1448,10 +1663,10 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 					 */
 					addEventListener: {
 						value: function(type, func, isCapture) {
-							if (type in PRE_EVENT) {
+							if (type in CJS_MOUSE_EVENT) {
 								this.interactive = true;
 							}
-							this.on(PRE_EVENT[type] || type, func);
+							this.on(PRE_MOUSE_EVENT[type] || type, func);
 							return func;
 						}
 					},
@@ -1465,7 +1680,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 					 */
 					removeEventListener: {
 						value: function(type, func, isCapture) {
-							this.off(PRE_EVENT[type] || type, func);
+							this.off(PRE_MOUSE_EVENT[type] || type, func);
 						}
 					},
 					/**
@@ -1480,14 +1695,14 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 							type = type || '';
 							
 							if (type) {
-								if (type in PIXI_EVENT) {
+								if (type in SYSTEM_EVENT) {
 									return;
 								}
-								this.removeAllListeners(PRE_EVENT[type] || type);
+								this.removeAllListeners(PRE_MOUSE_EVENT[type] || type);
 							} else {
 								names = this.eventNames();
 								for (i = 0; i < names.length; i++) {
-									if (names[i] in PIXI_EVENT) {
+									if (names[i] in SYSTEM_EVENT) {
 										continue;
 									}
 									this.removeAllListeners(names[i]);
@@ -1706,6 +1921,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 				gotoAndStop: {
 					value: function(num) {
 						DisplayObject.call(this);
+						this.interactive = isAccurateTarget;
 						
 						if (!this.spriteSheet) {
 							return;
@@ -1718,8 +1934,8 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 						}
 						*/
 						
-						this._creap.on(Creap.Event.Attach, function() {
-							this._creap.off(Creap.Event.Attach, arguments.callee);
+						this._creap.on(CREAP_EVENT.attach, function() {
+							this._creap.off(CREAP_EVENT.attach, arguments.callee);
 							this.addChild(new PIXI.Sprite(this.spriteSheet.textures['_' + num]));
 						});
 					}
@@ -1745,11 +1961,12 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 				initialize: {
 					value: function(resource) {
 						DisplayObject.call(this);
+						this.interactive = isAccurateTarget;
 						if (!resource) {
 							return;
 						}
-						this._creap.on(Creap.Event.Attach, function() {
-							this._creap.off(Creap.Event.Attach, arguments.callee);
+						this._creap.on(CREAP_EVENT.attach, function() {
+							this._creap.off(CREAP_EVENT.attach, arguments.callee);
 							this.addChild(new PIXI.Sprite(resource.texture));
 						});
 					}
@@ -1792,6 +2009,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 					this._creap = new CreapData(this);
 					DisplayObject.call(this);
 					this.parent = currentDefiner;
+					this.interactive = isAccurateTarget;
 				}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 					constructor: {
 						value: Shape
@@ -1851,7 +2069,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 						value: function(child, offset) {
 							this.removeLayer(child);
 							child._creap.reset();
-							child._creap.emit(Creap.Event.Attach);
+							child._creap.emit(CREAP_EVENT.attach);
 							for (var i = 0; i < child._creap.targetParent.children.length; i++) {
 								if (offset > child._creap.targetParent.children[i]._creap.depthOffset) {
 									PIXI.Container.prototype.addChildAt.call(child._creap.targetParent, child, i);
@@ -2109,7 +2327,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 								return;
 							}
 							
-							child._creap.emit(Creap.Event.Attach);
+							child._creap.emit(CREAP_EVENT.attach);
 							return PIXI.Container.prototype.addChild.call(this, child);
 						}
 					},
@@ -2128,7 +2346,7 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 								return;
 							}
 							
-							child._creap.emit(Creap.Event.Attach);
+							child._creap.emit(CREAP_EVENT.attach);
 							return PIXI.Container.prototype.addChildAt.call(this, child, Math.min(index + this._creap.onLayerCount, this.children.length));
 						}
 					},
@@ -2251,6 +2469,8 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 				this.instance.scale.x = this.instance.scale.y = 1 / 10;
 				this.instance.y = f / 10 / 6;
 				this.addChild(this.instance);
+				
+				this.interactive = isAccurateTarget;
 			}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 				constructor: {
 					value: Text
@@ -2265,11 +2485,11 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.style.lineHeight;
 					},
 					set: function(v) {
-						this.instance.style.lineHeight = v / this.instance.scale.y;
+						this.instance.style.lineHeight = v / this.instance.scale.y / 10;
 						if (v <= 0) {
-							this.instance.style.padding = (-v + 10) * this.instance.scale.y;
+							this.instance.style.padding = (-v + 10) * this.instance.scale.y / 10;
 						} else {
-							this.instance.style.padding = 10 * this.instance.scale.y;
+							this.instance.style.padding = 10 * this.instance.scale.y / 10;
 						}
 					}
 				},
@@ -2428,9 +2648,12 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 								}
 							}
 							
+							/*
 							if (!tween._creap.target._creap.empty) {
 								this._creap.target._creap.addLayerAt(tween._creap.target, 9999999);
 							}
+							*/
+							tween._creap.target._off = true;
 							
 							tween._creap.target._creap.depthOffset = this._creap.target._creap.definedLayerCount++;
 							tween._creap.target._creap.isDefined = true;
@@ -2994,8 +3217,6 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 			(function() {
 				var CreapData;
 				
-				var DEFAULT_COLOR = '#000000';
-				
 				/*!
 				 * Convert color and alpha from String of "color" in CSS format.
 				 * 
@@ -3051,9 +3272,12 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 					beginFill: {
 						value: function(color) {
 							var c;
+							this.closePath();
 							if (color) {
 								c = toColorAndAlpha(color);
 								PIXI.Graphics.prototype.beginFill.call(this, c.color, c.alpha);
+							} else {
+								PIXI.Graphics.prototype.beginFill.call(this, 0, 0);
 							}
 							return this;
 						}
@@ -3155,8 +3379,6 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 			
 			(function() {
 				var CreapData, StaticCreapData;
-				
-				var EVENT_COMPLETE = 'complete';
 				
 				/*!
 				 * @constructor createjs.Sound~StaticCreapData
@@ -3270,12 +3492,12 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 								audio.loop(false);
 							}
 							if (playProp.loop > -1) {
-								audio.on(EVENT.End, (function(v) {
+								audio.on(EVENT.end, (function(v) {
 									var c = 0;
 									return (function() {
 										var e;
 										if (++c > v) {
-											this.emit(EVENT_COMPLETE);
+											this.emit(EVENT.complete);
 											audio.stop();
 										}
 									}).bind(this);
@@ -3331,8 +3553,9 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 				 * Name of event type.
 				 * 
 				 * @member createjs.Event#type {string}
+				 * @default ''
 				 */
-				this.type = type;
+				this.type = type || '';
 				
 				/**
 				 * Unixtime when event was created.
@@ -3340,11 +3563,112 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @member createjs.Event#timeStamp {number}
 				 */
 				this.timeStamp = Date.now();
+				
+				/**
+				 * Object that fired the event.
+				 * 
+				 * @see Creap.Option#isAccurateTarget
+				 * @member createjs.Event#target {createjs~DisplayObject}
+				 */
+				this.target = null;
+				
+				/**
+				 * Object that added the event listener.
+				 * 
+				 * @member createjs.Event#currentTarget {createjs~DisplayObject}
+				 */
+				this.currentTarget = null;
+				
+				/**
+				 * Whether to interrupt event propagation
+				 * 
+				 * pmember createjs.Event#stopped {bool}
+				 * @default false
+				 */
+				this.stopped = false;
 			}).prototype = Object.defineProperties({}, {
 				constructor: {
 					value: Event
 				}
 			});
+			
+			(function() {
+				var CreapData, StaticCreapData;
+				
+				/*!
+				 * @constructor createjs.MouseEvent~StaticCreapData
+				 * @classdesc Class related to static system data of createjs.MouseEvent.
+				 */
+				(StaticCreapData = function() {
+					this.audios = {};
+				}).prototype = Object.defineProperties({}, {
+					/**
+					 * @function createjs.MouseEvent~StaticCreapData#ref
+					 * @param type {string} Event type.
+					 * @param e {PIXI.interaction.InteractionEvent}
+					 * @return {createjs.Event}
+					 */
+					ref: {
+						value: function(type, e) {
+							var ne = new MouseEvent(type);
+							ne.stageX = ne.rawX = e.data.global.x;
+							ne.stageY = ne.rawY = e.data.global.y;
+							ne.target = e.target;
+							ne.currentTarget = e.currentTarget;
+							ne.stopPropagation = e.stopPropagation;
+							return ne;
+						}
+					}
+				});
+				
+				/**
+				 * @constructor createjs.MouseEvent
+				 * @classdesc Class related to mouse event.
+				 * @extends createjs.Event
+				 * @since 1.0.1
+				 * @param type {string} Name of event type.
+				 */
+				Object.defineProperties((MouseEvent = function(type) {
+					Event.call(this, type);
+					
+					/**
+					 * @member createjs.MouseEvent#stageX {number}
+					 * @default 0
+					 */
+					this.stageX = 0;
+					
+					/**
+					 * @member createjs.MouseEvent#stageY {number}
+					 * @default 0
+					 */
+					this.stageY = 0;
+					
+					/**
+					 * @member createjs.MouseEvent#rawX {number}
+					 * @default 0
+					 */
+					this.rawX = 0;
+					
+					/**
+					 * @member createjs.MouseEvent#rawY {number}
+					 * @default 0
+					 */
+					this.rawY = 0;
+					
+					/**
+					 * @member createjs.MouseEvent#stopPropagation {function}
+					 */
+					this.stopPropagation = null;
+				}), {
+					_creapStatic: {
+						value: new StaticCreapData()
+					},
+				}).prototype = Object.defineProperties(Event, {
+					constructor: {
+						value: MouseEvent
+					}
+				});
+			})();
 			
 			/**
 			 * @constructor createjs.Touch
@@ -3400,6 +3724,9 @@ console.log('\r\n%c  Creap.js %c v1.0.0  %c\r\n\r\n', 'color: #FFF; background: 
 			},
 			Event: {
 				value: Event
+			},
+			MouseEvent: {
+				value: MouseEvent
 			},
 			Touch: {
 				value: Touch

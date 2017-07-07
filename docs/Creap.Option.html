@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Class: ReplaceData</title>
+	<title>Documentation Class: Option</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -86,7 +86,7 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: ReplaceData</h1>
+	<h1 class="page-title">Class: Option</h1>
 <section>
 
 <header>
@@ -94,10 +94,10 @@
         <h2>
             <span class="ancestors"><a href="Creap.html">Creap</a>.</span>
         
-        ReplaceData
+        Option
         </h2>
         
-            <div class="class-description"><p>Class related to data of replacement of definition.</p></div>
+            <div class="class-description"><p>Class related to data of creap option.</p></div>
         
     
 </header>
@@ -109,7 +109,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="ReplaceData"><span class="type-signature"></span>new ReplaceData(content, name)</h4>
+    <h4 class="name" id="Option"><span class="type-signature"></span>new Option( [width] [, usePreRender] [, useWebGL] [, isAccurateTarget])</h4>
     
     
 </dt>
@@ -136,7 +136,11 @@
         <th>Type</th>
 
         
+        <th>Argument</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -148,13 +152,13 @@
 
         <tr>
             
-                <td class="name"><code>content</code></td>
+                <td class="name"><code>width</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="Creap.Content.html">Creap.Content</a></span>
+<span class="param-type">number</span>
 
 
 
@@ -162,23 +166,39 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last"><p>Target content which have definition to replace.</p></td>
+            
+                <td class="default">
+                
+                    Value of "lib.properties.width"
+                
+                </td>
+            
+
+            <td class="description last"><p>Canvas width.</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>name</code></td>
+                <td class="name"><code>usePreRender</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">bool</span>
 
 
 
@@ -186,10 +206,106 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last"><p>Name of definition to replace.</p></td>
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether render bitmaps before starting the content.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>useWebGL</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether use webGL render.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>isAccurateTarget</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether set accurate target when fires mouse/touch event.</p></td>
         </tr>
 
     
@@ -234,7 +350,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-1046">line 1046</a>
+				 <a href="Creap.js.html#sunlight-1-line-778">line 778</a>
 			</li>
 		</ul>
 	</dd>
@@ -276,6 +392,383 @@
 
     
 
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<hr>
+<dt class="name" id="isAccurateTarget">
+    <h4 id="isAccurateTarget"><span class="type-signature"></span>isAccurateTarget<span class="type-signature"> :bool</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Whether set accurate target when fires mouse/touch event.<br />
+<br />
+When code like the following...</p>
+<pre class="prettyprint source lang-js"><code>exportRoot.addEventListener(&quot;mousedown&quot;, function(e) {
+    console.log(e.currentTarget);
+    console.log(e.target);
+})</code></pre><p><li>isAccurateTarget = true;</li>
+<img src="../img/accurateTrue.jpg" /></p>
+<pre class="prettyprint source lang-js"><code>console.log(e.currentTarget); // exportRoot
+console.log(e.target); // Bitmap</code></pre><p>This specification is the same as createjs, but performance tends to decline instead.<br />
+It is especially noticeable when many mousemove event fires on the browser for PC.<br /></p>
+<p><li>isAccurateTarget = false;</li>
+<img src="../img/accurateFalse.jpg" /></p>
+<pre class="prettyprint source lang-js"><code>console.log(e.currentTarget); // exportRoot
+console.log(e.target); // exportRoot</code></pre><p>If you don't need an accurate target, please use this setting.<br />
+<br />
+In createjs, the conditions under which pressmove, pressup events can fire.<br /></p>
+<p><li>&quot;e.currentTarget&quot; that when the mousedown event fires. ( = instance with the event listener)</li></p>
+<p><li>&quot;e.target&quot; that when the mousedown event fires.</li></p>
+<p><li>Instance containing &quot;e.target&quot; when the mousedown event fires.</li>
+<br />
+Therefore, if isAccurateTarget is false, please be aware that pressmove and pressup may not behave as expected.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">bool</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>true</li>
+		</ul>
+	</dd>
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-811">line 811</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="usePreRender">
+    <h4 id="usePreRender"><span class="type-signature"></span>usePreRender<span class="type-signature"> :bool</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Whether render bitmaps before starting the content.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">bool</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>true</li>
+		</ul>
+	</dd>
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-795">line 795</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="useWebGL">
+    <h4 id="useWebGL"><span class="type-signature"></span>useWebGL<span class="type-signature"> :bool</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Whether use webGL render.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">bool</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>true</li>
+		</ul>
+	</dd>
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-803">line 803</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt class="name" id="width">
+    <h4 id="width"><span class="type-signature"></span>width<span class="type-signature"> :number</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Canvas width.</p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+	<dt class="tag-default method-doc-label method-doc-details-label">Default Value:</dt>
+	<dd class="tag-default">
+		<ul class="dummy">
+			<li>Value of "lib.properties.width"</li>
+		</ul>
+	</dd>
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-787">line 787</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
     
 
     

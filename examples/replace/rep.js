@@ -2,7 +2,7 @@
 
 var p; // shortcut to reference prototypes
 lib.ssMetadata = [
-		{name:"rep_atlas_", frames: [[21,23,19,19],[0,23,19,19],[0,0,21,21]]}
+		{name:"rep_atlas_", frames: [[0,23,19,19],[21,23,19,19],[0,0,21,21]]}
 ];
 
 
@@ -98,7 +98,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/rep_atlas_.png?1499244150657", id:"rep_atlas_"}
+		{src:"images/rep_atlas_.png?1499324521439", id:"rep_atlas_"}
 	],
 	preloads: []
 };
