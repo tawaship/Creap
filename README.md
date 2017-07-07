@@ -61,7 +61,7 @@ or
 ```html
 <script>
 	new Creap.Application(test, document.body)
-	.on(Creap.Event.Initialized, function() {
+	.on('initialized', function() {
 		this.fullScreen();
 		this.start();
 	});
