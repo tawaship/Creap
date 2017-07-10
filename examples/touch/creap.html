@@ -19,7 +19,7 @@
 			document.addEventListener('DOMContentLoaded', function() {
 				var creap = new Creap.Application(test, document.body, {
 					width: window.innerWidth,
-					isAccurateTarget: true
+					isAccurateTarget: false
 				}).on('initialized', function() {
 					this.fullScreen();
 					this.start();
