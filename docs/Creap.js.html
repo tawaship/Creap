@@ -92,7 +92,7 @@
     <article>
         <pre
             class="sunlight-highlight-javascript linenums">/*!
- * Creap.js - v1.0.2
+ * Creap.js - v1.0.3
  * 
  * @requires pixi.js v4.4.3 | 4.5.1
  * @requires howler.core.js v2.0.1
@@ -104,7 +104,7 @@
 
 var createjs, Creap, playSound, exportRoot, stage;
 
-console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.0.3  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData;
@@ -987,7 +987,7 @@ console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: 
 				start: {
 					value: function() {
 						var f;
-						var tappedList;
+						var tappedList, tappedTarget;
 						
 						if (this.isStarted) {
 							return;
@@ -1020,12 +1020,11 @@ console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: 
 						tappedList = [];
 						stage.on(EVENT.pointerdown, function(e) {
 							var ne;
-							var t = e.target;
+							var t = tappedTarget = e.target;
 							
 							this.mouseX = e.data.global.x;
 							this.mouseY = e.data.global.y;
 							while (true) {
-								
 								e.currentTarget = t;
 								ne = createjs.MouseEvent._creapStatic.ref(EVENT.mousedown.o, e);
 								tappedList.push(t);
@@ -1040,10 +1039,9 @@ console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: 
 						
 						stage.on(EVENT.pointermove, function(e) {
 							var ne, t;
-							
 							this.mouseX = e.data.global.x;
 							this.mouseY = e.data.global.y;
-							
+							e.target = tappedTarget;
 							for (var i = 0; i &lt; tappedList.length; i++) {
 								t = tappedList[i];
 								if (t._creap.empty) {
@@ -1057,17 +1055,24 @@ console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: 
 						
 						stage.on(EVENT.pointerup, f = function(e) {
 							var ne, t;
+							var ft = e.target;
+							e.target = tappedTarget;
 							for (var i = 0; i &lt; tappedList.length; i++) {
 								t = tappedList[i];
 								if (t._creap.empty) {
 									continue;
 								}
 								e.currentTarget = t;
+								if (tappedTarget === ft) {
+									ne = createjs.MouseEvent._creapStatic.ref(EVENT.click.o, e);
+									t.emit(PRE_MOUSE_EVENT.click, ne);
+								}
 								ne = createjs.MouseEvent._creapStatic.ref(EVENT.pressmove.o, e);
 								t.emit(PRE_MOUSE_EVENT.pressup, ne);
 							}
 							
 							tappedList = [];
+							tappedTarget = null;
 						});
 						
 						stage.on(EVENT.pointerupoutside, f);
@@ -1264,29 +1269,17 @@ console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: 
 		var NONE_EASE = createjs.Ease.get(0);
 		
 		var CJS_MOUSE_EVENT = {
-			mousedown: {
-				o: EVENT.mousedown,
-				p: EVENT.pointerdown
-			},
-			pressup: {
-				o: EVENT.pressup,
-				p: EVENT.pointerup
-			},
-			pressmove: {
-				o: EVENT.pressmove,
-				p: EVENT.pointermove
-			},
-			click: {
-				o: EVENT.click,
-				p: EVENT.click
-			}
+			mousedown: EVENT.mousedown,
+			pressup: EVENT.pressup,
+			pressmove: EVENT.pressmove,
+			click: EVENT.click
 		};
 		
 		var SYSTEM_EVENT = {
-			pointerdown: EVENT.PointerDown,
-			pointerup: EVENT.PointerUp,
-			pointermove: EVENT.PointerMove,
-			pointerupoutside: EVENT.PointerUpOutside
+			pointerdown: EVENT.pointerdown,
+			pointerup: EVENT.pointerup,
+			pointermove: EVENT.pointermove,
+			pointerupoutside: EVENT.pointerupoutside
 		};
 		
 		var currentDefiner = null;
@@ -1544,96 +1537,6 @@ console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: 
 					
 					this._creap = this._creap || new DisplayObjectCreapData(this);
 					PIXI.Container.call(this);
-					
-					/*
-					this.on("pointerdown", function(e) {
-						e.stopPropagation();
-						console.log(e.currentTarget, e.target)
-					})
-					
-					this.on("pointermove", function(e) {
-						e.stopPropagation();
-					//	console.log(e.currentTarget, e.target)
-					})*/
-					/*
-					this.on(EVENT.pointerdown, function(e) {
-						this._creap.tapped = e.target;
-						e.type = EVENT.mousedown;
-						e.timeStamp = Date.now();
-						this.emit(PRE_MOUSE_EVENT.mousedown, e);
-					});
-					
-					this.on(EVENT.pointermove, function(e) {
-						if (!this._creap.tapped) {
-							return;
-						}
-						
-						e.target = this._creap.tapped;
-						e.type = EVENT.pressmove;
-						e.timeStamp = Date.now();
-						this.emit(PRE_MOUSE_EVENT.pressmove, e);
-					});
-					
-					this.on(EVENT.pointerup, f = function(e) {
-						var t = e.target;
-						if (!this._creap.tapped) {
-							return;
-						}
-						
-						if (e.target === this._creap.tapped) {
-							e.type = EVENT.click;
-							this.emit(PRE_MOUSE_EVENT.click, e);
-						}
-						
-						e.target = this._creap.tapped;
-						e.type = EVENT.pressup;
-						e.timeStamp = Date.now();
-						this.emit(PRE_MOUSE_EVENT.pressup, e);
-						this._creap.tapped = null;
-						e.target = t;
-					});
-					*/
-					
-					/*
-					this.on(CJS_MOUSE_EVENT.mousedown.p, function(e) {
-						var ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
-						this._creap.tapped = e.target;
-						this.emit(PRE_MOUSE_EVENT.mousedown, ne);
-					});
-					
-					this.on(CJS_MOUSE_EVENT.pressmove.p, function(e) {
-						var ne;
-						
-						if (!this._creap.tapped) {
-							return;
-						}
-						
-						ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
-						ne.target = this._creap.tapped;
-						this.emit(PRE_MOUSE_EVENT.pressmove, ne);
-					});
-					
-					this.on(CJS_MOUSE_EVENT.pressup.p, f = function(e) {
-						var ne, n;
-						
-						if (!this._creap.tapped) {
-							return;
-						}
-						
-						if (e.target === this._creap.tapped) {
-							n = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
-							this.emit(PRE_MOUSE_EVENT.click, n);
-						}
-						
-						ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
-						ne.target = this._creap.tapped;
-						this.emit(PRE_MOUSE_EVENT.pressup, ne);
-						this._creap.tapped = null;
-					});
-					
-					this.on(EVENT.pointerupoutside, f);
-					
-					this.interactive = true;*/
 				}).prototype = Object.defineProperties(Object.create(PIXI.Container.prototype), {
 					constructor: {
 						value: DisplayObject
@@ -3887,7 +3790,7 @@ console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on July 7th 2017, 8:29:44 pm
+		on July 10th 2017, 10:37:05 am
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

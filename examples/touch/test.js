@@ -1,7 +1,9 @@
 (function (lib, img, cjs, ss, an) {
 
 var p; // shortcut to reference prototypes
-lib.ssMetadata = [];
+lib.ssMetadata = [
+		{name:"test_atlas_", frames: [[0,0,19,19],[0,21,19,19]]}
+];
 
 
 // symbols:
@@ -9,9 +11,17 @@ lib.ssMetadata = [];
 
 
 (lib.Bitmap1 = function() {
-	this.initialize(img.Bitmap1);
-}).prototype = p = new cjs.Bitmap();
-p.nominalBounds = new cjs.Rectangle(0,0,19,19);// helper functions:
+	this.spriteSheet = ss["test_atlas_"];
+	this.gotoAndStop(0);
+}).prototype = p = new cjs.Sprite();
+
+
+
+(lib.Bitmap2 = function() {
+	this.spriteSheet = ss["test_atlas_"];
+	this.gotoAndStop(1);
+}).prototype = p = new cjs.Sprite();
+// helper functions:
 
 function mc_symbol_clone() {
 	var clone = this._cloneProps(new this.constructor(this.mode, this.startPosition, this.loop));
@@ -34,7 +44,7 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 	this.initialize(mode,startPosition,loop,{});
 
 	// レイヤー 1
-	this.instance = new lib.Bitmap1();
+	this.instance = new lib.Bitmap2();
 	this.instance.parent = this;
 
 	this.timeline.addTween(cjs.Tween.get(this.instance).wait(1));
@@ -154,7 +164,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/Bitmap1.png?1499391210896", id:"Bitmap1"}
+		{src:"images/test_atlas_.png?1499649889848", id:"test_atlas_"}
 	],
 	preloads: []
 };
