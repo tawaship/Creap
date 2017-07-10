@@ -1191,40 +1191,6 @@ console.log('\r\n%c  Creap.js %c v1.0.3  %c\r\n\r\n', 'color: #FFF; background: 
 		
 		var currentDefiner = null;
 		
-		// Add accessors like a createjs to event prototype.
-		var eventPrototype = Object.getPrototypeOf((new PIXI.interaction.InteractionManager(document.createElement('canvas'))).eventData);
-		
-		Object.defineProperties(eventPrototype, {
-			stageX: {
-				get: function() {
-					return this.data.global.x;
-				},
-				set: function(v) {
-				}
-			},
-			stageY: {
-				get: function() {
-					return this.data.global.y;
-				},
-				set: function(v) {
-				}
-			},
-			rawX: {
-				get: function() {
-					return this.data.global.x;
-				},
-				set: function(v) {
-				}
-			},
-			rawY: {
-				get: function() {
-					return this.data.global.y;
-				},
-				set: function(v) {
-				}
-			}
-		});
-		
 		(function() {
 			var DisplayObjectCreapData;
 			var maskDiscriptor = Object.getOwnPropertyDescriptor(PIXI.DisplayObject.prototype, 'mask');
@@ -1342,7 +1308,7 @@ console.log('\r\n%c  Creap.js %c v1.0.3  %c\r\n\r\n', 'color: #FFF; background: 
 				this.bindProp = new BindProp();
 				
 				/**
-				 * Whether this instance is removed in the timeline of the parent instance.
+				 * Whether this instance has removed in the timeline of the parent instance.
 				 * 
 				 * @member createjs~DisplayObjectCreapData#empty {bool}
 				 * @default false
