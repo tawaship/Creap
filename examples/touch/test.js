@@ -110,16 +110,11 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 		}, false);
 		
 		
-		this.t.c.g.addEventListener("pressmove", function(e) {
-			console.log("move", e);
-		});
-		
-		
 		this.addEventListener("pressmove", function(e) {
 			console.log("move", e);
 		});
 		
-		this.t.addEventListener("pressup", function(e) {
+		this.t.c.g.addEventListener("pressup", function(e) {
 			console.log("up",e);
 		});
 		
@@ -164,7 +159,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/test_atlas_.png?1499649889848", id:"test_atlas_"}
+		{src:"images/test_atlas_.png?1500542296696", id:"test_atlas_"}
 	],
 	preloads: []
 };

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+		<title>index</title>
+		
+		<script src="../../dist/Creap.all.min.js"></script>
+		<script src="test.js?1494297215211"></script>
+		<script>
+			var creap;
+			var f = 1;
+			var test = new Creap.Content('lib', 'test', 'images', 'ss').createJson();
+			function func() {
+				if (++f > 3) {
+					f = 1;
+				}
+				
+				creap.stop();
+				creap.defineImages({
+					Bitmap1: "images/Bitmap" + f + ".png"
+				}, function() {
+					creap.start();
+				});
+			}
+		</script>
+	</head>
+	<body style="margin:0px; overflow: hidden;">
+		<div id="sContainer" style="position:absolute;"></div>
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				creap = new Creap.Application(test, document.getElementById('sContainer'), {
+					width: window.innerWidth
+				}).on('initialized', function() {
+					this.fullScreen();
+					this.start();
+				});
+			}, false);
+		</script>
+	</body>
+</html>

@@ -5,15 +5,12 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
 		<title>index</title>
 		
-		<script src="../../lib/pixi.4.4.3.min.js"></script>
-		<script src="../../lib/Ease.js"></script>
-		<script src="../../lib/howler.core.js"></script>
 		<script src="../../dist/Creap.all.min.js"></script>
 		
 		<script src="test.js?1494297215211"></script>
 		<script>
+			Creap.options.isAccurateTarget = false;
 			var test = new Creap.Content('lib', 'test', 'images', 'ss');
-			test.createJson();
 		</script>
 		<script>
 			document.addEventListener('DOMContentLoaded', function() {

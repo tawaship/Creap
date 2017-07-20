@@ -1,0 +1,18 @@
+<ul>
+	<li><a href="contents/standard/creap.html">standard origin</a><br /></li>
+	<li><a href="contents/replace/creap.html">replace origin</a><br /></li>
+	<li>
+		<a href="#" id="b">Creap.js with replaces</a>&nbsp;
+		<select id="a">
+			<option value="0">red circle</option>
+			<option value="1">green circle</option>
+			<option value="2">blue square</option>
+		</select><br />
+	</li>
+</ul>
+
+<script>
+	document.getElementById('b').addEventListener('click', function() {
+		location.href = 'creap.html?a=' + document.getElementById('a').value;
+	});
+</script>

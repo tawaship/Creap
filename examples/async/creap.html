@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+		<title>index</title>
+		
+		<script src="../../dist/Creap.all.min.js"></script>
+		<script>
+			Creap.options.isAccurateTarget = false;
+		</script>
+	</head>
+	<body style="margin:0px; overflow: hidden;">
+		<div id="sContainer" style="position:absolute;"></div>
+		<div id="rContainer" style="position:absolute;"></div>
+		
+		<script>
+			var loader = new Creap.Loader();
+			
+			loader.loadContent([
+				{name: 'rep', path: 'contents/replace/rep.js', lib: 'lib', root: 'rep', images: 'images', ss: 'ss', basePath: 'contents/replace'},
+				{name: 'test', path: 'contents/replace/test.js', lib: 'lib', root: 'test', images: 'images', ss: 'ss', basePath: 'contents/replace'}
+			], function(contents) {
+				contents.test.createJson()
+				.replaceClips({
+					Ball: new Creap.ReplaceData(contents.rep, 'Ball')
+				}).defineVars({
+					colorNum: parseInt(location.search.substring(1).split('=')[1])
+				}).defineImages({
+					Bitmap1: "contents/replace/images/rep_atlas_.png"
+				}).disabledImages(['Bitmap3']);
+				
+				var test = new Creap.Application(contents.test, document.getElementById('rContainer'), {
+					width: window.innerWidth
+				}).fullScreen().start();
+			})
+			.loadContent({
+				name: 'test', path: 'contents/standard/test.js', lib: 'lib', root: 'test', images: 'images', ss: 'ss', basePath: './contents/standard'
+			}, function(contents) {
+				contents.test.createJson();
+				
+				var test = new Creap.Application(contents.test, document.getElementById('sContainer'), {
+					width: window.innerWidth
+				}).fullScreen().start();
+			});
+			
+		</script>
+	</body>
+</html>

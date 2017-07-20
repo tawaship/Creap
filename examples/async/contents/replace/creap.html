@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+		<title>index</title>
+		
+		<script src="../../../../dist/Creap.all.min.js"></script>
+		
+		<script src="rep.js?1494297215211"></script>
+		<script>
+			var rep = new Creap.Content('lib', 'rep', 'images', 'ss');
+			rep.createJson();
+		</script>
+		
+		<script src="test.js?1494297215211"></script>
+		<script>
+			var test = new Creap.Content('lib', 'test', 'images', 'ss');
+			test.createJson();
+			test.replaceClips({
+				Ball: new Creap.ReplaceData(rep, 'Ball')
+			});
+			
+			test.defineVars({
+				colorNum: parseInt(location.search.substring(1).split('=')[1])
+			});
+			test.defineImages({
+				Bitmap1: "images/rep_atlas_.png"
+			});
+		</script>
+		
+		<script>
+			document.addEventListener('DOMContentLoaded', function() {
+				var creap = new Creap.Application(test, document.body, {
+					width: window.innerWidth
+				}).on('initialized', function() {
+					this.fullScreen();
+					this.start();
+				});
+			}, false);
+		</script>
+	</head>
+	<body style="margin:0px; overflow: hidden;">
+	</body>
+</html>

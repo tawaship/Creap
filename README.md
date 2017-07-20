@@ -5,6 +5,29 @@
 Creap.js is a plug-in for playing createjs content built by "Adobe Animate CC".<br />
 By using webGL rendering you can render faster than regular createjs content.
 
+## Rerease note
+### v1.0.0 07/05/2017
+- [add] Initial release
+
+### v1.0.3 07/10/2017
+- [add] createjs.MouseEvent
+
+### v1.1.0 07/20/2017
+- [add] Creap.loader
+	- Function that asynchronous loading.
+	- Function that asynchronous loading and create Creap.Content.
+- [update] Support for multiple contents
+- [update] Creap.Application
+	- Functions related to align content.
+	- Functions related to display of content.
+	- Functions related to definition replacement.
+	- Function that replace only a part of the image contained in the sprite sheet.
+- [update] Creap.Application#isAccurateTarget has been changed to Creap.options.isAccurateTarget.
+- [fix] createjs.Event
+	- Fix an error when addEventListener has not executed.
+- [fix] createjs.Shape
+	- Fix that I could not express a path with a hole inside Fill.
+
 ## Features
 - Can use the createjs content built by "Adobe Animate CC" as it is.
 - Can use sprite sheet.

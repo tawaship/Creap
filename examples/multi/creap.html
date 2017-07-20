@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+		<title>index</title>
+		
+		<script src="../../dist/Creap.all.min.js"></script>
+		
+		<script src="contents/t/t.js?1494297215211"></script>
+		<script>
+			Creap.options.isAccurateTarget = false;
+			var t = new Creap.Content('lib', 't', 'images', 'ss', './contents/t').createJson();
+		</script>
+		
+		<script src="contents/a/a.js?1494297215211"></script>
+		<script>
+			var a = new Creap.Content('lib', 'a', 'images', 'ss', './contents/a').createJson();
+		</script>
+		
+		<script src="contents/b/b.js?1494297215211"></script>
+		<script>
+			var b = new Creap.Content('lib', 'b', 'images', 'ss', './contents/b').createJson();
+		</script>
+		
+		<script>
+			var flagA = false;
+			var flagB = false;
+			
+			function toggleA() {
+				if (flagA = !flagA) {
+					ca.start();
+				} else {
+					ca.stop();
+				}
+			}
+			
+			function toggleB() {
+				if (flagB = !flagB) {
+					cb.start();
+				} else {
+					cb.stop();
+				}
+			}
+		</script>
+	</head>
+	<body style="margin:0px; overflow: hidden;">
+		<div id="aContainer" style="position:absolute;"></div>
+		<div id="bContainer" style="position:absolute;"></div>
+		<div id="tContainer" style="position:absolute;"></div>
+		
+		<script>
+			var ca = new Creap.Application(a, document.getElementById('aContainer'), {
+				width: window.innerWidth
+			}).fullScreen();
+			var baseRect = ca.getRect();
+			
+			var cb = new Creap.Application(b, document.getElementById('bContainer'), {
+				width: window.innerWidth
+			}).fullScreen();
+			
+			var ct = new Creap.Application(t, document.getElementById('tContainer'), {
+				width: window.innerWidth
+			}).adjustWidth(baseRect.width).toLeft(baseRect).toTop(baseRect).start();
+			
+		</script>
+	</body>
+</html>
