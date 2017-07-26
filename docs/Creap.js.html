@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Creap.Application.html">Creap.Application</a></li><li><a href="Creap.Content.html">Creap.Content</a></li><li><a href="Creap.Loader.html">Creap.Loader</a></li><li><a href="Creap.Position.html">Creap.Position</a></li><li><a href="Creap.Rect.html">Creap.Rect</a></li><li><a href="Creap.ReplaceData.html">Creap.ReplaceData</a></li><li><a href="createjs.Bitmap.html">createjs.Bitmap</a></li><li><a href="createjs.Event.html">createjs.Event</a></li><li><a href="createjs.Graphics.html">createjs.Graphics</a></li><li><a href="createjs.MouseEvent.html">createjs.MouseEvent</a></li><li><a href="createjs.MovieClip.html">createjs.MovieClip</a></li><li><a href="createjs.Rectangle.html">createjs.Rectangle</a></li><li><a href="createjs.Shape.html">createjs.Shape</a></li><li><a href="createjs.Sound.html">createjs.Sound</a></li><li><a href="createjs.Sprite.html">createjs.Sprite</a></li><li><a href="createjs.Text.html">createjs.Text</a></li><li><a href="createjs.Touch.html">createjs.Touch</a></li><li><a href="createjs.Tween.html">createjs.Tween</a></li><li><a href="createjs-DisplayObject.html">createjs~DisplayObject</a></li><li><a href="createjs-Stage.html">createjs~Stage</a></li><li><a href="Emitter.html">Emitter</a></li>
+					<li><a href="Creap.Application.html">Creap.Application</a></li><li><a href="Creap.Content.html">Creap.Content</a></li><li><a href="Creap.Loader.html">Creap.Loader</a></li><li><a href="Creap.Point.html">Creap.Point</a></li><li><a href="Creap.Rect.html">Creap.Rect</a></li><li><a href="Creap.ReplaceData.html">Creap.ReplaceData</a></li><li><a href="Creap.Size.html">Creap.Size</a></li><li><a href="createjs.Bitmap.html">createjs.Bitmap</a></li><li><a href="createjs.Event.html">createjs.Event</a></li><li><a href="createjs.Graphics.html">createjs.Graphics</a></li><li><a href="createjs.MouseEvent.html">createjs.MouseEvent</a></li><li><a href="createjs.MovieClip.html">createjs.MovieClip</a></li><li><a href="createjs.Rectangle.html">createjs.Rectangle</a></li><li><a href="createjs.Shape.html">createjs.Shape</a></li><li><a href="createjs.Sound.html">createjs.Sound</a></li><li><a href="createjs.Sprite.html">createjs.Sprite</a></li><li><a href="createjs.Text.html">createjs.Text</a></li><li><a href="createjs.Touch.html">createjs.Touch</a></li><li><a href="createjs.Tween.html">createjs.Tween</a></li><li><a href="createjs-DisplayObject.html">createjs~DisplayObject</a></li><li><a href="createjs-Stage.html">createjs~Stage</a></li><li><a href="Emitter.html">Emitter</a></li>
 				</ul>
 			</li>
 			
@@ -92,9 +92,9 @@
     <article>
         <pre
             class="sunlight-highlight-javascript linenums">/*!
- * Creap.js - v1.1.0
+ * Creap.js - v1.1.1
  * 
- * @requires pixi.js v4.4.3 | 4.5.1
+ * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
  * @requires Ease.js
  * @author makazu.mori@gmail.com (tawaship)
@@ -104,10 +104,12 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
+	var typeKitLoaded = false;
+	var googleWebFontLoaded = false;
 	var isAccurateTarget = true;
 	var _exportRoot, _stage;
 	var isAndroid = navigator.userAgent.match(/Android/i) !== null;
@@ -115,6 +117,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 	var isMobile = isAndroid || isIos;
 	var windowWidth = window.innerWidth;
 	var windowHeight = window.innerHeight;
+	var webFontObj;
 	var CPJSON = '.cp.json';
 	var DEFAULT_COLOR = '#000000';
 	var EVENT = {
@@ -164,12 +167,19 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 	var TAG_COLOR = '#';
 	var TAG_COMMA = ',';
 	
+	var TEXT_SIZE_MAG = 1;
+	
 	var CREAP_EVENT = {
 		/*!
 		 * Fires when the instance first get on the display list.
 		 * @event Creap.attach
 		 */
 		attach: 'attach',
+		/*!
+		 * Fires when the loader loaded assets.
+		 * @event Creap.loaded
+		 */
+		loaded: 'loaded',
 		/**
 		 * Fires when call new Creap.Application().
 		 * @event Creap.initialized
@@ -495,9 +505,6 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 	 */
 	Creap = (function() {
 		var Loader, Option, Application, Content, ReplaceData, SsJsonParser, Rect, Position, Size;
-		var webFontLoadedState = 0;
-		var willLoadFonts = {};
-		var fonts = {};
 		
 		(function() {
 			var e = eval;
@@ -859,11 +866,13 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @param w {number} Canvas width.
 			 * @param upr {bool} Whether render bitmaps before starting the content.
 			 * @param ugl {bool} Whether use webGL render.
+			 * @param tk {Creap.TypeKitData} Data related to TypeKit font used in content.
+			 * @param tk {Creap.GoogleFontData} Data related to GoogleFont used in content.
 			 */
-			function initialize(p, c, w, upr, ugl) {
+			function initialize(p, c, w, upr, ugl, tk, gf) {
 				var s; //shortcut
 				var app, ticker, container, view, loader, i, j, count, ssMetadata, images, sounds, audios;
-				
+				var loaderCount = 0, loadedLoaderCount = 0;
 				app = new PIXI.Application(p._lib.properties.width, p._lib.properties.height, {transparent: true, antialias: true, resolution: w / p._lib.properties.width}, !ugl);
 				app.stage = new Stage();
 				ticker = app.ticker;
@@ -910,8 +919,8 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @member Creap.Application#view {HTMLCanvasElement}
 				 */
 				this.view = view;
-				this.view.style.width = this.view.width + TAG_PX;
-				this.view.style.height = this.view.height + TAG_PX;
+				
+				this.adjustWidth(w);
 				this.wrapper.style.marginLeft = 0 + TAG_PX;
 				this.wrapper.style.marginTop = 0 + TAG_PX;
 				
@@ -957,7 +966,6 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 				}
 				
 				this.hide();
-				//container.style.position = 'absolute';
 				container.appendChild(view);
 				app.stop();
 				
@@ -974,9 +982,16 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					});
 				}
 				
+				this.on(CREAP_EVENT.loaded, function() {
+					if (loadedLoaderCount === loaderCount) {
+						finishInitialization.call(this);
+					}
+				});
+				
 				if (count) {
+					loaderCount++;
 					loader.load((function(loader, resources) {
-						var s; // shortcut
+						var s;
 						for (i in resources) {
 							for (j = 0; j &lt; p._relatedContents.length; j++) {
 								s = p._relatedContents[j];
@@ -998,19 +1013,157 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 								}
 							}
 						}
-						
-						app.ticker.update();
-						this.isInitialized = true;
-						this.emit(CREAP_EVENT.initialized);
+						loadedLoaderCount++;
+						this.emit(CREAP_EVENT.loaded);
 					}).bind(this));
-				} else {
-					app.ticker.update();
-					setTimeout((function() {
-						this.isInitialized = true;
-						this.emit(CREAP_EVENT.initialized);
-					}).bind(this), 10);
+				}
+				
+				if (tk) {
+					loaderCount++;
+					loadTypeKit(tk, (function() {
+						loadedLoaderCount++;
+						this.emit(CREAP_EVENT.loaded);
+					}).bind(this));
+				}
+				
+				if (gf) {
+					loaderCount++;
+					loadGoogleFont(gf, (function() {
+						loadedLoaderCount++;
+						this.emit(CREAP_EVENT.loaded);
+					}).bind(this));
+				}
+				
+				if (loaderCount === 0) {
+					setTimeout(finishInitialization.bind(this), 10);
 				}
 			}
+			
+			function finishInitialization() {
+				this.app.ticker.update();
+				this.isInitialized = true;
+				this.emit(CREAP_EVENT.initialized);
+			}
+			
+			function loadTypeKit(typeKitData, callback) {
+				new Loader().load(typeKitData.url, function() {
+					var t = window.Typekit;
+					window.Typekit = null;
+					t.load({
+						async: false,
+						classes: false,
+						active: callback,
+						inactive: callback
+					});
+				});
+			}
+			
+			function loadGoogleFont(googleFontData, callback) {
+				var f, c;
+				var families = [];
+				
+				c = function() {
+					checkFont(families, callback);
+				}
+				
+				f = function() {
+					webFontObj.load({
+						async: false,
+						classes: false,
+						google: {
+							families: googleFontData.families
+						},
+						active: c,
+						fontactive: function(family) {
+							families.push(family);
+						},
+						inactive: c
+					});
+				};
+				
+				if (!webFontObj) {
+					new Loader().load('http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js', function() {
+						webFontObj = window.WebFont;
+						window.WebFont = null;
+						f();
+					});
+				} else {
+					f();
+				}
+			}
+			
+			function checkFont(families, callback) {
+				var v = 0;
+				var f = function() {
+					if (++v === families.length) {
+						callback();
+					}
+				}
+				
+				for (var i = 0; i &lt; families.length; i++) {
+					checkFont(families[i], f);
+				}
+			}
+			
+			function checkFont(family, callback) {
+				var node, width;
+				
+				node = document.createElement('span');
+				node.innerHTML = 'giItT1WQy@!-/#';
+				node.style.position = 'absolute';
+				node.style.left = '-1000px';
+				node.style.top = '-1000px';
+				node.style.fontSize = '300px';	
+				node.style.fontFamily = 'sans-serif';
+				node.style.fontVariant = 'normal';
+				node.style.fontStyle = 'normal';
+				node.style.fontWeight = 'normal';
+				node.style.letterSpacing = '0';
+				document.body.appendChild(node);
+				width = node.offsetWidth;
+				
+				node.style.fontFamily = family + ',' + node.style.fontFamily;
+				if (node &amp;&amp; node.offsetWidth != width) {
+					callback();
+					return;
+				}
+				
+				document.body.removeChild(node);
+				setTimeout(function() {
+					checkFont(family, callback);
+				}, 200);
+			}
+			
+			/**
+			 * @typedef Creap.ApplicationOption {object}
+			 * @property [width=lib.properties.width] {number} Horizontal resolution of canvas.
+			 * @property [usePreRender=true] {bool} Whether render bitmaps before starting the content.
+			 * @property [useWebGL=true] {bool} Whether use webGL render.
+			 * @property [typeKit=null] {TypeKitData} Data related to TypeKit font used in content. (since v1.1.1)
+			 * @property [googleFont=null] {GoogleFontData} Data related to GoogleFont used in content. (since v1.1.1)
+			 */
+			
+			/**
+			 * &lt;span style="color:red;">In animate CC "publish setting", you need to register the domain to use for the service.&lt;/span>
+			 * 
+			 * @typedef Creap.TypeKitData {object}
+			 * @since 1.1.1
+			 * @property url {string} This is as the following URL in html file built by animate CC.
+			 * ```html
+			 * &lt;script src="https://use.typekit.net/ik/[string like a Base64 encoding].js">&lt;/script>
+			 * ```
+			 */
+			
+			/**
+			 * @typedef Creap.GoogleFontData {object}
+			 * @since 1.1.1
+			 * @property families {array&lt;string>} This is as the following array in html file built by animate CC.
+			 * ```html
+			 * &lt;script>
+			 *     var gFontsFamilies = ["Alegreya","Gloria Hallelujah"];
+			 * &lt;/script>
+			 * ```
+			 */
 			
 			/**
 			 * Create an application from instance of Creap.Content.
@@ -1021,10 +1174,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @fires Creap.initialized
 			 * @param content {Creap.Content} Target content.
 			 * @param [container=document.body] {HTMLElement} The parent element of the canvas that displays the content.
-			 * @param [options] {object}
-			 * @param [options.width=lib.properties.width] {number} Horizontal resolution of canvas.
-			 * @param [options.usePreRender=true] {bool} Whether render bitmaps before starting the content.
-			 * @param [options.useWebGL=true] {bool} Whether use webGL render.
+			 * @param [options] {Creap.ApplicationOption} Optional data related to Creep.Application.
 			 */
 			(Application = function(content, container, options) {
 				if (!(this instanceof Application)) {
@@ -1069,7 +1219,9 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					container || document.body,
 					options.width || content._lib.properties.width,
 					options.usePreRender === false ? false : true,
-					options.useWebGL === false ? false : true
+					options.useWebGL === false ? false : true,
+					options.typeKit || null,
+					options.googleFont || null
 				);
 			}).prototype = Object.defineProperties(Object.create(Emitter.prototype), {
 				constructor: {
@@ -1457,12 +1609,12 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 				 * This function references "canvas.parentNode.style.marginTop".
 				 * 
 				 * @since 1.1.0
-				 * @function Creap.Application#getPosition
-				 * @return {Creap.Position}
+				 * @function Creap.Application#getPoint
+				 * @return {Creap.Point}
 				 */
-				getPosition: {
+				getPoint: {
 					value: function() {
-						return new Position(
+						return new Point(
 							parseFloat(this.wrapper.style.marginLeft.replace(TAG_PX, '')),
 							parseFloat(this.wrapper.style.marginTop.replace(TAG_PX, ''))
 						);
@@ -1578,18 +1730,18 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 		});
 		
 		/**
-		 * @constructor Creap.Position
-		 * @classdesc Class related to position data.
+		 * @constructor Creap.Point
+		 * @classdesc Class related to Point data.
 		 * @param [x=0] {number} X coordinate.
 		 * @param [y=0] {number} Y coordinate.
 		 */
-		(Position = function(x, y) {
+		(Point = function(x, y) {
 			this.x = x || 0;
 			this.y = y || 0;
 		});
 		
 		/**
-		 * @constructor Creap.Rect
+		 * @constructor Creap.Size
 		 * @classdesc Class related to rectangle data.
 		 * @param [width=0] {number} Width.
 		 * @param [height=0] {number} Height.
@@ -1718,8 +1870,8 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 			Rect: {
 				value: Rect
 			},
-			Position: {
-				value: Position
+			Point: {
+				value: Point
 			},
 			Size: {
 				value: Size
@@ -2089,8 +2241,8 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					 * @param [rotation=0] {number} Rotation amount (degree).
 					 * @param [skewX=0] {number} X skew factor (degree).
 					 * @param [skewY=0] {number} Y skew factor (degree).
-					 * @param [regX=0] {number} X coodinate of the rotation reference point.
-					 * @param [regY=0] {number} Y coodinate of the rotation reference point.
+					 * @param [regX=0] {number} X coordinate of the rotation reference point.
+					 * @param [regY=0] {number} Y coordinate of the rotation reference point.
 					 */
 					setTransform: {
 						value: function(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
@@ -2370,7 +2522,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 						}
 					},
 					/**
-					 * X coodinate of the rotation reference point.
+					 * X coordinate of the rotation reference point.
 					 * 
 					 * @member createjs~DisplayObject#regY {number}
 					 * @default 0
@@ -2388,7 +2540,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 						}
 					},
 					/**
-					 * Y coodinate of the rotation reference point.
+					 * Y coordinate of the rotation reference point.
 					 * 
 					 * @member createjs~DisplayObject#regY {number}
 					 * @default 0
@@ -2886,7 +3038,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					 * 
 					 * @function createjs.MovieClip#addChildAt
 					 * @param child {createjs~DisplayObject}
-					 * @param index {number}
+					 * @param index {number} Index of to insert.
 					 * @return {createjs~DisplayObject} Added instance.
 					 */
 					addChildAt: {
@@ -2920,7 +3072,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					 * &lt;span style="color:#F00;">This funcion not supported multi instances.&lt;/span>
 					 * 
 					 * @function createjs.MovieClip#removeChildAt
-					 * @param index {number}
+					 * @param index {number} Index of child.
 					 * @return {createjs~DisplayObject} Removed instance.
 					 */
 					removeChildAt: {
@@ -3000,25 +3152,33 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @param [color='#000000'] {string} String of "color" in CSS format.
 			 */
 			(Text = function(value, style, color) {
-				var s = style.split(/\s/);
-				var f;
+				var s, f;
+				var t = style.split(/\'/);
 				var styles = {};
 				
 				DisplayObject.call(this);
 				
-				if (!s[0].match(TAG_PX)) {
-					styles.fontWeight = s.shift();
-				}
-				f = parseInt(s.shift().replace(TAG_PX, ''));
-				styles.fontSize = f * 10 + TAG_PX;
-				styles.fontFamily = s.join(' ');
 				styles.fill = color || 0;
+				styles.fontFamily = t[1];
+				s = t[0].split(/\s/);
+				s.pop();
+				f = parseInt(s.pop().replace(TAG_PX, ''));
+				styles.fontSize = f * TEXT_SIZE_MAG;
+				if (s.length) {
+					styles.fontWeight = s.pop();
+				}
+				if (s.length) {
+					styles.fontStyle = s.pop();
+				}
+				styles.textBaseline = 'top';
+				styles.wordWrap = true;
 				
 				this.instance = new PIXI.Text(value, styles);
-				this.instance.scale.x = this.instance.scale.y = 1 / 10;
-				this.instance.y = f / 10 / 6;
-				this.addChild(this.instance);
 				
+				this._fontProp = PIXI.TextMetrics.measureText(styles.fontFamily, this.instance.style).fontProperties;
+				this.instance.style.padding = (this._fontProp.ascent + 2) * value.split('\n').length;
+				this.instance.y = -this._fontProp.ascent;
+				this.addChild(this.instance);
 				this.interactive = isAccurateTarget;
 			}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 				constructor: {
@@ -3034,12 +3194,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.style.lineHeight;
 					},
 					set: function(v) {
-						this.instance.style.lineHeight = v / this.instance.scale.y / 10;
-						if (v &lt;= 0) {
-							this.instance.style.padding = (-v + 10) * this.instance.scale.y / 10;
-						} else {
-							this.instance.style.padding = 10 * this.instance.scale.y / 10;
-						}
+						this.instance.style.lineHeight = v;
 					}
 				},
 				/**
@@ -3075,10 +3230,10 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					set: function(v) {
 						switch (v) {
 							case 'center':
-								this.instance.x = -this.width / 2;
+								this.instance.x = -(this.width - this.instance.style.padding * 2) / 2;
 								break;
 							case 'right':
-								this.instance.x = -this.width;
+								this.instance.x = -(this.width - this.instance.style.padding * 2);
 								break;
 							default:
 								v = 'left';
@@ -3100,6 +3255,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					set: function(v) {
 						this.instance.text = v || '';
 						this.textAlign = this.textAlign;
+						this.instance.style.padding = (this._fontProp.ascent + 2) * v.split('\n').length;
 					}
 				},
 				/**
@@ -3806,12 +3962,20 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 					this.isLine = false;
 					
 					/**
-					 * Whether current path is to use as hole.
+					 * Whether path is closed.
 					 * 
-					 * @member createjs.Graphics~CreapData#isHole {bool}
+					 * @member createjs.Graphics~CreapData#isClose {bool}
 					 * @default false
 					 */
-					this.isHole = false;
+					this.isClose = false;
+					
+					/**
+					 * Index of the coordinates of the bottom-right corner in the graphic.
+					 * 
+					 * @member createjs.Graphics~CreapData#isLine {bool}
+					 * @default false
+					 */
+					this.maxPointIndex = 0;
 				});
 				
 				/**
@@ -3822,35 +3986,83 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 				(Graphics = function(obj) {
 					this._creap = new CreapData();
 					PIXI.Graphics.call(this);
-					this.beginFill(DEFAULT_COLOR);
+					//this.beginFill(DEFAULT_COLOR);
 				}).prototype = Object.defineProperties(Object.create(PIXI.Graphics.prototype), {
 					constructor: {
 						value: Graphics
 					},
-					moveTo: {
-						value: function(x, y) {
-							PIXI.Graphics.prototype.moveTo.call(this, x, y);
-							if (this.containsPoint({x:x, y:y})) {
-								this._creap.isHole = true;
-							}
-							
-							return this;
-						}
-					},
+					/**
+					 * Closes the current path.
+					 * 
+					 * @function createjs.Graphics#closePath
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
 					closePath: {
 						value: function() {
+							var points;
+							var currentX, currentY, prevX, prevY, nextX, nextY;
+							var sx, sy, acos;
 							
-							if (this._creap.isHole) {
-								this.addHole();
+							PIXI.Graphics.prototype.closePath.call(this);
+							this._creap.isClose = true;
+							if (this._creap.isLine) {
+								return this;
 							}
-							this._creap.isHole = false;
+							
+							points = this.currentPath.shape.points;
+							currentX = points[this._creap.maxPointIndex];
+							currentY = points[this._creap.maxPointIndex + 1];
+							
+							if (this._creap.maxPointIndex === 0) {
+								prevX = points[points.length - 4];
+								prevY = points[points.length - 3];
+								nextX = points[this._creap.maxPointIndex + 2];
+								nextY = points[this._creap.maxPointIndex + 3];
+							} else {
+								prevX = points[this._creap.maxPointIndex - 2];
+								prevY = points[this._creap.maxPointIndex - 1];
+								nextX = points[this._creap.maxPointIndex + 2];
+								nextY = points[this._creap.maxPointIndex + 3];
+							}
+							
+							if (prevY >= currentY &amp;&amp; nextY &lt;= currentY) {
+								this.addHole();
+							} else if (prevY &lt;= currentY &amp;&amp; nextY &lt;= currentY) {
+								sx = currentX - prevX;
+								sy = currentY - prevY;
+								acos = sx / Math.sqrt(sx * sx + sy * sy);
+								
+								sx = currentX - nextX;
+								sy = currentY - nextY;
+								if (acos > sx / Math.sqrt(sx * sx + sy * sy)) {
+									this.addHole();
+								}
+							} else if (prevY >= currentY &amp;&amp; nextY >= currentY) {
+								sx = currentX - prevX;
+								sy = currentY - prevY;
+								acos = sx / Math.sqrt(sx * sx + sy * sy);
+								
+								sx = currentX - nextX;
+								sy = currentY - nextY;
+								if (acos &lt; sx / Math.sqrt(sx * sx + sy * sy)) {
+									this.addHole();
+								}
+							}
+							
 							return this;
 						}
 					},
+					/**
+					 * Start drawing of single color fill.
+					 * 
+					 * @function createjs.Graphics#beginFill
+					 * @param color {string} String of "color" in CSS format.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
 					beginFill: {
 						value: function(color) {
 							var c;
-							PIXI.Graphics.prototype.closePath.call(this);
+							//PIXI.Graphics.prototype.closePath.call(this);
 							if (color) {
 								c = toColorAndAlpha(color);
 								PIXI.Graphics.prototype.beginFill.call(this, c.color, c.alpha);
@@ -3860,27 +4072,171 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 							return this;
 						}
 					},
+					/**
+					 * Start drawing of linear gradient color fill.&lt;br />
+					 * &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginFill with the color of the end of the gradation.&lt;/span>
+					 * 
+					 * @since 1.1.1
+					 * @function createjs.Graphics#beginLinearGradientFill
+					 * @param colors {array&lt;string>} String(s) of "color" in CSS format.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
+					beginLinearGradientFill: {
+						value: function(colors) {
+							return this.beginFill(colors[colors.length - 1]);
+						}
+					},
+					/**
+					 * Start drawing of radial gradient color fill.&lt;br />
+					 * &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginFill with the color of the end of the gradation.&lt;/span>
+					 * 
+					 * @since 1.1.1
+					 * @function createjs.Graphics#beginRadialGradientFill
+					 * @param colors {array&lt;string>} String(s) of "color" in CSS format.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
+					beginRadialGradientFill: {
+						value: function(colors) {
+							return this.beginFill(colors[colors.length - 1]);
+						}
+					},
+					/**
+					 * Start drawing of single color line.
+					 * 
+					 * @function createjs.Graphics#beginStroke
+					 * @param color {string} String of "color" in CSS format.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
 					beginStroke: {
 						value: function(color) {
 							var c;
-							if (color) {
-								this._creap.isLine = true;
-								c = toColorAndAlpha(color);
-								this.lineStyle(1, c.color, c.alpha);
+							if (!color) {
+								return this;
+							}
+							
+							this._creap.isLine = true;
+							c = toColorAndAlpha(color);
+							this.lineStyle(1, c.color, c.alpha);
+							return this;
+						}
+					},
+					/**
+					 * Start drawing of linear gradient color line.&lt;br />
+					 * &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginStroke with the color of the end of the gradation.&lt;/span>
+					 * 
+					 * @function createjs.Graphics#beginLinearGradientStroke
+					 * @since 1.1.1
+					 * @param color {string} String of "color" in CSS format.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
+					beginLinearGradientStroke: {
+						value: function(colors) {
+							return this.beginStroke(colors[colors.length - 1]);
+						}
+					},
+					/**
+					 * Start drawing of radial gradient color line.&lt;br />
+					 * &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginStroke with the color of the end of the gradation.&lt;/span>
+					 * 
+					 * @function createjs.Graphics#beginRadialGradientStroke
+					 * @since 1.1.1
+					 * @param color {string} String of "color" in CSS format.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
+					beginRadialGradientStroke: {
+						value: function(colors) {
+							return this.beginStroke(colors[colors.length - 1]);
+						}
+					},
+					/**
+					 * Specify the style of the line.
+					 * 
+					 * @function createjs.Graphics#setStrokeStyle
+					 * @param thickness {string} Width of line.
+					 * @param [caps=0] {number} &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, this parameter doesn't have valid function.&lt;/span>
+					 * @param [joints=0] {number} &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, this parameter doesn't have valid function.&lt;/span>
+					 * @param [miterLimit=10] {number} &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, this parameter doesn't have valid function.&lt;/span>
+					 * @param [ignoreScale=false] Whether the stroke will be drawn at the specified thickness regardless of active transformations.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
+					setStrokeStyle: {
+						value: function(thickness, caps, joints, miterLimit, ignoreScale) {
+							this.nativeLines = ignoreScale;
+							this.lineWidth = thickness;
+							return this;
+						}
+					},
+					/**
+					 * Move current drawing point.
+					 * 
+					 * @function createjs.Graphics#moveTo
+					 * @param x {number} X coordinate.
+					 * @param y {number} Y coordinate.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
+					moveTo: {
+						value: function(x, y) {
+							if (!this._creap.isClose &amp;&amp; this.currentPath &amp;&amp; !this._creap.isLine) {
+								PIXI.Graphics.prototype.lineTo.call(this, x, y);
+							} else {
+								this._creap.maxPointIndex = 0;
+								PIXI.Graphics.prototype.moveTo.call(this, x, y);
+							}
+							
+							return this;
+						}
+					},
+					/**
+					 * Draw line from current drawing point.
+					 * 
+					 * @function createjs.Graphics#lineTo
+					 * @param x {number} X coordinate of end point.
+					 * @param y {number} Y coordinate of end point.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
+					lineTo: {
+						value: function(x, y) {
+							var points = this.currentPath.shape.points;
+							
+							PIXI.Graphics.prototype.lineTo.call(this, x, y);
+							
+							if (points[this._creap.maxPointIndex] &lt;= x || (points[this._creap.maxPointIndex] === x &amp;&amp; points[this._creap.maxPointIndex + 1] &lt;= y)) {
+								this._creap.maxPointIndex = points.length - 2;
 							}
 							return this;
 						}
 					},
-					setStrokeStyle: {
-						value: function(width, endStyle, joinStyle, e, isNativeLines) {
-							this.nativeLines = isNativeLines || false;
-							this.lineWidth = width;
-							return this;
-						}
-					},
+					/**
+					 * Draw curved line from current drawing point.
+					 * 
+					 * @function createjs.Graphics#curveTo
+					 * @param cpX {number} X coordinate of control point.
+					 * @param cpY {number} Y coordinate of control point.
+					 * @param cpX2 {number} X coordinate of second control point.&lt;br />
+					 *     If aruguments length is 4, this is considered to be "toX".
+					 * @param cpY2 {number} Y coordinate of second control point.&lt;br />
+					 *     If aruguments length is 4, this is considered to be "toY".
+					 * @param [toX=null] {number} X coordinate of end point.
+					 * @param [toY=null] {number} Y coordinate of end point.
+					 * @return {createjs.Graphics} Return a itself (can use method chaining).
+					 */
 					curveTo: {
-						value: function(cpX, cpY, toX, toY, cpX2, cpY2) {
-							this.bezierCurveTo(this.currentPath.shape.points[this.currentPath.shape.points.length - 2], this.currentPath.shape.points[this.currentPath.shape.points.length - 1], cpX, cpY, toX, toY);
+						value: function(cpX, cpY, cpX2, cpY2, toX, toY) {
+							var vx, vy;
+							var points = this.currentPath.shape.points;
+							var s = points.length;
+							
+							if (arguments.length > 4) {
+								this.bezierCurveTo(cpX, cpY, cpX2, cpY2, toX, toY);
+							} else {
+								this.quadraticCurveTo(cpX, cpY, cpX2, cpY2);
+							}
+							
+							for (var i = s; i &lt; points.length; i += 2) {
+								if (points[this._creap.maxPointIndex] &lt; points[i] || (points[this._creap.maxPointIndex] === points[i] &amp;&amp; points[this._creap.maxPointIndex + 1] &lt; points[i + 1])) {
+									this._creap.maxPointIndex = i;
+								}
+							}
 							return this;
 						}
 					}
@@ -3890,7 +4246,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * @constructor createjs.Rectangle
 			 * @classdesc Class related to rectangle.&lt;br />
-			 *            &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, this class doesn't have valid function.&lt;/span>
+			 * &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, this class doesn't have valid function.&lt;/span>
 			 */
 			(Rectangle = function() {
 				// not use
@@ -4256,7 +4612,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 			}), {
 				/**
 				 * Change status on validity of touch event.&lt;br />
-				 * &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, don't need to execute this function.&lt;/span>&lt;br />
+				 * &lt;span style="color:#F00;">Defined for compatibility. In Creap.js, don't need to execute this function.&lt;/span>
 				 * 
 				 * @function createjs.Touch#enable
 				 * @param flag {bool} Whether to enable.
@@ -4382,7 +4738,7 @@ console.log('\r\n%c  Creap.js %c v1.1.0  %c\r\n\r\n', 'color: #FFF; background: 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on July 20th 2017, 7:02:31 pm
+		on July 26th 2017, 9:32:42 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Creap.Application.html">Creap.Application</a></li><li><a href="Creap.Content.html">Creap.Content</a></li><li><a href="Creap.Loader.html">Creap.Loader</a></li><li><a href="Creap.Position.html">Creap.Position</a></li><li><a href="Creap.Rect.html">Creap.Rect</a></li><li><a href="Creap.ReplaceData.html">Creap.ReplaceData</a></li><li><a href="createjs.Bitmap.html">createjs.Bitmap</a></li><li><a href="createjs.Event.html">createjs.Event</a></li><li><a href="createjs.Graphics.html">createjs.Graphics</a></li><li><a href="createjs.MouseEvent.html">createjs.MouseEvent</a></li><li><a href="createjs.MovieClip.html">createjs.MovieClip</a></li><li><a href="createjs.Rectangle.html">createjs.Rectangle</a></li><li><a href="createjs.Shape.html">createjs.Shape</a></li><li><a href="createjs.Sound.html">createjs.Sound</a></li><li><a href="createjs.Sprite.html">createjs.Sprite</a></li><li><a href="createjs.Text.html">createjs.Text</a></li><li><a href="createjs.Touch.html">createjs.Touch</a></li><li><a href="createjs.Tween.html">createjs.Tween</a></li><li><a href="createjs-DisplayObject.html">createjs~DisplayObject</a></li><li><a href="createjs-Stage.html">createjs~Stage</a></li><li><a href="Emitter.html">Emitter</a></li>
+					<li><a href="Creap.Application.html">Creap.Application</a></li><li><a href="Creap.Content.html">Creap.Content</a></li><li><a href="Creap.Loader.html">Creap.Loader</a></li><li><a href="Creap.Point.html">Creap.Point</a></li><li><a href="Creap.Rect.html">Creap.Rect</a></li><li><a href="Creap.ReplaceData.html">Creap.ReplaceData</a></li><li><a href="Creap.Size.html">Creap.Size</a></li><li><a href="createjs.Bitmap.html">createjs.Bitmap</a></li><li><a href="createjs.Event.html">createjs.Event</a></li><li><a href="createjs.Graphics.html">createjs.Graphics</a></li><li><a href="createjs.MouseEvent.html">createjs.MouseEvent</a></li><li><a href="createjs.MovieClip.html">createjs.MovieClip</a></li><li><a href="createjs.Rectangle.html">createjs.Rectangle</a></li><li><a href="createjs.Shape.html">createjs.Shape</a></li><li><a href="createjs.Sound.html">createjs.Sound</a></li><li><a href="createjs.Sprite.html">createjs.Sprite</a></li><li><a href="createjs.Text.html">createjs.Text</a></li><li><a href="createjs.Touch.html">createjs.Touch</a></li><li><a href="createjs.Tween.html">createjs.Tween</a></li><li><a href="createjs-DisplayObject.html">createjs~DisplayObject</a></li><li><a href="createjs-Stage.html">createjs~Stage</a></li><li><a href="Emitter.html">Emitter</a></li>
 				</ul>
 			</li>
 			
@@ -140,7 +140,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-400">line 400</a>
+				 <a href="Creap.js.html#sunlight-1-line-410">line 410</a>
 			</li>
 		</ul>
 	</dd>
@@ -175,16 +175,16 @@
             <dt><a href="Creap.Loader.html">Loader</a></dt>
             <dd></dd>
         
-            <dt><a href="Creap.Position.html">Position</a></dt>
-            <dd></dd>
-        
-            <dt><a href="Creap.Rect.html">Rect</a></dt>
+            <dt><a href="Creap.Point.html">Point</a></dt>
             <dd></dd>
         
             <dt><a href="Creap.Rect.html">Rect</a></dt>
             <dd></dd>
         
             <dt><a href="Creap.ReplaceData.html">ReplaceData</a></dt>
+            <dd></dd>
+        
+            <dt><a href="Creap.Size.html">Size</a></dt>
             <dd></dd>
         </dl>
     
@@ -204,6 +204,592 @@
 
     
 
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
+<hr>
+<dt class="name" id=".ApplicationOption">
+    <h4 id=".ApplicationOption">ApplicationOption</h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">object</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>width</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    lib.properties.width
+                
+                </td>
+            
+
+            <td class="description last"><p>Horizontal resolution of canvas.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>usePreRender</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether render bitmaps before starting the content.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>useWebGL</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">bool</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last"><p>Whether use webGL render.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>typeKit</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">TypeKitData</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last"><p>Data related to TypeKit font used in content. (since v1.1.1)</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>googleFont</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">GoogleFontData</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    null
+                
+                </td>
+            
+
+            <td class="description last"><p>Data related to GoogleFont used in content. (since v1.1.1)</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-1044">line 1044</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id=".GoogleFontData">
+    <h4 id=".GoogleFontData">GoogleFontData</h4>
+
+    
+</dt>
+<dd>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">object</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>families</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array.&lt;string></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>This is as the following array in html file built by animate CC.</p>
+<pre class="prettyprint source lang-html"><code>&lt;script>
+    var gFontsFamilies = [&quot;Alegreya&quot;,&quot;Gloria Hallelujah&quot;];
+&lt;/script></code></pre></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+	<dt class="tag-since method-doc-label method-doc-details-label">Since:</dt>
+	<dd class="tag-since">
+		<ul class="dummy">
+			<li>1.1.1</li>
+		</ul>
+	</dd>
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-1064">line 1064</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id=".TypeKitData">
+    <h4 id=".TypeKitData">TypeKitData</h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p><span style="color:red;">In animate CC &quot;publish setting&quot;, you need to register the domain to use for the service.</span></p>
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">object</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>url</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>This is as the following URL in html file built by animate CC.</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;https://use.typekit.net/ik/[string like a Base64 encoding].js&quot;>&lt;/script></code></pre></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+	<dt class="tag-since method-doc-label method-doc-details-label">Since:</dt>
+	<dd class="tag-since">
+		<ul class="dummy">
+			<li>1.1.1</li>
+		</ul>
+	</dd>
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-1053">line 1053</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            </dl>
     
 
     
@@ -268,7 +854,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-85">line 85</a>
+				 <a href="Creap.js.html#sunlight-1-line-95">line 95</a>
 			</li>
 		</ul>
 	</dd>
@@ -356,7 +942,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-80">line 80</a>
+				 <a href="Creap.js.html#sunlight-1-line-90">line 90</a>
 			</li>
 		</ul>
 	</dd>
@@ -444,7 +1030,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-90">line 90</a>
+				 <a href="Creap.js.html#sunlight-1-line-100">line 100</a>
 			</li>
 		</ul>
 	</dd>
@@ -532,7 +1118,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-95">line 95</a>
+				 <a href="Creap.js.html#sunlight-1-line-105">line 105</a>
 			</li>
 		</ul>
 	</dd>
@@ -607,7 +1193,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on July 20th 2017, 7:02:31 pm
+		on July 26th 2017, 9:32:42 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

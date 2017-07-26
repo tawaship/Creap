@@ -6,13 +6,19 @@ Creap.js is a plug-in for playing createjs content built by "Adobe Animate CC".<
 By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
-### v1.0.0 07/05/2017
-- [add] Initial release
 
-### v1.0.3 07/10/2017
-- [add] createjs.MouseEvent
-
-### v1.1.0 07/20/2017
+### v1.1.1 (07/26/2017)
+<span style="red:">From this version, pixi.js v4.4.3 has become unsupported.</span>
+- [add] TypeKit and GoogleWebFont are now available
+- [update] createjs.Shape
+	- Some functions for compatibility.
+- [update] Creap.ApplicationOption
+	- Related to TypeKit.
+	- Related to GoogleWebFont.
+- [fix] createjs.Shape
+	- Fixed that complex path could not be expressed.
+	
+### v1.1.0 (07/20/2017)
 - [add] Creap.loader
 	- Function that asynchronous loading.
 	- Function that asynchronous loading and create Creap.Content.
@@ -24,9 +30,16 @@ By using webGL rendering you can render faster than regular createjs content.
 	- Function that replace only a part of the image contained in the sprite sheet.
 - [update] Creap.Application#isAccurateTarget has been changed to Creap.options.isAccurateTarget.
 - [fix] createjs.Event
-	- Fix an error when addEventListener has not executed.
+	- Fixed an error when addEventListener has not executed.
 - [fix] createjs.Shape
-	- Fix that I could not express a path with a hole inside Fill.
+	- Fixed that I could not express a path with a hole inside Fill.
+
+### v1.0.3 (07/10/2017)
+- [add] createjs.MouseEvent
+
+### v1.0.0 (07/05/2017)
+- [add] Initial release
+
 
 ## Features
 - Can use the createjs content built by "Adobe Animate CC" as it is.
@@ -43,7 +56,7 @@ Therefore it may not work with complicated createjs content.
 Since compression of shapes is not supported, please disable "Shape Compact" from publish settings.
 
 ## Required libraries
-- [pixi.js](http://www.pixijs.com/) v4.4.3 | 4.5.1
+- [pixi.js](http://www.pixijs.com/) v4.5.1 (If Creap.js v1.1.0 or lower, pixi.js v4.4.3 supported too.)
 - [howler.js](https://howlerjs.com/) v2.0.1
 - [Ease.js](http://www.createjs.com/)(module of Tween.js)
 

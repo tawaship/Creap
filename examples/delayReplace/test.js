@@ -97,7 +97,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/Bitmap1.png?1500544830571", id:"Bitmap1"}
+		{src:"images/Bitmap1.png?1500600355427", id:"Bitmap1"}
 	],
 	preloads: []
 };

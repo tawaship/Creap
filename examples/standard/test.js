@@ -31,7 +31,7 @@ p.nominalBounds = new cjs.Rectangle(0,0,19,19);
 	this.initialize(mode,startPosition,loop,{});
 
 	// レイヤー 1
-	this.instance = new lib.Graphic1("synched",0);
+	this.instance = new lib.Graphic1();
 	this.instance.parent = this;
 	this.instance.setTransform(9.5,9.5,1,1,0,0,0,9.5,9.5);
 
@@ -61,8 +61,15 @@ p.nominalBounds = new cjs.Rectangle(0,0,19,19);
 	// actions tween:
 	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(1));
 
+	// レイヤー 1
+	this.a = new lib.Ball();
+	this.a.parent = this;
+	this.a.setTransform(37,105.1,1,1,0,0,0,9.5,9.5);
+
+	this.timeline.addTween(cjs.Tween.get(this.a).wait(1));
+
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = null;
+p.nominalBounds = new cjs.Rectangle(147.5,255.6,19,19);
 // library properties:
 lib.properties = {
 	width: 240,
@@ -71,7 +78,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/Bitmap1.png?1499233972951", id:"Bitmap1"}
+		{src:"images/Bitmap1.png?1500545969688", id:"Bitmap1"}
 	],
 	preloads: []
 };
