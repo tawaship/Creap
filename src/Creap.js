@@ -989,7 +989,7 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 				};
 				
 				if (!webFontObj) {
-					new Loader().load('http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js', function() {
+					new Loader().load((location.protocol === 'https:' ? 'https:' : 'http:') + '//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js', function() {
 						webFontObj = window.WebFont;
 						window.WebFont = null;
 						f();
