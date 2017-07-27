@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.1.1
+ * Creap.js - v1.1.2.1
  * 
  * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,7 +11,7 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
@@ -426,6 +426,12 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 				constructor: {
 					value: Loader
 				},
+				watch: {
+					value: function(functioncs) {
+						var loadedCount = 0;
+						
+					}
+				},
 				/**
 				 * Asynchronously load js file.
 				 * 
@@ -452,7 +458,9 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 							xhr = new XMLHttpRequest();
 							xhr.addEventListener('readystatechange', function() {
 								if (this.readyState == 4) {
-									e(this.responseText);
+									if (this.status == 200) {
+										e(this.responseText);
+									}
 									if (++loadedCount === path.length) {
 										callback.call(self);
 									}
@@ -523,8 +531,13 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 							xhr.addEventListener('readystatechange', (function(v) {
 								return function() {
 									if (this.readyState == 4) {
-										e(this.responseText);
-										res[v.name] = new Creap.Content(v.lib, v.root, v.images, v.ss, v.basePath);
+										if (this.status == 200) {
+											e(this.responseText);
+											res[v.name] = new Creap.Content(v.lib, v.root, v.images, v.ss, v.basePath);
+										} else {
+											res[v.name] = null;
+										}
+										
 										if (++loadedCount === data.length) {
 											callback.call(self, res);
 										}
@@ -577,7 +590,11 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 							xhr.addEventListener('readystatechange', (function(v) {
 								return function() {
 									if (this.readyState == 4) {
-										res[v.name] = this.responseText;
+										if (this.status == 200) {
+											res[v.name] = this.responseText;
+										} else {
+											res[v.name] = '';
+										}
 										if (++loadedCount === data.length) {
 											callback.call(self, res);
 										}
