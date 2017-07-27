@@ -953,7 +953,7 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 			}
 			
 			function loadTypeKit(typeKitData, callback) {
-				new Loader().load(typeKitData.url, function() {
+				new Loader().load((location.protocol === 'https:' ? 'https:' : 'http:') + typeKitData.url.replace(/(^http(s?):\/\/)/, '//'), function() {
 					var t = window.Typekit;
 					window.Typekit = null;
 					t.load({
