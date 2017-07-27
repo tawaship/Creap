@@ -33,7 +33,7 @@
 			<li class="dropdown">
 				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Creap.html">Creap</a></li><li><a href="Creap.options.html">Creap.options</a></li><li><a href="createjs.html">createjs</a></li>
+					<li><a href="Creap.html">Creap</a></li><li><a href="Creap.encoding.html">Creap.encoding</a></li><li><a href="Creap.options.html">Creap.options</a></li><li><a href="createjs.html">createjs</a></li>
 				</ul>
 			</li>
 			
@@ -472,10 +472,10 @@ loader.load('./content.js', function() {
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">LoadContentData</span>
 |
 
-<span class="param-type">array.&lt;object></span>
+<span class="param-type">array.&lt;LoadContentData></span>
 
 
 
@@ -486,177 +486,7 @@ loader.load('./content.js', function() {
 
             
 
-            <td class="description last"><p>Content data(s).</p>
-                <h6 class="method-params-label method-subparams-label">Properties</h6>
-                
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>path</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>File path.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>lib</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of library object. (Maybe, named 'lib')</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>root</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of the root object in library object.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>images</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of images object. (Maybe, named 'images')</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>ss</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Name of sprite sheet object. (Maybe, named 'ss')</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>basePath</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Basement path of aseets.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last"><p>Content data(s).</p></td>
         </tr>
 
     
@@ -732,7 +562,7 @@ loader.load('./content.js', function() {
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-467">line 467</a>
+				 <a href="Creap.js.html#sunlight-1-line-480">line 480</a>
 			</li>
 		</ul>
 	</dd>
@@ -747,6 +577,226 @@ loader.load('./content.js', function() {
 			<li><a href="Creap.Content.html">Creap.Content</a></li>
 			</ul>
 	</dd>
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Return a itself (can use method chaining).</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Creap.Loader.html">Creap.Loader</a></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="loadCSV"><span class="type-signature"></span>loadCSV(data, callback, encode)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Asynchronously load csv file(s).</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">LoadCSVData</span>
+|
+
+<span class="param-type">array.&lt;LoadCSVData></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>CSV data(s).</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Callback when the file loaded.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>encode</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="Creap.encoding.html">Creap.encoding</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Callback when the file loaded.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+	<dt class="tag-since method-doc-label method-doc-details-label">Since:</dt>
+	<dd class="tag-since">
+		<ul class="dummy">
+			<li>1.1.2</li>
+		</ul>
+	</dd>
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-548">line 548</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
 	
 
 	
@@ -842,7 +892,7 @@ loader.load('./content.js', function() {
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on July 27th 2017, 1:24:16 pm
+		on July 27th 2017, 3:25:48 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

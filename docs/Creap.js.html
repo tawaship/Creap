@@ -33,7 +33,7 @@
 			<li class="dropdown">
 				<a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="Creap.html">Creap</a></li><li><a href="Creap.options.html">Creap.options</a></li><li><a href="createjs.html">createjs</a></li>
+					<li><a href="Creap.html">Creap</a></li><li><a href="Creap.encoding.html">Creap.encoding</a></li><li><a href="Creap.options.html">Creap.options</a></li><li><a href="createjs.html">createjs</a></li>
 				</ul>
 			</li>
 			
@@ -557,6 +557,19 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 						return this;
 					}
 				},
+				
+				/**
+				 * @typedef Creap.LoadContentData {object}
+				 * @since 1.1.2
+				 * @property name {string} Object name in response.
+				 * @property path {string} File path.
+				 * @property lib {string} Name of library object. (Maybe, named 'lib')
+				 * @property root {string} Name of the root object in library object.
+				 * @property images {string} Name of images object. (Maybe, named 'images')
+				 * @property ss {string} Name of sprite sheet object. (Maybe, named 'ss')
+				 * @property basePath {string} Basement path of aseets.
+				 */
+				 
 				/**
 				 * Asynchronously load js file built by animate CC and create instance of Creap.Content.&lt;br />
 				 * ```js
@@ -580,13 +593,7 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @since 1.1.0
 				 * @function Creap.Loader#loadContent
 				 * @see Creap.Content
-				 * @param data {object|array&lt;object>} Content data(s).
-				 * @param data.path {string} File path.
-				 * @param data.lib {string} Name of library object. (Maybe, named 'lib')
-				 * @param data.root {string} Name of the root object in library object.
-				 * @param data.images {string} Name of images object. (Maybe, named 'images')
-				 * @param data.ss {string} Name of sprite sheet object. (Maybe, named 'ss')
-				 * @param data.basePath {string} Basement path of aseets.
+				 * @param data {LoadContentData|array&lt;LoadContentData>} Content data(s).
 				 * @param callback {function} Callback when the file loaded.
 				 * @return {Creap.Loader} Return a itself (can use method chaining).
 				 */
@@ -611,6 +618,59 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 									if (this.readyState == 4) {
 										e(this.responseText);
 										res[v.name] = new Creap.Content(v.lib, v.root, v.images, v.ss, v.basePath);
+										if (++loadedCount === data.length) {
+											callback.call(self, res);
+										}
+									}
+								};
+							})(data[i]), false);
+							xhr.open('GET', data[i].path);
+							xhr.send();
+						}
+						return this;
+					}
+				},
+				
+				/**
+				 * @typedef Creap.LoadCSVData {object}
+				 * @since 1.1.2
+				 * @property path {string} File path.
+				 * @property name {string} Object name in response.
+				 */
+				
+				/**
+				 * Asynchronously load csv file(s).
+				 * 
+				 * @since 1.1.2
+				 * @function Creap.Loader#loadCSV
+				 * @param data {LoadCSVData|array&lt;LoadCSVData>} CSV data(s).
+				 * @param callback {function} Callback when the file loaded.
+				 * @param encode {Creap.encoding} Callback when the file loaded.
+				 * @return {Creap.Loader} Return a itself (can use method chaining).
+				 */
+				loadCSV: {
+					value: function(data, callback, encode) {
+						var xhr;
+						var loadedCount = 0;
+						var self = this;
+						var res = {};
+						
+						encode = encode || Creap.encoding.SJIS;
+						
+						data = data || [];
+						if (!(data instanceof Array)) {
+							data = [data];
+						}
+						
+						callback = callback || function() {};
+						
+						for (var i = 0; i &lt; data.length; i++) {
+							xhr = new XMLHttpRequest();
+							xhr.overrideMimeType('text/plain; charset=' + encode);
+							xhr.addEventListener('readystatechange', (function(v) {
+								return function() {
+									if (this.readyState == 4) {
+										res[v.name] = this.responseText;
 										if (++loadedCount === data.length) {
 											callback.call(self, res);
 										}
@@ -1877,58 +1937,29 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 				value: Size
 			},
 			/**
+			 * @namespace Creap.encoding
+			 */
+			encoding: {
+				value: Object.defineProperties({}, {
+					/**
+					 * @constant Creap.encoding#SJIS {string}
+					 */
+					SJIS: {
+						value: 'SJIS'
+					},
+					/**
+					 * @constant Creap.encoding#UTF8 {string}
+					 */
+					UTF8: {
+						value: 'UTF-8'
+					}
+				})
+			},
+			/**
 			 * @namespace Creap.options
 			 */
 			options: {
 				value: Object.defineProperties({}, {
-					/*
-					fonts: {
-						get: function() {
-							return fonts;
-						},
-						set: function(obj) {
-							var loader = new Loader();
-							var i, j;
-							
-							obj = obj || {};
-							switch (webFontLoadedState) {
-								case 0:
-									var css = document.createElement('style');
-									css.type = 'text/css';
-									document.getElementsByTagName('head').item(0).appendChild(css);
-									autoLoadCss = document.styleSheets.item(document.styleSheets.length - 1);
-									
-									webFontLoadedState = 1;
-									for (i in obj) {
-										willLoadFonts[i] = obj[i];
-									}
-									loader.load('http://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js', function() {
-										var v;
-										webFontLoadedState = 2;
-										for (i in obj) {
-											willLoadFonts[i] = obj[i];
-										}
-										
-										for (i in willLoadFonts) {
-											v = willLoadFonts[i].match(/\..*$/);
-											autoLoadCss.insertRule('@font-face {font-family: "' + i + '"; src: url(' + willLoadFonts[i] + ')' + ((v in FONT_EXT) ? '' : ' format("' + FONT_EXT[v] + '");') + '}');
-										
-										}
-									});
-									break;
-								case 1:
-									for (i in obj) {
-										willLoadFonts[i] = obj[i];
-									}
-									break;
-								case 2:
-									
-									
-									webFontLoadedState = 3;
-									break;
-							}
-						}
-					},*/
 					/**
 					 * Whether set accurate target when fires mouse/touch event.&lt;br />
 					 * &lt;br />
@@ -4738,7 +4769,7 @@ console.log('\r\n%c  Creap.js %c v1.1.1  %c\r\n\r\n', 'color: #FFF; background: 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on July 27th 2017, 1:24:16 pm
+		on July 27th 2017, 3:25:48 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

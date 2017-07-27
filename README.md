@@ -7,6 +7,9 @@ By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
 
+### v1.1.2 (07/27/2017)
+- [add] CSV loader.
+
 ### v1.1.1 (07/26/2017)
 <span style="red:">From this version, pixi.js v4.4.3 has become unsupported.</span>
 - [add] TypeKit and GoogleWebFont are now available
