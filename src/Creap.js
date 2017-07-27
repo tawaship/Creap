@@ -426,12 +426,6 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				constructor: {
 					value: Loader
 				},
-				watch: {
-					value: function(functioncs) {
-						var loadedCount = 0;
-						
-					}
-				},
 				/**
 				 * Asynchronously load js file.
 				 * 
@@ -3208,7 +3202,8 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.text;
 					},
 					set: function(v) {
-						this.instance.text = v || '';
+						v = v || '';
+						this.instance.text = v;
 						this.textAlign = this.textAlign;
 						this.instance.style.padding = (this._fontProp.ascent + 2) * v.split('\n').length;
 					}
