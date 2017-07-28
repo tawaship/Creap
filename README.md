@@ -7,6 +7,9 @@ By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
 
+### v1.1.4 (07/28/2017)
+- [modify] The variables "stage" and "erportRoot" can now be acquired normally from the listener.
+	
 ### v1.1.3 (07/28/2017)
 - [modify] Moved the Emitter class to the Creap namespace.
 - [fix] createjs.Text
