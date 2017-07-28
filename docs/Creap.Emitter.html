@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Class: Loader</title>
+	<title>Documentation Class: Emitter</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -86,7 +86,7 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Class: Loader</h1>
+	<h1 class="page-title">Class: Emitter</h1>
 <section>
 
 <header>
@@ -94,10 +94,10 @@
         <h2>
             <span class="ancestors"><a href="Creap.html">Creap</a>.</span>
         
-        Loader
+        Emitter
         </h2>
         
-            <div class="class-description"><p>Class related to loader.</p></div>
+            <div class="class-description"><p>Class related to event emission.</p></div>
         
     
 </header>
@@ -109,16 +109,12 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="Loader"><span class="type-signature"></span>new Loader()</h4>
+    <h4 class="name" id="Emitter"><span class="type-signature">&lt;abstract> </span>new Emitter()</h4>
     
     
 </dt>
 <dd>
 
-    
-    <div class="description">
-        <p>Create loader.</p>
-    </div>
     
 
     
@@ -164,7 +160,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-417">line 417</a>
+				 <a href="Creap.js.html#sunlight-1-line-290">line 290</a>
 			</li>
 		</ul>
 	</dd>
@@ -215,7 +211,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="load"><span class="type-signature"></span>load(path, callback)</h4>
+    <h4 class="name" id="addEventListener"><span class="type-signature"></span>addEventListener(type, func)</h4>
     
     
 </dt>
@@ -223,7 +219,7 @@
 
     
     <div class="description">
-        <p>Asynchronously load js file.</p>
+        <p>Alias of on().</p>
     </div>
     
 
@@ -258,16 +254,13 @@
 
         <tr>
             
-                <td class="name"><code>path</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
-|
-
-<span class="param-type">array.&lt;string></span>
 
 
 
@@ -278,14 +271,14 @@
 
             
 
-            <td class="description last"><p>File path(s).</p></td>
+            <td class="description last"><p>Event type.</p></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>callback</code></td>
+                <td class="name"><code>func</code></td>
             
 
             <td class="type">
@@ -302,8 +295,8 @@
 
             
 
-            <td class="description last"><p>Callback when the file loaded.<br />
-    Context 'this' in callback is Creap.Loader.</p></td>
+            <td class="description last"><p>Callback when the event fires.<br />
+    Context 'this' in callback is Creap.Emitter.</p></td>
         </tr>
 
     
@@ -318,13 +311,6 @@
 
 	
 
-	
-	<dt class="tag-since method-doc-label method-doc-details-label">Since:</dt>
-	<dd class="tag-since">
-		<ul class="dummy">
-			<li>1.1.0</li>
-		</ul>
-	</dd>
 	
 
 	
@@ -355,216 +341,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-428">line 428</a>
-			</li>
-		</ul>
-	</dd>
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>Return a itself (can use method chaining).</p>
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Creap.Loader.html">Creap.Loader</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="loadContent"><span class="type-signature"></span>loadContent(data, callback)</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        <p>Asynchronously load js file built by animate CC and create instance of Creap.Content.<br /></p>
-<pre class="prettyprint source lang-js"><code>var loader = new Creap.Loader();
-var data = {
-    name: 'contentA', path: './content.js', lib: 'lib', root: 'root', images: 'images', ss: 'ss', basePath: './'}
-};
-loader.loadContent(data, function(contents) {
-    contents.contentA.createJson();
-});</code></pre><p>This code is equivalent to the following code.<br /></p>
-<pre class="prettyprint source lang-js"><code>var loader = new Creap.Loader();
-loader.load('./content.js', function() {
-    var contentA = new Creap.Content('lib', 'rep', 'images', 'ss', './')
-    contentA.createJson();
-});</code></pre>
-    </div>
-    
-
-    
-
-    
-
-    
-    
-        <h5>Parameters:</h5>
-        
-
-<table class="params table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>data</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">LoadContentData</span>
-|
-
-<span class="param-type">array.&lt;LoadContentData></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Content data(s).</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Callback when the file loaded.<br />
-    Context 'this' in callback is Creap.Loader.</p></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-	<dt class="tag-since method-doc-label method-doc-details-label">Since:</dt>
-	<dd class="tag-since">
-		<ul class="dummy">
-			<li>1.1.0</li>
-		</ul>
-	</dd>
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
-	<dd class="tag-source">
-		<ul class="dummy">
-			<li>
-				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-482">line 482</a>
+				 <a href="Creap.js.html#sunlight-1-line-346">line 346</a>
 			</li>
 		</ul>
 	</dd>
@@ -576,7 +353,7 @@ loader.load('./content.js', function() {
 	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
 	<dd class="tag-see">
 		<ul>
-			<li><a href="Creap.Content.html">Creap.Content</a></li>
+			<li>Emitter#on</li>
 			</ul>
 	</dd>
 	
@@ -611,7 +388,7 @@ loader.load('./content.js', function() {
     </dt>
     <dd>
         
-<span class="param-type"><a href="Creap.Loader.html">Creap.Loader</a></span>
+<span class="param-type">Emitter</span>
 
 
 
@@ -628,7 +405,7 @@ loader.load('./content.js', function() {
             
 <hr>
 <dt>
-    <h4 class="name" id="loadCSV"><span class="type-signature"></span>loadCSV(data, callback, encode)</h4>
+    <h4 class="name" id="dispatchEvent"><span class="type-signature"></span>dispatchEvent(e)</h4>
     
     
 </dt>
@@ -636,7 +413,7 @@ loader.load('./content.js', function() {
 
     
     <div class="description">
-        <p>Asynchronously load csv file(s).</p>
+        <p>Alias of emit().</p>
     </div>
     
 
@@ -671,16 +448,16 @@ loader.load('./content.js', function() {
 
         <tr>
             
-                <td class="name"><code>data</code></td>
+                <td class="name"><code>e</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">LoadCSVData</span>
+<span class="param-type">string</span>
 |
 
-<span class="param-type">array.&lt;LoadCSVData></span>
+<span class="param-type"><a href="createjs.Event.html">createjs.Event</a></span>
 
 
 
@@ -691,56 +468,7 @@ loader.load('./content.js', function() {
 
             
 
-            <td class="description last"><p>CSV data(s).</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Callback when the file loaded.<br />
-    Context 'this' in callback is Creap.Loader.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>encode</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="Creap.encoding.html">Creap.encoding</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Callback when the file loaded.</p></td>
+            <td class="description last"><p>Event type or Event object.</p></td>
         </tr>
 
     
@@ -755,13 +483,6 @@ loader.load('./content.js', function() {
 
 	
 
-	
-	<dt class="tag-since method-doc-label method-doc-details-label">Since:</dt>
-	<dd class="tag-since">
-		<ul class="dummy">
-			<li>1.1.2</li>
-		</ul>
-	</dd>
 	
 
 	
@@ -792,7 +513,755 @@ loader.load('./content.js', function() {
 		<ul class="dummy">
 			<li>
 				<a href="Creap.js.html">Creap.js</a>,
-				 <a href="Creap.js.html#sunlight-1-line-556">line 556</a>
+				 <a href="Creap.js.html#sunlight-1-line-393">line 393</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
+	<dd class="tag-see">
+		<ul>
+			<li>Emitter#emit</li>
+			</ul>
+	</dd>
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Return a itself (can use method chaining).</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Emitter</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="emit"><span class="type-signature"></span>emit(e)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Fires event.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>e</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type"><a href="createjs.Event.html">createjs.Event</a></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event type or Event object.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-332">line 332</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
+	<dd class="tag-see">
+		<ul>
+			<li>Emitter#dispatchEvent</li>
+			</ul>
+	</dd>
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Return a itself (can use method chaining).</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Emitter</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="off"><span class="type-signature"></span>off(type, func)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Unregisters event.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Registered event type.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Regitered callback.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-317">line 317</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
+	<dd class="tag-see">
+		<ul>
+			<li>Emitter#removeEventListener</li>
+			</ul>
+	</dd>
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Return a itself (can use method chaining).</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Emitter</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="on"><span class="type-signature"></span>on(type, func)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Registers event.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Event type.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Callback when the event fires.<br />
+    Context 'this' in callback is Creap.Emitter.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-301">line 301</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
+	<dd class="tag-see">
+		<ul>
+			<li>Emitter#addEventListener</li>
+			</ul>
+	</dd>
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Return a itself (can use method chaining).</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Emitter</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="removeAllEventListeners"><span class="type-signature"></span>removeAllEventListeners( [type])</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Unregisters all applicable events.</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Argument</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    ''
+                
+                </td>
+            
+
+            <td class="description last"><p>Registered event type. If it regarded as false, unregister all events.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-375">line 375</a>
 			</li>
 		</ul>
 	</dd>
@@ -832,7 +1301,200 @@ loader.load('./content.js', function() {
     </dt>
     <dd>
         
-<span class="param-type"><a href="Creap.Loader.html">Creap.Loader</a></span>
+<span class="param-type">Emitter</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="removeEventListener"><span class="type-signature"></span>removeEventListener(type, func)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        <p>Alias of off().</p>
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Registered event type.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>func</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Regitered callback.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source method-doc-label method-doc-details-label">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="Creap.js.html">Creap.js</a>,
+				 <a href="Creap.js.html#sunlight-1-line-361">line 361</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+	<dt class="tag-see method-doc-label method-doc-details-label">See:</dt>
+	<dd class="tag-see">
+		<ul>
+			<li>Emitter#off</li>
+			</ul>
+	</dd>
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>Return a itself (can use method chaining).</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Emitter</span>
 
 
 
@@ -895,7 +1557,7 @@ loader.load('./content.js', function() {
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on July 28th 2017, 4:57:28 pm
+		on July 28th 2017, 4:57:27 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

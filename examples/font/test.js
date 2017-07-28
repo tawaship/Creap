@@ -74,11 +74,11 @@ lib.tfontAvailable = function(family, totalTypekitCount) {
 	this.initialize(mode,startPosition,loop,{});
 
 	// レイヤー 1
-	this.text = new cjs.Text("sans", "24px 'Arial'", "#0000FF");
-	this.text.lineHeight = 29;
+	this.text = new cjs.Text("sans\nline2", "24px 'Arial'", "#0000FF");
+	this.text.lineHeight = -23;
 	this.text.lineWidth = 100;
 	this.text.parent = this;
-	this.text.setTransform(23,253.8);
+	this.text.setTransform(133,258.4);
 
 	this.text_1 = new cjs.Text("Oswald\n(but not loaded in Creap.js)", "normal 400 20px 'Oswald'", "#0000FF");
 	this.text_1.lineHeight = 34;
@@ -113,7 +113,7 @@ lib.tfontAvailable = function(family, totalTypekitCount) {
 	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.text_3},{t:this.text_2},{t:this.text_1},{t:this.text}]}).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(141,181.7,256,281.8);
+p.nominalBounds = new cjs.Rectangle(141,181.7,256,294.5);
 // library properties:
 lib.properties = {
 	width: 240,

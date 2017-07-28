@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.1.2.1
+ * Creap.js - v1.1.3
  * 
  * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,7 +11,7 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.3  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
@@ -183,7 +183,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 	
 	(function() {
 		/*!
-		 * @function Emitter~addListener
+		 * @function Creap.Emitter~addListener
 		 * @param type {object} The object that contains callbacks.
 		 * @param type {string} Event type.
 		 * @param func {function} Callback when the event fires.
@@ -197,7 +197,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 		}
 		
 		/*!
-		 * @function Emitter~removeListener
+		 * @function Creap.Emitter~removeListener
 		 * @param type {object} The object that contains callbacks.
 		 * @param type {string} Registered event type.
 		 * @param func {function} Regitered callback.
@@ -212,7 +212,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 		}
 		
 		/*!
-		 * @function  Emitter~fire
+		 * @function  Creap.Emitter~fire
 		 * @param e {string|createjs.Event} Event type or Event object.
 		 */
 		function fire(events, e) {
@@ -230,7 +230,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 		}
 		
 		/*!
-		 * @constructor Emitter~CreapData
+		 * @constructor Creap.Emitter~CreapData
 		 * @classdesc Class related to system data of Emitter.
 		 * @param obj {createjs.MovieClip} Instance that owns event.
 		 */
@@ -247,7 +247,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/*!
 			 * Registers event managed by the system.
 			 * 
-			 * @function Emitter~CreapData#on
+			 * @function Creap.Emitter~CreapData#on
 			 * @param type {string} Event type.
 			 * @param func {function} Callback when the event fires.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -261,7 +261,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/*!
 			 * Unregisters event managed by the system.
 			 * 
-			 * @function Emitter~CreapData#off
+			 * @function Creap.Emitter~CreapData#off
 			 * @param type {string} Registered event type.
 			 * @param func {function} Regitered callback.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -275,7 +275,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/*!
 			 * Fires event.
 			 * 
-			 * @function Emitter#emit
+			 * @function Creap.Emitter~CreapData#emit
 			 * @param e {string|createjs.Event} Event type or Event object.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
@@ -288,9 +288,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 		});
 		
 		/**
-		 * <span style="color: #F00;">This constructor is accessible only in Creap.js.</span>
-		 * 
-		 * @constructor Emitter
+		 * @constructor Creap.Emitter
 		 * @classdesc Class related to event emission.
 		 * @abstract
 		 */
@@ -303,10 +301,11 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Registers event.
 			 * 
-			 * @function Emitter#on
+			 * @function Creap.Emitter#on
 			 * @see Emitter#addEventListener
 			 * @param type {string} Event type.
-			 * @param func {function} Callback when the event fires.
+			 * @param func {function} Callback when the event fires.<br />
+			 *     Context 'this' in callback is Creap.Emitter.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
 			on: {
@@ -318,7 +317,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Unregisters event.
 			 * 
-			 * @function Emitter#off
+			 * @function Creap.Emitter#off
 			 * @see Emitter#removeEventListener
 			 * @param type {string} Registered event type.
 			 * @param func {function} Regitered callback.
@@ -333,7 +332,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Fires event.
 			 * 
-			 * @function Emitter#emit
+			 * @function Creap.Emitter#emit
 			 * @see Emitter#dispatchEvent
 			 * @param e {string|createjs.Event} Event type or Event object.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -347,10 +346,11 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Alias of on().
 			 * 
-			 * @function Emitter#addEventListener
+			 * @function Creap.Emitter#addEventListener
 			 * @see Emitter#on
 			 * @param type {string} Event type.
-			 * @param func {function} Callback when the event fires.
+			 * @param func {function} Callback when the event fires.<br />
+			 *     Context 'this' in callback is Creap.Emitter.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
 			addEventListener: {
@@ -361,7 +361,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Alias of off().
 			 * 
-			 * @function Emitter#removeEventListener
+			 * @function Creap.Emitter#removeEventListener
 			 * @see Emitter#off
 			 * @param type {string} Registered event type.
 			 * @param func {function} Regitered callback.
@@ -375,7 +375,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Unregisters all applicable events.
 			 * 
-			 * @function Emitter#removeAllEventListeners
+			 * @function Creap.Emitter#removeAllEventListeners
 			 * @param [type=''] {string} Registered event type. If it regarded as false, unregister all events.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
@@ -393,7 +393,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Alias of emit().
 			 * 
-			 * @function Emitter#dispatchEvent
+			 * @function Creap.Emitter#dispatchEvent
 			 * @see Emitter#emit
 			 * @param e {string|createjs.Event} Event type or Event object.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -404,7 +404,6 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				}
 			}
 		});
-		
 	})();
 	
 	/**
@@ -432,7 +431,8 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @since 1.1.0
 				 * @function Creap.Loader#load
 				 * @param path {string|array<string>} File path(s).
-				 * @param callback {function} Callback when the file loaded.
+				 * @param callback {function} Callback when the file loaded.<br />
+				 *     Context 'this' in callback is Creap.Loader.
 				 * @return {Creap.Loader} Return a itself (can use method chaining).
 				 */
 				load: {
@@ -503,15 +503,16 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @function Creap.Loader#loadContent
 				 * @see Creap.Content
 				 * @param data {LoadContentData|array<LoadContentData>} Content data(s).
-				 * @param callback {function} Callback when the file loaded.
+				 * @param callback {function} Callback when the file loaded.<br />
+				 *     Context 'this' in callback is Creap.Loader.
 				 * @return {Creap.Loader} Return a itself (can use method chaining).
 				 */
 				loadContent: {
 					value: function(data, callback) {
 						var xhr;
 						var loadedCount = 0;
-						var self = this;
 						var res = {};
+						var self = this;
 						
 						data = data || [];
 						if (!(data instanceof Array)) {
@@ -558,7 +559,8 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @since 1.1.2
 				 * @function Creap.Loader#loadCSV
 				 * @param data {LoadCSVData|array<LoadCSVData>} CSV data(s).
-				 * @param callback {function} Callback when the file loaded.
+				 * @param callback {function} Callback when the file loaded.<br />
+				 *     Context 'this' in callback is Creap.Loader.
 				 * @param encode {Creap.encoding} Callback when the file loaded.
 				 * @return {Creap.Loader} Return a itself (can use method chaining).
 				 */
@@ -566,8 +568,8 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 					value: function(data, callback, encode) {
 						var xhr;
 						var loadedCount = 0;
-						var self = this;
 						var res = {};
+						var self = this;
 						
 						encode = encode || Creap.encoding.SJIS;
 						
@@ -1264,6 +1266,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 								
 								p = t.parent;
 								tappedList.push(t);
+								
 								t.emit(PRE_MOUSE_EVENT.mousedown, ne);
 								if (p === this) {
 									break;
@@ -1383,7 +1386,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				pause: {
 					value: function(flag) {
-						if (!this.isInitialized) {
+						if (!this.isInitialized || !this.isStarted) {
 							return this;
 						}
 						
@@ -1583,8 +1586,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 					}
 				},
 				/**
-				 * Align the content to the center with respect to the vertical direction of the reference rectangle.<br />
-				 * This function references "canvas.parentNode.style.marginTop".
+				 * Get the top-left coordinates of the application.
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#getPoint
@@ -1598,6 +1600,13 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 						);
 					}
 				},
+				/**
+				 * Get the size of the application.
+				 * 
+				 * @since 1.1.0
+				 * @function Creap.Application#getSize
+				 * @return {Creap.Size}
+				 */
 				getSize: {
 					value: function() {
 						return new Size(
@@ -1606,6 +1615,13 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 						);
 					}
 				},
+				/**
+				 * Gets a rectangle representing the display area of the application.
+				 * 
+				 * @since 1.1.0
+				 * @function Creap.Application#getRect
+				 * @return {Creap.Rect}
+				 */
 				getRect: {
 					value: function() {
 						return new Rect(
@@ -1652,7 +1668,8 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @param obj {object<string, string>}
 				 *     key: Image identifier<br >
 				 *     value: Images URL.
-				 * @param callback {function} Callback when images loaded.
+				 * @param callback {function} Callback when images loaded.<br />
+				 *     Context 'this' in callback is Creap.Application.
 				 * @return {Creap.Application} Return a itself (can use method chaining).
 				 */
 				defineImages: {
@@ -1680,10 +1697,10 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 								for (i in resources) {
 									this.content._ss[i] = this.content._img[i] = resources[i];
 								}
-								callback();
+								callback.call(this);
 							}).bind(this));
 						} else {
-							callback();
+							callback.call(this);
 						}
 						
 						return this;
@@ -1833,6 +1850,9 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 		})();
 		
 		return Object.defineProperties({}, {
+			Emitter: {
+				value: Emitter
+			},
 			Loader: {
 				value: Loader
 			},
@@ -2291,7 +2311,8 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 					 * 
 					 * @function createjs~DisplayObject#addEventListener
 					 * @param type {string} Event type.
-					 * @param func {function} Callback when the event fires.
+					 * @param func {function} Callback when the event fires.<br />
+					 *     Context 'this' in callback is window.
 					 * @param [isCapture=false] {bool} <span style="color:#F00;">Defined for compatibility. Creap.js always ignores it.</span>
 					 * @return {function} Referece of argument 'func'.
 					 */
@@ -2300,7 +2321,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 							if (type in CJS_MOUSE_EVENT) {
 								this.interactive = true;
 							}
-							this.on(PRE_MOUSE_EVENT[type] || type, func);
+							this.on(PRE_MOUSE_EVENT[type] || type, func, window);
 							return func;
 						}
 					},
@@ -3123,9 +3144,8 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 				styles.wordWrap = true;
 				
 				this.instance = new PIXI.Text(value, styles);
-				
-				this._fontProp = PIXI.TextMetrics.measureText(styles.fontFamily, this.instance.style).fontProperties;
-				this.instance.style.padding = (this._fontProp.ascent + 2) * value.split('\n').length;
+				this._fontProp = PIXI.TextMetrics.measureText(value, this.instance.style).fontProperties;
+				this.instance.style.padding = this._fontProp.fontSize * value.split('\n').length;
 				this.instance.y = -this._fontProp.ascent;
 				this.addChild(this.instance);
 				this.interactive = isAccurateTarget;
@@ -3144,6 +3164,7 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 					},
 					set: function(v) {
 						this.instance.style.lineHeight = v;
+						this.text = this.text;
 					}
 				},
 				/**
@@ -3202,10 +3223,23 @@ console.log('\r\n%c  Creap.js %c v1.1.2  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.text;
 					},
 					set: function(v) {
+						var l, h;
 						v = v || '';
+						l = v.split('\n').length;
 						this.instance.text = v;
 						this.textAlign = this.textAlign;
-						this.instance.style.padding = (this._fontProp.ascent + 2) * v.split('\n').length;
+						
+						if (this.lineHeight < this._fontProp.fontSize) {
+							h = this._fontProp.fontSize + this.lineHeight * (l - 1);
+							if (this.lineHeight >= 0) {
+								this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, h);
+							} else {
+								this.hitArea = new PIXI.Rectangle(0, h - this._fontProp.fontSize, this.instance.width, this._fontProp.fontSize - (h - this._fontProp.fontSize));
+							}
+						} else {
+							this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, this.instance.height);
+						}
+						this.instance.style.padding = this.hitArea.height;
 					}
 				},
 				/**

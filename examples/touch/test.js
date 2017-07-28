@@ -2,7 +2,7 @@
 
 var p; // shortcut to reference prototypes
 lib.ssMetadata = [
-		{name:"test_atlas_", frames: [[0,0,19,19],[0,21,19,19]]}
+		{name:"test_atlas_", frames: [[0,21,19,19],[0,0,19,19]]}
 ];
 
 
@@ -94,6 +94,44 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 }).prototype = getMCSymbolPrototype(lib.Ball, new cjs.Rectangle(0,0,39.8,19), null);
 
 
+(lib.Symbom0 = function(mode,startPosition,loop) {
+	this.initialize(mode,startPosition,loop,{});
+
+	// timeline functions:
+	this.frame_0 = function() {
+		this.a.text = "A\nA\nA\nA\nA\nA\nA\nA"
+	}
+
+	// actions tween:
+	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(1));
+
+	// レイヤー 1
+	this.text = new cjs.Text("A\nA\nA\nA\nA\nA", "24px 'Yu Gothic UI Light'", "#0000FF");
+	this.text.lineHeight = -70;
+	this.text.lineWidth = 100;
+	this.text.parent = this;
+	this.text.setTransform(55,85);
+
+	this.t = new lib.Ball();
+	this.t.parent = this;
+	this.t.setTransform(133,21,1,1,0,0,0,9.5,9.5);
+
+	this.r = new lib.Symbol2();
+	this.r.parent = this;
+	this.r.setTransform(136,21,1,1,0,0,0,21,21);
+
+	this.a = new cjs.Text("p\nY", "24px 'Times New Roman'", "#0000FF");
+	this.a.name = "a";
+	this.a.lineHeight = 27;
+	this.a.lineWidth = 100;
+	this.a.parent = this;
+	this.a.setTransform(-33.2,-110);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.a},{t:this.r},{t:this.t},{t:this.text}]}).wait(1));
+
+}).prototype = getMCSymbolPrototype(lib.Symbom0, new cjs.Rectangle(-35.2,-112,198.5,390.4), null);
+
+
 // stage content:
 (lib.test = function(mode,startPosition,loop) {
 	this.initialize(mode,startPosition,loop,{});
@@ -105,26 +143,26 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 		
 		
 		
-		this.t.c.addEventListener("mousedown", function(e) {
+		this.a.t.c.addEventListener("mousedown", function(e) {
 			console.log("down",e);
 		}, false);
 		
 		
-		this.addEventListener("pressmove", function(e) {
+		this.a.addEventListener("pressmove", (function(e) {
 			console.log("move", e);
-		});
+		}).bind(this));
 		
-		this.t.c.g.addEventListener("pressup", function(e) {
+		this.a.t.c.g.addEventListener("pressup", function(e) {
 			console.log("up",e);
 		});
 		
-		this.t.addEventListener("click", function(e) {
+		this.a.t.addEventListener("click", function(e) {
 			console.log("click", e);
 			self.dispatchEvent("userevent");
 			self.dispatchEvent(new createjs.Event("userevent"));
 		});
 		
-		this.addEventListener("userevent", function(e) {
+		this.a.addEventListener("userevent", function(e) {
 			console.log("userevent", e);
 		});
 	}
@@ -133,24 +171,14 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(1));
 
 	// レイヤー 1
-	this.text = new cjs.Text("aaaaa", "24px 'Times New Roman'", "#0000FF");
-	this.text.lineHeight = 29;
-	this.text.lineWidth = 100;
-	this.text.parent = this;
-	this.text.setTransform(58,197.7);
+	this.a = new lib.Symbom0();
+	this.a.parent = this;
+	this.a.setTransform(137.6,175.7,1,1,0,0,0,81.6,50.6);
 
-	this.t = new lib.Ball();
-	this.t.parent = this;
-	this.t.setTransform(189,146.1,1,1,0,0,0,9.5,9.5);
-
-	this.r = new lib.Symbol2();
-	this.r.parent = this;
-	this.r.setTransform(192,146.1,1,1,0,0,0,21,21);
-
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.r},{t:this.t},{t:this.text}]}).wait(1));
+	this.timeline.addTween(cjs.Tween.get(this.a).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(176,285.1,163.3,101.2);
+p.nominalBounds = new cjs.Rectangle(140.8,173.1,198.5,390.4);
 // library properties:
 lib.properties = {
 	width: 240,
@@ -159,7 +187,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/test_atlas_.png?1500542296696", id:"test_atlas_"}
+		{src:"images/test_atlas_.png?1501225438188", id:"test_atlas_"}
 	],
 	preloads: []
 };

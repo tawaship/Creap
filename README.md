@@ -7,6 +7,11 @@ By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
 
+### v1.1.3 (07/28/2017)
+- [modify] Moved the Emitter class to the Creap namespace.
+- [fix] createjs.Text
+	- Fixed incorrect padding and touch judgment range when lineHeight value was below font size.
+
 ### v1.1.2 (07/27/2017)
 - [add] CSV loader.
 
