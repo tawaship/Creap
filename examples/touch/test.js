@@ -99,7 +99,7 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 
 	// timeline functions:
 	this.frame_0 = function() {
-		this.a.text = "A\nA\nA\nA\nA\nA\nA\nA"
+		this.a.text = "A aaaa a    aaaanA\nA\nA\nA"
 	}
 
 	// actions tween:
@@ -108,7 +108,7 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 	// レイヤー 1
 	this.text = new cjs.Text("A\nA\nA\nA\nA\nA", "24px 'Yu Gothic UI Light'", "#0000FF");
 	this.text.lineHeight = -70;
-	this.text.lineWidth = 100;
+	this.text.lineWidth = 20;
 	this.text.parent = this;
 	this.text.setTransform(55,85);
 
@@ -121,11 +121,12 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 	this.r.setTransform(136,21,1,1,0,0,0,21,21);
 
 	this.a = new cjs.Text("p\nY", "24px 'Times New Roman'", "#0000FF");
+	this.a.textAlign = "center"
 	this.a.name = "a";
 	this.a.lineHeight = 27;
-	this.a.lineWidth = 100;
+	this.a.lineWidth = 20
 	this.a.parent = this;
-	this.a.setTransform(-33.2,-110);
+	this.a.setTransform(3.2,-110);
 
 	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.a},{t:this.r},{t:this.t},{t:this.text}]}).wait(1));
 

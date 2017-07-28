@@ -3231,10 +3231,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					set: function(v) {
 						switch (v) {
 							case 'center':
-								this.instance.x = -(this.width - this.instance.style.padding * 2) / 2 + 0.5;
+								this.instance.x = -(this.width / this.scaleX - this.instance.style.padding * 2) / 2;
 								break;
 							case 'right':
-								this.instance.x = -(this.width - this.instance.style.padding * 2) + 1;
+								this.instance.x = -(this.width / this.scaleX - this.instance.style.padding * 2);
 								break;
 							default:
 								v = 'left';
