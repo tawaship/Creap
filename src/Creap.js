@@ -3265,18 +3265,16 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						if (this._fontProp.fontSize <= this.lineHeight) {
 							l = m.height / this.lineHeight - 1;
 							this.hitArea = new PIXI.Rectangle(this.instance.x, 0, m.width, p + this.lineHeight * l);
-							this.instance.style.padding = this.hitArea.height - this.lineHeight * l;
 						} else {
 							l = (m.height - p) / this.lineHeight;
 							if (this.lineHeight > 0) {
 								this.hitArea = new PIXI.Rectangle(this.instance.x, 0, m.width, p + this.lineHeight * l);
-								this.instance.style.padding = this.hitArea.height - this.lineHeight * l;
 							} else {
 								g = m.height - p;
 								this.hitArea = new PIXI.Rectangle(this.instance.x, g, m.width, p - g);
-								this.instance.style.padding = this.hitArea.height - this.lineHeight * l;
 							}
 						}
+						this.instance.style.padding = this.hitArea.height - this.lineHeight * l;
 					}
 				},
 				/**
