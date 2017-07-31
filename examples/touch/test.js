@@ -99,16 +99,26 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 
 	// timeline functions:
 	this.frame_0 = function() {
+<<<<<<< HEAD
 		//this.a.text = "A\nA\nA\nA\nA\nA\nA\nA"
+=======
+		this.a.text = "A aaaa a    aaaanA\nA\nA\nA"
+>>>>>>> text_view_issue
 	}
 
 	// actions tween:
 	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(1));
 
 	// レイヤー 1
+<<<<<<< HEAD
 	this.text = new cjs.Text("AAA PPP\nPPP\nPPP\nPPP\nPPP\nVVV", "24px 'Yu Gothic UI'", "#0000FF");
 	this.text.lineHeight = -28;
 	this.text.lineWidth = 55;
+=======
+	this.text = new cjs.Text("A\nA\nA\nA\nA\nA", "24px 'Yu Gothic UI Light'", "#0000FF");
+	this.text.lineHeight = -70;
+	this.text.lineWidth = 20;
+>>>>>>> text_view_issue
 	this.text.parent = this;
 	this.text.setTransform(-49,27.8);
 
@@ -120,7 +130,19 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 	this.r.parent = this;
 	this.r.setTransform(136,21,1,1,0,0,0,21,21);
 
+<<<<<<< HEAD
 	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.r},{t:this.t},{t:this.text}]}).wait(1));
+=======
+	this.a = new cjs.Text("p\nY", "24px 'Times New Roman'", "#0000FF");
+	this.a.textAlign = "center"
+	this.a.name = "a";
+	this.a.lineHeight = 27;
+	this.a.lineWidth = 20
+	this.a.parent = this;
+	this.a.setTransform(3.2,-110);
+
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.a},{t:this.r},{t:this.t},{t:this.text}]}).wait(1));
+>>>>>>> text_view_issue
 
 }).prototype = getMCSymbolPrototype(lib.Symbom0, new cjs.Rectangle(-51,0,214.3,349.2), null);
 

@@ -138,7 +138,9 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		 * setTimeout(function() {
 		 *     console.log(exportRoot); // ???
 		 * ), 1000);
+		 * ```
 		 * The following code can be acquired normally from v1.1.4.
+		 * ```js
 		 * this.addEventListener("mousedown", function() {
 		 *     console.log(exportRoot); // OK
 		 * ));
@@ -3170,6 +3172,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				styles.wordWrap = true;
 				
 				this.instance = new PIXI.Text(value, styles);
+				this._fontProp = PIXI.TextMetrics.measureText(value, this.instance.style).fontProperties;
+				this.instance.y = -this._fontProp.ascent;
 				this.addChild(this.instance);
 				this.text = this.text;
 				this.instance.y = -this._measureText.fontProperties.ascent;
@@ -3188,7 +3192,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.style.lineHeight;
 					},
 					set: function(v) {
-						this.instance.style.lineHeight = v
+						if (v === 0) {
+							v = this.instance.style.fontSize;
+						}
+						this.instance.style.lineHeight = v;
 						this.text = this.text;
 					}
 				},
@@ -3203,6 +3210,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					},
 					set: function(v) {
 						this.instance.style.wordWrapWidth = v;
+						this.text = this.text;
 					}
 				},
 				/**
@@ -3225,10 +3233,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					set: function(v) {
 						switch (v) {
 							case 'center':
-								this.instance.x = -(this.width - this.instance.style.padding * 2) / 2;
+								this.instance.x = -(this.width / this.scaleX - this.instance.style.padding * 2) / 2;
 								break;
 							case 'right':
-								this.instance.x = -(this.width - this.instance.style.padding * 2);
+								this.instance.x = -(this.width / this.scaleX - this.instance.style.padding * 2);
 								break;
 							default:
 								v = 'left';
@@ -3248,43 +3256,27 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.text;
 					},
 					set: function(v) {
-						var l, h, s, u;
+						var l, m, g, p;
 						v = v || '';
-						l = v.split('\n').length;
 						this.instance.text = v;
 						this.textAlign = this.textAlign;
 						
-						//this.instance.text = "pppp pppp pppp\npppp"
-						//this.instanupdateTransform()
+						m = PIXI.TextMetrics.measureText(v, this.instance.style);
+						p = this._fontProp.fontSize;
 						
-							this._measureText = PIXI.TextMetrics.measureText(v, this.instance.style);
-							console.log(this._measureText.fontProperties)
-							setTimeout((function() {
-							console.log(this.instance.getBounds())
-							console.log("h",this.height, this.instance.height, this._measureText.height,this.instance.style.padding)
-							console.log("w",this.width, this.instance.width, this._measureText.width,this.instance.style.padding)
-							}).bind(this),1)
-							this.instance.style.padding.top = 100;
-							//this.instance.style.padding = 60;
-						return;
-						
-					
-						s = this._measureText.fontProperties.fontSize;
-						
-						if (this.lineHeight < s) {
-							h = s + this.lineHeight * (l - 1);
-							if (this.lineHeight >= 0) {
-								this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, h);
-							} else {
-								u = h - s;
-								this.hitArea = new PIXI.Rectangle(0, u, this.instance.width, s - u);
-							}
+						if (this._fontProp.fontSize <= this.lineHeight) {
+							l = m.height / this.lineHeight - 1;
+							this.hitArea = new PIXI.Rectangle(this.instance.x, 0, m.width, p + this.lineHeight * l);
 						} else {
-							this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, this.instance.height);
+							l = (m.height - p) / this.lineHeight;
+							if (this.lineHeight > 0) {
+								this.hitArea = new PIXI.Rectangle(this.instance.x, 0, m.width, p + this.lineHeight * l);
+							} else {
+								g = m.height - p;
+								this.hitArea = new PIXI.Rectangle(this.instance.x, g, m.width, p - g);
+							}
 						}
-						this.instance.style.padding = this.hitArea.height;
-						
-						console.log(this.width - this.instance.style.padding * 2, this._measureText.width, this.width, this._measureText.width,this._measureText.height)
+						this.instance.style.padding = this.hitArea.height - this.lineHeight * l;
 					}
 				},
 				/**
