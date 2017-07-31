@@ -7,6 +7,13 @@ By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
 
+### v1.1.6 (07/31/2017)
+- [add] (type) Creap.ImageDefinitionData
+- [update] Creap.Application.defineImages
+	- By using the Creap.ImageDefinitionData type, it is now possible to specify the size of the image to be defined.<br />
+	  It is effective mainly when the size of the image to be defined is not constant, but you want to make the display a certain size.
+	- If you pass the String type as before, it will be displayed in its original image size.
+	
 ### v1.1.5 (07/31/2017)
 - [fix] createjs.Text
 	- Fixed incorrect padding and range of touch judgment when newline by wordwrap or textAlign is other than left.

@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.1.5
+ * Creap.js - v1.1.6
  * 
  * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,7 +11,7 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.5  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.6  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
@@ -293,7 +293,6 @@ console.log('\r\n%c  Creap.js %c v1.1.5  %c\r\n\r\n', 'color: #FFF; background: 
 		/**
 		 * @constructor Creap.Emitter
 		 * @classdesc Class related to event emission.
-		 * @abstract
 		 */
 		(Emitter = function() {
 			this._creap = this._creap || new EmitterCreapData(this);
@@ -1687,48 +1686,90 @@ console.log('\r\n%c  Creap.js %c v1.1.5  %c\r\n\r\n', 'color: #FFF; background: 
 						return this;
 					}
 				},
+				
+				/**
+				 * @typedef Creap.ImageDefinitionData {object}
+				 * @since 1.1.6
+				 * @property Creap.ImageDefinitionData#url {string} Image URL.
+				 * @property Creap.ImageDefinitionData#width {number} Image width.
+				 * @property Creap.ImageDefinitionData#height {number} Image height.
+				 */
+				
 				/**
 				 * Define images to the content.<br />
 				 * If already defined, replace that definition.
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#defineImages
-				 * @param obj {object<string, string>}
+				 * @param obj {object<string, ImageDefinitionData>|object<string, string>}
 				 *     key: Image identifier<br >
-				 *     value: Images URL.
+				 *     value: Image definition data | Image URL.
 				 * @param callback {function} Callback when images loaded.<br />
 				 *     Context 'this' in callback is Creap.Application.
 				 * @return {Creap.Application} Return a itself (can use method chaining).
 				 */
 				defineImages: {
 					value: function(obj, callback) {
+						var self = this;
 						var loader = new PIXI.loaders.Loader();
 						var count = 0;
+						var img, canvas;
+						var canvasCount = 0;
+						var canvasLoadedCount = 0;
+						var loaderLoaded = false;
+						var emitter = new Emitter();
+						
+						emitter.on(CREAP_EVENT.loaded, function() {
+							if (!loaderLoaded || canvasLoadedCount !== canvasCount) {
+								return;
+							}
+							callback = callback || function() {}
+							callback.call(self);
+						});
 						
 						obj = obj || {};
 						for (var i in obj) {
-							++count;
-							if (i in this.content._ssMetadata) {
-								loader.add(i, obj[i].replace(/(\.gif|\.png|\.jpg)($|\?.*)/, CPJSON + '$2'), {
-									crossOrigin: true
-								});
+							if (typeof(obj[i]) === 'string') {
+								++count;
+								if (i in this.content._ssMetadata) {
+									loader.add(i, obj[i].replace(/(\.gif|\.png|\.jpg)($|\?.*)/, CPJSON + '$2'), {
+										crossOrigin: true
+									});
+								} else {
+									loader.add(i, obj[i], {
+										crossOrigin: true
+									});
+								}
 							} else {
-								loader.add(i, obj[i], {
-									crossOrigin: true
-								});
+								++canvasCount;
+								img = new Image();
+								img.crossOrigin = 'anonymous';
+								img.addEventListener('load', (function(v) {
+									return function() {
+										canvas = document.createElement('canvas');
+										canvas.width = obj[v].width;
+										canvas.height = obj[v].height;
+										canvas.getContext('2d').drawImage(this, 0, 0, obj[v].width, obj[v].height);
+										self.content._ss[v] = self.content._img[v] = canvas;
+										++canvasLoadedCount;
+										emitter.emit(CREAP_EVENT.loaded);
+									};
+								})(i));
+								img.src = obj[i].url;
 							}
 						}
 						
-						callback = callback || function() {}
 						if (count) {
-							loader.load((function(loader, resources) {
+							loader.load(function(loader, resources) {
 								for (i in resources) {
-									this.content._ss[i] = this.content._img[i] = resources[i];
+									self.content._ss[i] = self.content._img[i] = resources[i];
 								}
-								callback.call(this);
-							}).bind(this));
+								loaderLoaded = true;
+								emitter.emit(CREAP_EVENT.loaded);
+							});
 						} else {
-							callback.call(this);
+							loaderLoaded = true;
+							emitter.emit(CREAP_EVENT.loaded);
 						}
 						
 						return this;
@@ -2648,9 +2689,14 @@ console.log('\r\n%c  Creap.js %c v1.1.5  %c\r\n\r\n', 'color: #FFF; background: 
 						if (!resource) {
 							return;
 						}
+						
 						this._creap.on(CREAP_EVENT.attach, function() {
 							this._creap.off(CREAP_EVENT.attach, arguments.callee);
-							this.addChild(new PIXI.Sprite(resource.texture));
+							if (resource instanceof HTMLCanvasElement) {
+								this.addChild(PIXI.Sprite.from(resource));
+							} else {
+								this.addChild(new PIXI.Sprite(resource.texture));
+							}
 						});
 					}
 				}
