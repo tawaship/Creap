@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.1.6
+ * Creap.js - v1.1.7
  * 
  * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,7 +11,7 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.6  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
@@ -1746,16 +1746,18 @@ console.log('\r\n%c  Creap.js %c v1.1.6  %c\r\n\r\n', 'color: #FFF; background: 
 								img.crossOrigin = 'anonymous';
 								img.addEventListener('load', (function(v) {
 									return function() {
+										var width = obj[v].width || 0;
+										var height = obj[v].height || 0;
 										canvas = document.createElement('canvas');
-										canvas.width = obj[v].width;
-										canvas.height = obj[v].height;
-										canvas.getContext('2d').drawImage(this, 0, 0, obj[v].width, obj[v].height);
+										canvas.width = width;
+										canvas.height = height;
+										canvas.getContext('2d').drawImage(this, 0, 0, width, height);
 										self.content._ss[v] = self.content._img[v] = canvas;
 										++canvasLoadedCount;
 										emitter.emit(CREAP_EVENT.loaded);
 									};
 								})(i));
-								img.src = obj[i].url;
+								img.src = obj[i].url || '';
 							}
 						}
 						
@@ -1772,6 +1774,28 @@ console.log('\r\n%c  Creap.js %c v1.1.6  %c\r\n\r\n', 'color: #FFF; background: 
 							emitter.emit(CREAP_EVENT.loaded);
 						}
 						
+						return this;
+					}
+				},
+				/**
+				 * Define a new bitmap symbol.<br />
+				 * It is mainly used when the number of images to be inserted from the outside is not fixed.<br />
+				 * If the quantity is fixed, please use Creap.Content#defineImages or Creap.Application#defineImages and replace the image.
+				 * 
+				 * @since 1.1.7
+				 * @function Creap.Application#defineBitmap
+				 * @see Creap.Content#defineImages
+				 * @see Creap.Application#defineImages
+				 * @param libName {string} Name of definition to change in content.
+				 * @param imageName {string} Image identifier.
+				 * @return {Creap.Content} Return a itself (can use method chaining).
+				 */
+				defineBitmap: {
+					value: function(libName, imageName) {
+						var img = this.content._img;
+						(this.content._lib[libName] = function() {
+							this.initialize(img[imageName]);
+						}).prototype = new createjs.Bitmap();
 						return this;
 					}
 				}

@@ -7,6 +7,9 @@ By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
 
+### v1.1.7 (07/31/2017)
+- [add] Creap.Application#defineBitmap
+	
 ### v1.1.6 (07/31/2017)
 - [add] (type) Creap.ImageDefinitionData
 - [update] Creap.Application.defineImages
