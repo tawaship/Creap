@@ -7,6 +7,10 @@ By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
 
+### v1.1.5 (07/31/2017)
+- [fix] createjs.Text
+	- Fixed incorrect padding and range of touch judgment when newline by wordwrap or textAlign is other than left.
+
 ### v1.1.4 (07/28/2017)
 - [modify] The variables "stage" and "erportRoot" can now be acquired normally from the listener.
 	
