@@ -1,7 +1,7 @@
 /*!
- * Creap.js - v1.1.4
+ * Creap.js - v1.0.2
  * 
- * @requires pixi.js 4.5.1
+ * @requires pixi.js v4.4.3 | 4.5.1
  * @requires howler.core.js v2.0.1
  * @requires Ease.js
  * @author makazu.mori@gmail.com (tawaship)
@@ -9,22 +9,18 @@
  * @license MIT License
  */
 
-var createjs, Creap;
+var createjs, Creap, playSound, exportRoot, stage;
 
-console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.0.2  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
-	var Emitter, EmitterCreapData, Stage;
-	var typeKitLoaded = false;
-	var googleWebFontLoaded = false;
+	var Emitter, EmitterCreapData;
 	var isAccurateTarget = true;
-	var _exportRoot, _stage;
 	var isAndroid = navigator.userAgent.match(/Android/i) !== null;
 	var isIos = navigator.userAgent.match(/iPhone/i) !== null || navigator.userAgent.match(/iPad/i) !== null || navigator.userAgent.match(/iPod/i) !== null;
 	var isMobile = isAndroid || isIos;
 	var windowWidth = window.innerWidth;
 	var windowHeight = window.innerHeight;
-	var webFontObj;
 	var CPJSON = '.cp.json';
 	var DEFAULT_COLOR = '#000000';
 	var EVENT = {
@@ -74,39 +70,22 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 	var TAG_COLOR = '#';
 	var TAG_COMMA = ',';
 	
-	var TEXT_SIZE_MAG = 1;
-	
 	var CREAP_EVENT = {
 		/*!
 		 * Fires when the instance first get on the display list.
 		 * @event Creap.attach
 		 */
 		attach: 'attach',
-		/*!
-		 * Fires when the loader loaded assets.
-		 * @event Creap.loaded
-		 */
-		loaded: 'loaded',
 		/**
-		 * Fires when call new Creap.Application().
+		 * Fires when call new Creap().
 		 * @event Creap.initialized
 		 */
 		initialized: 'initialized',
 		/**
-		 * Fires when built root instance by Creap.Application#start.
-		 * @event Creap.built
-		 */
-		built: 'built',
-		/**
-		 * Fires when call Creap.Application#start.
+		 * Fires when call Creap#start.
 		 * @event Creap.started
 		 */
-		started: 'started',
-		/**
-		 * Fires when call Creap.Application#stop.
-		 * @event Creap.stopped
-		 */
-		stopped: 'stopped'
+		started: 'started'
 	};
 	
 	var PRE_MOUSE_EVENT = {
@@ -116,75 +95,21 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		click: '_' + EVENT.click
 	};
 	
-	var autoLoadCss;
-	var FONT_EXT = {
-		'.eot#iefix': 'embedded-opentype',
-		'.woff': 'woff',
-		'.ttf': 'truetype',
-		'.otf': 'opentype',
-		'.svg': 'svg',
-		'.svgx': 'svg'
-	}
-	
-	Object.defineProperties(window, {
-		/**
-		 * Reference of root instance.<br />
-		 * <br />
-		 * <span style="color:red;">Be careful when using multiple contents simultaneously.</span><br />
-		 * In Creap.js, the variable "exportRoot" re-refers to the root instance managed by the application when the application's ticker is updated.<br />
-		 * In other words, you can refer to exportRoot successfully on a script(ie frame script) that is handled synchronously by ticker.<br />
-		 * However, if you refer to the variable "exportRoot" from a function that is asynchronous and not managed by the framework as follows, you will not know whether it is a reference to the expected root instance.<br />
-		 * ```js
-		 * setTimeout(function() {
-		 *     console.log(exportRoot); // ???
-		 * ), 1000);
-		 * The following code can be acquired normally from v1.1.4.
-		 * this.addEventListener("mousedown", function() {
-		 *     console.log(exportRoot); // OK
-		 * ));
-		 * ```
-		 * The same is true for the variable "stage".
-		 * 
-		 * @member exportRoot {createjs.MovieClip}
-		 */
-		exportRoot: {
-			get: function() {
-				return _exportRoot;
-			},
-			set: function(v) {
-			}
-		},
-		/**
-		 * Reference of stage instance.
-		 * 
-		 * @see exportRoot
-		 * @member stage {createjs.MovieClip}
-		 */
-		stage: {
-			get: function() {
-				return _stage;
-			},
-			set: function(v) {
-			}
-		},
-		/**
-		 * Play sound.
-		 * 
-		 * @function playSound
-		 * @param id {string} Linkage name of sound file in createjs content.
-		 * @param loop {number} Number of loops. If it is negative value, loop infinitely.
-		 * @return {createjs.Sound}
-		 */
-		playSound: {
-			value: function(id, loop) {
-				return createjs.Sound.play(id, 0, 0, 0, loop);
-			}
-		}
-	});
+	/**
+	 * Play sound.
+	 * 
+	 * @function playSound
+	 * @param id {string} Linkage name of sound file in createjs content.
+	 * @param loop {number} Number of loops. If it is negative value, loop infinitely.
+	 * @return {createjs.Sound}
+	 */
+	playSound = function(id, loop) {
+		return createjs.Sound.play(id, 0, 0, 0, loop);
+	};
 	
 	(function() {
 		/*!
-		 * @function Creap.Emitter~addListener
+		 * @function Emitter~addListener
 		 * @param type {object} The object that contains callbacks.
 		 * @param type {string} Event type.
 		 * @param func {function} Callback when the event fires.
@@ -198,7 +123,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		}
 		
 		/*!
-		 * @function Creap.Emitter~removeListener
+		 * @function Emitter~removeListener
 		 * @param type {object} The object that contains callbacks.
 		 * @param type {string} Registered event type.
 		 * @param func {function} Regitered callback.
@@ -213,7 +138,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		}
 		
 		/*!
-		 * @function  Creap.Emitter~fire
+		 * @function  Emitter~fire
 		 * @param e {string|createjs.Event} Event type or Event object.
 		 */
 		function fire(events, e) {
@@ -231,7 +156,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		}
 		
 		/*!
-		 * @constructor Creap.Emitter~CreapData
+		 * @constructor Emitter~CreapData
 		 * @classdesc Class related to system data of Emitter.
 		 * @param obj {createjs.MovieClip} Instance that owns event.
 		 */
@@ -248,7 +173,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/*!
 			 * Registers event managed by the system.
 			 * 
-			 * @function Creap.Emitter~CreapData#on
+			 * @function Emitter~CreapData#on
 			 * @param type {string} Event type.
 			 * @param func {function} Callback when the event fires.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -262,7 +187,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/*!
 			 * Unregisters event managed by the system.
 			 * 
-			 * @function Creap.Emitter~CreapData#off
+			 * @function Emitter~CreapData#off
 			 * @param type {string} Registered event type.
 			 * @param func {function} Regitered callback.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -276,7 +201,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/*!
 			 * Fires event.
 			 * 
-			 * @function Creap.Emitter~CreapData#emit
+			 * @function Emitter#emit
 			 * @param e {string|createjs.Event} Event type or Event object.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
@@ -289,7 +214,9 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		});
 		
 		/**
-		 * @constructor Creap.Emitter
+		 * <span style="color: #F00;">This constructor is accessible only in Creap.js.</span>
+		 * 
+		 * @constructor Emitter
 		 * @classdesc Class related to event emission.
 		 * @abstract
 		 */
@@ -302,11 +229,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Registers event.
 			 * 
-			 * @function Creap.Emitter#on
+			 * @function Emitter#on
 			 * @see Emitter#addEventListener
 			 * @param type {string} Event type.
-			 * @param func {function} Callback when the event fires.<br />
-			 *     Context 'this' in callback is Creap.Emitter.
+			 * @param func {function} Callback when the event fires.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
 			on: {
@@ -318,7 +244,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Unregisters event.
 			 * 
-			 * @function Creap.Emitter#off
+			 * @function Emitter#off
 			 * @see Emitter#removeEventListener
 			 * @param type {string} Registered event type.
 			 * @param func {function} Regitered callback.
@@ -333,7 +259,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Fires event.
 			 * 
-			 * @function Creap.Emitter#emit
+			 * @function Emitter#emit
 			 * @see Emitter#dispatchEvent
 			 * @param e {string|createjs.Event} Event type or Event object.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -347,11 +273,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Alias of on().
 			 * 
-			 * @function Creap.Emitter#addEventListener
+			 * @function Emitter#addEventListener
 			 * @see Emitter#on
 			 * @param type {string} Event type.
-			 * @param func {function} Callback when the event fires.<br />
-			 *     Context 'this' in callback is Creap.Emitter.
+			 * @param func {function} Callback when the event fires.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
 			addEventListener: {
@@ -362,7 +287,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Alias of off().
 			 * 
-			 * @function Creap.Emitter#removeEventListener
+			 * @function Emitter#removeEventListener
 			 * @see Emitter#off
 			 * @param type {string} Registered event type.
 			 * @param func {function} Regitered callback.
@@ -376,7 +301,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Unregisters all applicable events.
 			 * 
-			 * @function Creap.Emitter#removeAllEventListeners
+			 * @function Emitter#removeAllEventListeners
 			 * @param [type=''] {string} Registered event type. If it regarded as false, unregister all events.
 			 * @return {Emitter} Return a itself (can use method chaining).
 			 */
@@ -394,7 +319,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * Alias of emit().
 			 * 
-			 * @function Creap.Emitter#dispatchEvent
+			 * @function Emitter#dispatchEvent
 			 * @see Emitter#emit
 			 * @param e {string|createjs.Event} Event type or Event object.
 			 * @return {Emitter} Return a itself (can use method chaining).
@@ -405,207 +330,132 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				}
 			}
 		});
+		
 	})();
 	
 	/**
 	 * @namespace Creap
 	 */
 	Creap = (function() {
-		var Loader, Option, Application, Content, ReplaceData, SsJsonParser, Rect, Position, Size;
+		var Creap, Option, Application, Content, ReplaceData, SsJsonParser;
 		
-		(function() {
-			var e = eval;
-			/**
-			 * Create loader.
-			 * 
-			 * @constructor Creap.Loader
-			 * @classdesc Class related to loader.
-			 */
-			(Loader = function() {
-			}).prototype = Object.defineProperties({}, {
-				constructor: {
-					value: Loader
-				},
-				/**
-				 * Asynchronously load js file.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Loader#load
-				 * @param path {string|array<string>} File path(s).
-				 * @param callback {function} Callback when the file loaded.<br />
-				 *     Context 'this' in callback is Creap.Loader.
-				 * @return {Creap.Loader} Return a itself (can use method chaining).
-				 */
-				load: {
-					value: function(path, callback) {
-						var xhr;
-						var loadedCount = 0;
-						var self = this;
-						
-						path = path || [];
-						if (!(path instanceof Array)) {
-							path = [path];
-						}
-						
-						callback = callback || function() {};
-						
-						for (var i = 0; i < path.length; i++) {
-							xhr = new XMLHttpRequest();
-							xhr.addEventListener('readystatechange', function() {
-								if (this.readyState == 4) {
-									if (this.status == 200) {
-										e(this.responseText);
-									}
-									if (++loadedCount === path.length) {
-										callback.call(self);
-									}
-								}
-							}, false);
-							xhr.open('GET', path[i]);
-							xhr.send();
-						}
-						return this;
+		/*
+		var TextureView;
+		var atlasListContainer;
+		
+		function createTextureView(resources) {
+			if (!this.useTextureView) {
+				return;
+			}
+			
+			atlasListContainer = atlasListContainer || (function() {
+				var c = document.createElement('div');
+				c.style.position = 'absolute';
+				c.style.top = 0;
+				c.style.width = innerWidth - 20 + TAG_PX;
+				this.container.appendChild(c);
+				return  c;
+			}).bind(this)();
+			atlasListContainer.appendChild((new TextureView(resources)).container);
+		}
+		
+		(TextureView = function(resources) {
+			var app, box, head, btn, pContainer, sContainer, sprite, text;
+			var row = cell = 0;
+			var i, j;
+			var container = document.createElement('div');
+			
+			var width = innerWidth - 20;
+			var size =  50;
+			var fontSize = 6;
+			var space = size + fontSize * 2;
+			var maxCellNum = width / size - 1;
+			
+			for (i in resources) {
+				box = document.createElement('div');
+				row = cell = 0;
+				pContainer = new PIXI.Container();
+				
+				if (resources[i].data instanceof Image) {
+					var idx = i.lastIndexOf('_image');
+					if (resources[i.substr(0, idx)]) {
+						continue;
 					}
-				},
-				
-				/**
-				 * @typedef Creap.LoadContentData {object}
-				 * @since 1.1.2
-				 * @property name {string} Object name in response.
-				 * @property path {string} File path.
-				 * @property lib {string} Name of library object. (Maybe, named 'lib')
-				 * @property root {string} Name of the root object in library object.
-				 * @property images {string} Name of images object. (Maybe, named 'images')
-				 * @property ss {string} Name of sprite sheet object. (Maybe, named 'ss')
-				 * @property basePath {string} Basement path of aseets.
-				 */
-				 
-				/**
-				 * Asynchronously load js file built by animate CC and create instance of Creap.Content.<br />
-				 * ```js
-				 * var loader = new Creap.Loader();
-				 * var data = {
-				 *     name: 'contentA', path: './content.js', lib: 'lib', root: 'root', images: 'images', ss: 'ss', basePath: './'}
-				 * };
-				 * loader.loadContent(data, function(contents) {
-				 *     contents.contentA.createJson();
-				 * });
-				 * ```
-				 * This code is equivalent to the following code.<br />
-				 * ```js
-				 * var loader = new Creap.Loader();
-				 * loader.load('./content.js', function() {
-				 *     var contentA = new Creap.Content('lib', 'rep', 'images', 'ss', './')
-				 *     contentA.createJson();
-				 * });
-				 * ```
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Loader#loadContent
-				 * @see Creap.Content
-				 * @param data {LoadContentData|array<LoadContentData>} Content data(s).
-				 * @param callback {function} Callback when the file loaded.<br />
-				 *     Context 'this' in callback is Creap.Loader.
-				 * @return {Creap.Loader} Return a itself (can use method chaining).
-				 */
-				loadContent: {
-					value: function(data, callback) {
-						var xhr;
-						var loadedCount = 0;
-						var res = {};
-						var self = this;
+					sContainer = new PIXI.Container();
+					sContainer.x = cell * size;
+					sContainer.y = row * space;
+					pContainer.addChild(sContainer);
+					
+					sprite = new PIXI.Sprite(resources[i].texture);
+					sprite.scale.x = sprite.scale.y = size / (sprite.width > sprite.height ? sprite.width : sprite.height);
+					sprite.y = fontSize * 2;
+					sContainer.addChild(sprite);
+					
+					text = new PIXI.Text(i, {font: fontSize + 'pt', fill: 'white'});
+					sContainer.addChild(text);
+				} else {
+					for (j in resources[i].textures) {
+						sContainer = new PIXI.Container();
+						sContainer.x = cell * size;
+						sContainer.y = row * space;
+						pContainer.addChild(sContainer);
 						
-						data = data || [];
-						if (!(data instanceof Array)) {
-							data = [data];
+						sprite = new PIXI.Sprite(resources[i].textures[j]);
+						sprite.scale.x = sprite.scale.y = size / (sprite.width > sprite.height ? sprite.width : sprite.height);
+						sprite.y = fontSize * 2;
+						sContainer.addChild(sprite);
+						
+						text = new PIXI.Text(j, {font: fontSize + 'pt', fill: 'white'});
+						sContainer.addChild(text);
+						
+						if (++cell > maxCellNum) {
+							cell = 0;
+							row++;
 						}
-						
-						callback = callback || function() {};
-						
-						for (var i = 0; i < data.length; i++) {
-							xhr = new XMLHttpRequest();
-							xhr.addEventListener('readystatechange', (function(v) {
-								return function() {
-									if (this.readyState == 4) {
-										if (this.status == 200) {
-											e(this.responseText);
-											res[v.name] = new Creap.Content(v.lib, v.root, v.images, v.ss, v.basePath);
-										} else {
-											res[v.name] = null;
-										}
-										
-										if (++loadedCount === data.length) {
-											callback.call(self, res);
-										}
-									}
-								};
-							})(data[i]), false);
-							xhr.open('GET', data[i].path);
-							xhr.send();
-						}
-						return this;
-					}
-				},
-				
-				/**
-				 * @typedef Creap.LoadCSVData {object}
-				 * @since 1.1.2
-				 * @property path {string} File path.
-				 * @property name {string} Object name in response.
-				 */
-				
-				/**
-				 * Asynchronously load csv file(s).
-				 * 
-				 * @since 1.1.2
-				 * @function Creap.Loader#loadCSV
-				 * @param data {LoadCSVData|array<LoadCSVData>} CSV data(s).
-				 * @param callback {function} Callback when the file loaded.<br />
-				 *     Context 'this' in callback is Creap.Loader.
-				 * @param encode {Creap.encoding} Callback when the file loaded.
-				 * @return {Creap.Loader} Return a itself (can use method chaining).
-				 */
-				loadCSV: {
-					value: function(data, callback, encode) {
-						var xhr;
-						var loadedCount = 0;
-						var res = {};
-						var self = this;
-						
-						encode = encode || Creap.encoding.SJIS;
-						
-						data = data || [];
-						if (!(data instanceof Array)) {
-							data = [data];
-						}
-						
-						callback = callback || function() {};
-						
-						for (var i = 0; i < data.length; i++) {
-							xhr = new XMLHttpRequest();
-							xhr.overrideMimeType('text/plain; charset=' + encode);
-							xhr.addEventListener('readystatechange', (function(v) {
-								return function() {
-									if (this.readyState == 4) {
-										if (this.status == 200) {
-											res[v.name] = this.responseText;
-										} else {
-											res[v.name] = '';
-										}
-										if (++loadedCount === data.length) {
-											callback.call(self, res);
-										}
-									}
-								};
-							})(data[i]), false);
-							xhr.open('GET', data[i].path);
-							xhr.send();
-						}
-						return this;
 					}
 				}
+				
+				app = new PIXI.Application(width, ++row * space);
+				app.view.style.display = 'none';
+				app.stage.addChild(pContainer);
+				
+				head = document.createElement('div');
+				head.style.textAlign ='right';
+				btn = head.appendChild(document.createElement('button'));
+				btn.appendChild(document.createTextNode(i));
+				btn.addEventListener('click', (function(canvas, head) {
+					return function() {
+						if (canvas.style.display !== 'none') {
+							canvas.style.display = 'none';
+							head.style.background = null;
+						} else {
+							canvas.style.display = 'block';
+							head.style.background = '#FF0000';
+						}
+					}
+				})(app.view, head));
+				box.appendChild(head);
+				box.appendChild(app.view);
+				container.appendChild(box);
+				app.stop();
+				app.render();
+				app.ticker.stop();
+			}
+			
+			Object.defineProperties(this, {
+				container: {
+					value: container
+				},
+				resources: {
+					value: resources
+				}
 			});
-		})();
+		}).prototype = Object.defineProperties({}, {
+			constructor: {
+				value: TextureView
+			}
+		});
+		*/
 		
 		(function() {
 			function encodeHTMLForm(data) {
@@ -625,9 +475,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @param root {string} Name of the root object in library object.
 			 * @param images {string} Name of images object. (Maybe, named 'images')
 			 * @param ss {string} Name of sprite sheet object. (Maybe, named 'ss')
-			 * @param basePath {string} Basement path of aseets.
 			 */
-			(Content = function(lib, root, images, ss, basePath) {
+			(Content = function(lib, root, images, ss) {
 				var s; // shortcut
 				
 				this._lib = window[lib];
@@ -639,10 +488,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				this._sounds = {};
 				this._ssMetadata = {};
 				
-				this._basePath = basePath || './';
-				this._basePath = this._basePath.replace(/([^/])$/, '$1/');
-				
 				this._relatedContents = [this];
+				
 				this._defineVars = {};
 				this._replaceMovieClips = {};
 				
@@ -654,12 +501,12 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				s = this._lib.properties.manifest;
 				for (i = 0; i < s.length; i++) {
 					if (s[i].id in this._ssMetadata) {
-						this._images[s[i].id] = this._basePath + s[i].src.replace(/(\.gif|\.png|\.jpg)($|\?.*)/, CPJSON + '$2');
+						this._images[s[i].id] = s[i].src.replace(/(\.gif|\.png|\.jpg)($|\?.*)/, CPJSON + '$2');
 					} else {
 						if (s[i].src.match(/(gif|png|jpg)/)) {
-							this._images[s[i].id] = this._basePath + s[i].src.replace(/(gif|png|jpg)($|\?.*)/, '$1$2');
+							this._images[s[i].id] = s[i].src.replace(/(gif|png|jpg)($|\?.*)/, '$1$2');
 						} else {
-							this._sounds[s[i].id] = this._basePath + s[i].src.replace(/(mp3|wav)($|\?.*)/, '$1$2');
+							this._sounds[s[i].id] = s[i].src.replace(/(mp3|wav)($|\?.*)/, '$1$2');
 						}
 					}
 				}
@@ -674,51 +521,23 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				/**
 				 * Create json file for sprite sheet image.<br />
 				 * This json file is like a created by SpritePacker.<br />
-				 * 
+				 * <span style="color: #F00;">This function uses XMLHttpRequest to load './ssJsonMaker.php'.</span><br />
 				 * <span style="color: #F00;">This function runs synchronously. In other words, it stops processing until all the json files are created.</span>
 				 * 
 				 * @function Creap.Content#createJson
-				 * @param [imageDirName=images] Image directory name.
-				 * @param [systemFile=./ssJsonMaker.php] {string} Path that system file to create json file.<br />
-				 *     <span style="color: #F00;">Specify the URL where the system that outputs json file is located.</span><br />
 				 * @return {Creap.Content} Return a itself (can use method chaining).
 				 */
 				createJson: {
-					value: function(imageDirName, systemFile) {
+					value: function() {
 						var list = SsJsonParser.parse(this._lib.ssMetadata);
 						var xhr;
-						
-						imageDirName = imageDirName || 'images/';
-						imageDirName = imageDirName.replace(/([^/])$/, '$1/');
-						systemFile = systemFile || './ssJsonMaker.php';
-						
 						for (var i = 0; i < list.length; i++) {
-							list[i].name = this._basePath + imageDirName + list[i].name;
 							xhr = new XMLHttpRequest();
-							xhr.open('POST', systemFile, false);
+							xhr.open('POST', './ssJsonMaker.php', false);
 							xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 							xhr.send(encodeHTMLForm(list[i]));
 						}
 						
-						return this;
-					}
-				},
-				/**
-				 * Change DisplayObject defined as sprite to Bitmap definition.<br />
-				 * It is mainly used to replace only a part of the image contained in the sprite sheet.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Content#spriteToBitmap
-				 * @param libName {string} Name of definition to change in content.
-				 * @param imageName {string} Image identifier.
-				 * @return {Creap.Content} Return a itself (can use method chaining).
-				 */
-				spriteToBitmap: {
-					value: function(libName, imageName) {
-						var img = this._img;
-						(this._lib[libName] = function() {
-							this.initialize(img[imageName]);
-						}).prototype = new createjs.Bitmap();
 						return this;
 					}
 				},
@@ -734,12 +553,9 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				disabledImages: {
 					value: function(list) {
 						list = list || [];
-						if (!(list instanceof Array)) {
-							list = [list];
-						}
 						for (var i = 0; i <list.length; i++) {
 							if (!(list[i] in this._images)) {
-								continue;
+								return;
 							}
 							
 							delete(this._images[list[i]]);
@@ -773,7 +589,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 * 
 				 * @function Creap.Content#defineImages
 				 * @param obj {object<string, string>}
-				 *     key: Image identifier<br >
+				 *     key: Value of 'id' in object that is registered lib.properies.manifest.<br >
 				 *     value: Images URL.
 				 * @return {Creap.Content} Return a itself (can use method chaining).
 				 */
@@ -797,7 +613,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 * 
 				 * @function Creap.Content#defineSounds
 				 * @param obj {object<string, string>}
-				 *     key: Sound identifier<br >
+				 *     key: Value of 'id' in object that is registered lib.properies.manifest.<br >
 				 *     value: Sound URL.
 				 * @return {Creap.Content} Return a itself (can use method chaining).
 				 */
@@ -843,81 +659,35 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @this Creap.Application
 			 * @fires Creap.initialized
 			 * @param p {Creap.Content} Target content.
-			 * @param c {HTMLElement} The parent element of the canvas that displays the content.
+			 * @param c {DOMElement} The parent element of the canvas that displays the content.
 			 * @param w {number} Canvas width.
 			 * @param upr {bool} Whether render bitmaps before starting the content.
 			 * @param ugl {bool} Whether use webGL render.
-			 * @param tk {Creap.TypeKitData} Data related to TypeKit font used in content.
-			 * @param tk {Creap.GoogleFontData} Data related to GoogleFont used in content.
 			 */
-			function initialize(p, c, w, upr, ugl, tk, gf) {
+			function initialize(p, c, w, upr, ugl) {
 				var s; //shortcut
-				var app, ticker, container, view, loader, i, j, count, ssMetadata, images, sounds, audios;
-				var loaderCount = 0, loadedLoaderCount = 0;
-				app = new PIXI.Application(p._lib.properties.width, p._lib.properties.height, {transparent: true, antialias: true, resolution: w / p._lib.properties.width}, !ugl);
-				app.stage = new Stage();
-				ticker = app.ticker;
-				container = c.appendChild(document.createElement('div'));
-				view = app.view;
-				loader = new PIXI.loaders.Loader();
-				count = 0;
-				ssMetadata = {};
-				images = {};
-				sounds = {};
-				audios = {};
+				var h = p._lib.properties.height * w / p._lib.properties.width;
+				var app = new PIXI.Application(w, h, {transparent: true}, !ugl);
+				var ticker = app.ticker;
+				var container = c.appendChild(document.createElement('div'));
+				var view = app.view;
+				var loader = new PIXI.loaders.Loader();
+				var i, j;
+				var count = 0;
+				var ssMetadata = {};
+				var images = {};
+				var sounds = {};
+				var audios = {}
 				
-				/**
-				 * Target content.
-				 * 
-				 * @member Creap.Application#content {Creap.Content}
-				 */
+				stage = app.stage;
+				
 				this.content = p;
-				
-				/**
-				 * Container element.
-				 * 
-				 * @member Creap.Application#container {HTMLElement}
-				 */
 				this.container = c;
-				
-				/**
-				 * Wrapper element.
-				 * 
-				 * @member Creap.Application#wrapper {HTMLDivElement}
-				 */
 				this.wrapper = container;
-				
-				/**
-				 * Target application.
-				 * 
-				 * @member Creap.Application#app {PIXI.Application}
-				 */
 				this.app = app;
-				
-				/**
-				 * Target canvas.
-				 * 
-				 * @member Creap.Application#view {HTMLCanvasElement}
-				 */
 				this.view = view;
-				
-				this.wrapper.style.position = 'absolute';
-				this.wrapper.style.left = 0 + TAG_PX;
-				this.wrapper.style.top = 0 + TAG_PX;
-				
-				this._rect = this.getRect();
-				this._size = this.getSize();
-				this._point = this.getPoint();
-				
-				this.adjustWidth(w);
-				
-				/**
-				 * Top level container in application.
-				 * 
-				 * @member Creap.Application#stage {createjs~Stage}
-				 */
-				this.stage = app.stage;
-				//this.stage.scale.x = this.stage.scale.y = this.scale = w / p._lib.properties.width;
+				this.app.stage.scale.x = this.app.stage.scale.y = this.scale = w / p._lib.properties.width
+				//this.useTextureView = false;
 				
 				for (i in p._replaceMovieClips) {
 					if (!((s = this.content._replaceMovieClips[i]) instanceof ReplaceData)) {
@@ -952,7 +722,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					});
 				}
 				
-				this.hide();
+				container.style.position = 'relative';
 				container.appendChild(view);
 				app.stop();
 				
@@ -969,16 +739,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					});
 				}
 				
-				this.on(CREAP_EVENT.loaded, function() {
-					if (loadedLoaderCount === loaderCount) {
-						finishInitialization.call(this);
-					}
-				});
-				
 				if (count) {
-					loaderCount++;
 					loader.load((function(loader, resources) {
-						var s;
+						var s; // shortcut
+						//createTextureView.call(this, resources);
 						for (i in resources) {
 							for (j = 0; j < p._relatedContents.length; j++) {
 								s = p._relatedContents[j];
@@ -990,167 +754,99 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 							for (i = 0; i < p._relatedContents.length; i++) {
 								s = p._relatedContents[i];
 								for (j in s._lib) {
-									h = s._lib[j];
 									if (h.prototype instanceof createjs.Sprite || h.prototype instanceof createjs.Bitmap) {
 										h = new s._lib[j]();
 										h.x = 99999;
 										h._creap.emit(CREAP_EVENT.attach);
-										this.stage.addChild(h);
+										stage.addChild(h);
 									}
 								}
 							}
 						}
-						loadedLoaderCount++;
-						this.emit(CREAP_EVENT.loaded);
+						
+						app.ticker.update();
+						this.emit(CREAP_EVENT.initialized);
 					}).bind(this));
-				}
-				
-				if (tk) {
-					loaderCount++;
-					loadTypeKit(tk, (function() {
-						loadedLoaderCount++;
-						this.emit(CREAP_EVENT.loaded);
-					}).bind(this));
-				}
-				
-				if (gf) {
-					loaderCount++;
-					loadGoogleFont(gf, (function() {
-						loadedLoaderCount++;
-						this.emit(CREAP_EVENT.loaded);
-					}).bind(this));
-				}
-				
-				if (loaderCount === 0) {
-					setTimeout(finishInitialization.bind(this), 10);
-				}
-			}
-			
-			function finishInitialization() {
-				this.app.ticker.update();
-				this.isInitialized = true;
-				this.emit(CREAP_EVENT.initialized);
-			}
-			
-			function loadTypeKit(typeKitData, callback) {
-				new Loader().load((location.protocol === 'https:' ? 'https:' : 'http:') + typeKitData.url.replace(/(^http(s?):\/\/)/, '//'), function() {
-					var t = window.Typekit;
-					window.Typekit = null;
-					t.load({
-						async: false,
-						classes: false,
-						active: callback,
-						inactive: callback
-					});
-				});
-			}
-			
-			function loadGoogleFont(googleFontData, callback) {
-				var f, c;
-				var families = [];
-				
-				c = function() {
-					checkFont(families, callback);
-				}
-				
-				f = function() {
-					webFontObj.load({
-						async: false,
-						classes: false,
-						google: {
-							families: googleFontData.families
-						},
-						active: c,
-						fontactive: function(family) {
-							families.push(family);
-						},
-						inactive: c
-					});
-				};
-				
-				if (!webFontObj) {
-					new Loader().load((location.protocol === 'https:' ? 'https:' : 'http:') + '//ajax.googleapis.com/ajax/libs/webfont/1/webfont.js', function() {
-						webFontObj = window.WebFont;
-						window.WebFont = null;
-						f();
-					});
 				} else {
-					f();
+					app.ticker.update();
+					setTimeout((function() {
+						this.emit(CREAP_EVENT.initialized);
+					}).bind(this), 100);
 				}
 			}
 			
-			function checkFont(families, callback) {
-				var v = 0;
-				var f = function() {
-					if (++v === families.length) {
-						callback();
-					}
-				}
-				
-				for (var i = 0; i < families.length; i++) {
-					checkFont(families[i], f);
-				}
-			}
-			
-			function checkFont(family, callback) {
-				var node, width;
-				
-				node = document.createElement('span');
-				node.innerHTML = 'giItT1WQy@!-/#';
-				node.style.position = 'absolute';
-				node.style.left = '-1000px';
-				node.style.top = '-1000px';
-				node.style.fontSize = '300px';	
-				node.style.fontFamily = 'sans-serif';
-				node.style.fontVariant = 'normal';
-				node.style.fontStyle = 'normal';
-				node.style.fontWeight = 'normal';
-				node.style.letterSpacing = '0';
-				document.body.appendChild(node);
-				width = node.offsetWidth;
-				
-				node.style.fontFamily = family + ',' + node.style.fontFamily;
-				if (node && node.offsetWidth != width) {
-					callback();
-					return;
-				}
-				
-				document.body.removeChild(node);
-				setTimeout(function() {
-					checkFont(family, callback);
-				}, 200);
-			}
-			
 			/**
-			 * @typedef Creap.ApplicationOption {object}
-			 * @property [width=lib.properties.width] {number} Horizontal resolution of canvas.
-			 * @property [usePreRender=true] {bool} Whether render bitmaps before starting the content.
-			 * @property [useWebGL=true] {bool} Whether use webGL render.
-			 * @property [typeKit=null] {TypeKitData} Data related to TypeKit font used in content. (since v1.1.1)
-			 * @property [googleFont=null] {GoogleFontData} Data related to GoogleFont used in content. (since v1.1.1)
+			 * @constructor Creap.Option
+			 * @classdesc Class related to data of creap option.
+			 * @param [width=Value of "lib.properties.width"] {number} Canvas width.
+			 * @param [usePreRender=true] {bool} Whether render bitmaps before starting the content.
+			 * @param [useWebGL=true] {bool} Whether use webGL render.
+			 * @param [isAccurateTarget=true] {bool} Whether set accurate target when fires mouse/touch event.
 			 */
-			
-			/**
-			 * <span style="color:red;">In animate CC "publish setting", you need to register the domain to use for the service.</span>
-			 * 
-			 * @typedef Creap.TypeKitData {object}
-			 * @since 1.1.1
-			 * @property url {string} This is as the following URL in html file built by animate CC.
-			 * ```html
-			 * <script src="https://use.typekit.net/ik/[string like a Base64 encoding].js"></script>
-			 * ```
-			 */
-			
-			/**
-			 * @typedef Creap.GoogleFontData {object}
-			 * @since 1.1.1
-			 * @property families {array<string>} This is as the following array in html file built by animate CC.
-			 * ```html
-			 * <script>
-			 *     var gFontsFamilies = ["Alegreya","Gloria Hallelujah"];
-			 * </script>
-			 * ```
-			 */
+			(Option = function(width, usePreRender, useWebGL, isAccurateTarget) {
+				/**
+				 * Canvas width.
+				 * 
+				 * @member Creap.Option#width {number}
+				 * @default Value of "lib.properties.width"
+				 */
+				this.width = width || 0;
+				
+				/**
+				 * Whether render bitmaps before starting the content.
+				 * 
+				 * @member Creap.Option#usePreRender {bool}
+				 * @default true
+				 */
+				this.usePreRender = usePreRender === false ? false : true;
+				
+				/**
+				 * Whether use webGL render.
+				 * 
+				 * @member Creap.Option#useWebGL {bool}
+				 * @default true
+				 */
+				this.useWebGL = useWebGL === false ? false : true;
+				
+				/**
+				 * Whether set accurate target when fires mouse/touch event.<br />
+				 * <br />
+				 * When code like the following...
+				 * ```js
+				 * exportRoot.addEventListener("mousedown", function(e) {
+				 *     console.log(e.currentTarget);
+				 *     console.log(e.target);
+				 * })
+				 * ```
+				 * <li>isAccurateTarget = true;</li>
+				 * <img src="../img/accurateTrue.jpg" />
+				 * ```js
+				 * console.log(e.currentTarget); // exportRoot
+				 * console.log(e.target); // Bitmap
+				 * ```
+				 * This specification is the same as createjs, but performance tends to decline instead.<br />
+				 * It is especially noticeable when many mousemove event fires on the browser for PC.<br />
+				 * 
+				 * <li>isAccurateTarget = false;</li>
+				 * <img src="../img/accurateFalse.jpg" />
+				 * ```js
+				 * console.log(e.currentTarget); // exportRoot
+				 * console.log(e.target); // exportRoot
+				 * ```
+				 * If you don't need an accurate target, please use this setting.<br />
+				 * <br />
+				 * In createjs, the conditions under which pressmove, pressup events can fire.<br />
+				 * <li>"e.currentTarget" that when the mousedown event fires. ( = instance with the event listener)</li>
+				 * <li>"e.target" that when the mousedown event fires.</li>
+				 * <li>Instance containing "e.target" when the mousedown event fires.</li>
+				 * <br />
+				 * Therefore, if isAccurateTarget is false, please be aware that pressmove and pressup may not behave as expected.
+				 * 
+				 * @member Creap.Option#isAccurateTarget {bool}
+				 * @default true
+				 */
+				this.isAccurateTarget = isAccurateTarget === false ? false : true;
+			});
 			
 			/**
 			 * Create an application from instance of Creap.Content.
@@ -1160,55 +856,30 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @extends Emitter
 			 * @fires Creap.initialized
 			 * @param content {Creap.Content} Target content.
-			 * @param [container=document.body] {HTMLElement} The parent element of the canvas that displays the content.
-			 * @param [options] {Creap.ApplicationOption} Optional data related to Creep.Application.
+			 * @param [container=document.body] {DOMElement} The parent element of the canvas that displays the content.
+			 * @param [options=new Creap.Option()] {object|Creap.Option} Object that like instance of Creap.Option, or instance of Creap.Option.
 			 */
 			(Application = function(content, container, options) {
 				if (!(this instanceof Application)) {
 					return;
 				}
 				
-				if (!(content instanceof Content)) {
-					return;
+				Emitter.call(this);
+				if (!(options instanceof Option)) {
+					options = options || {};
+					options = new Option(options.width, options.usePreRender, options.useWebGL, options.isAccurateTarget);
 				}
 				
-				Emitter.call(this);
-				options = options || {};
-				
-				/**
-				 * Whether application was initialized.<br />
-				 * "initialized" refers to whether all the assets required for the content have been loaded.
-				 * 
-				 * @member Creap.Application#isInitialized {bool}
-				 */
-				this.isInitialized = false;
-				
-				/**
-				 * Whether application was bulit.<br />
-				 * "built" means that the root of the content has been instantiated.
-				 * 
-				 * @member Creap.Application#isBuilt {bool}
-				 */
-				this.isBuilt = false;
-				
-				/**
-				 * Whether application was start.<br />
-				 * "start" means that the application's ticker has started.
-				 * 
-				 * @member Creap.Application#isStarted {bool}
-				 */
 				this.isStarted = false;
-				this._isFirstPlay = true;
+				isAccurateTarget = options.isAccurateTarget;
 				
 				initialize.call(
 					this,
 					content,
 					container || document.body,
 					options.width || content._lib.properties.width,
-					options.usePreRender === false ? false : true,
-					options.useWebGL === false ? false : true,
-					options.typeKit || null,
-					options.googleFont || null
+					options.usePreRender,
+					options.useWebGL
 				);
 			}).prototype = Object.defineProperties(Object.create(Emitter.prototype), {
 				constructor: {
@@ -1218,559 +889,158 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 * Build and start the content.
 				 * 
 				 * @function Creap.Application#start
-				 * @fires Creap.built
 				 * @fires Creap.started
-				 * @return {Creap.Application} Return a itself (can use method chaining).
 				 */
 				start: {
 					value: function() {
 						var f;
-						var tappedList, tappedTarget;
-						var i;
-						var self = this;
-						
-						if (!this.isInitialized) {
-							this.on(CREAP_EVENT.initialized, function() {
-								this.start();
-							});
-							return this;
-						}
+						var tappedList;
 						
 						if (this.isStarted) {
-							return this;
+							return;
 						}
 						
-						this.stage.app = this.content;
+						this.isStarted = true;
+						exportRoot = this.root = new this.content._root();
 						
-						this.show();
-						this.root = new this.content._root();
-						this.isBuilt = true;
-						this.stage.interactive = true;
-						
-						for (i in this.content._defineVars) {
-							this.root[i] = this.content._defineVars[i];
-						}
-						
-						this.emit(CREAP_EVENT.built);
-						
-						tappedList = [];
-						this.stage.on(EVENT.pointerdown, function(e) {
-							var ne;
-							var t = tappedTarget = e.target;
-							var p;
-							_stage = this;
-							
-							this.mouseX = e.data.global.x
-							this.mouseY = e.data.global.y;
-							
-							if (t === this) {
-								return;
-							}
-							
-							while (true) {
-								e.currentTarget = t;
-								ne = createjs.MouseEvent._creapStatic.ref(EVENT.mousedown, e);
-								
-								if (t._creap.empty || ne.stopped || t.parent === null) {
-									break;
+						Object.defineProperties(stage, {
+							scaleX: {
+								get: function() {
+									return this.scale.x;
+								},
+								set: function(v) {
+									this.scale.x = v;
 								}
-								
-								p = t.parent;
-								tappedList.push(t);
-								
-								t.emit(PRE_MOUSE_EVENT.mousedown, ne);
-								if (p === this) {
-									break;
+							},
+							scaleY: {
+								get: function() {
+									return this.scale.y;
+								},
+								set: function(v) {
+									this.scale.y = v;
 								}
-								
-								t = p;
 							}
 						});
 						
-						this.stage.on(EVENT.pointermove, function(e) {
-							var ne, t;
-							_stage = this;
+						stage.interactive = true;
+						
+						tappedList = [];
+						stage.on(EVENT.pointerdown, function(e) {
+							var ne;
+							var t = e.target;
 							
-							this.mouseX = e.data.global.x
+							this.mouseX = e.data.global.x;
 							this.mouseY = e.data.global.y;
-							e.target = tappedTarget;
-							for (i = 0; i < tappedList.length; i++) {
+							while (true) {
+								
+								e.currentTarget = t;
+								ne = createjs.MouseEvent._creapStatic.ref(EVENT.mousedown.o, e);
+								tappedList.push(t);
+								t.emit(PRE_MOUSE_EVENT.mousedown, ne);
+								if (t._creap.empty || t.parent === this || ne.stopped) {
+									break;
+								}
+								
+								t = t.parent;
+							}
+						});
+						
+						stage.on(EVENT.pointermove, function(e) {
+							var ne, t;
+							
+							this.mouseX = e.data.global.x;
+							this.mouseY = e.data.global.y;
+							
+							for (var i = 0; i < tappedList.length; i++) {
 								t = tappedList[i];
 								if (t._creap.empty) {
 									continue;
 								}
 								e.currentTarget = t;
-								ne = createjs.MouseEvent._creapStatic.ref(EVENT.pressmove, e);
+								ne = createjs.MouseEvent._creapStatic.ref(EVENT.pressmove.o, e);
 								t.emit(PRE_MOUSE_EVENT.pressmove, ne);
 							}
 						});
 						
-						this.stage.on(EVENT.pointerup, f = function(e) {
+						stage.on(EVENT.pointerup, f = function(e) {
 							var ne, t;
-							var ft = e.target;
-							_stage = this;
-							e.target = tappedTarget;
-							for (i = 0; i < tappedList.length; i++) {
+							for (var i = 0; i < tappedList.length; i++) {
 								t = tappedList[i];
 								if (t._creap.empty) {
 									continue;
 								}
 								e.currentTarget = t;
-								if (tappedTarget === ft) {
-									ne = createjs.MouseEvent._creapStatic.ref(EVENT.click, e);
-									t.emit(PRE_MOUSE_EVENT.click, ne);
-								}
-								ne = createjs.MouseEvent._creapStatic.ref(EVENT.pressup, e);
+								ne = createjs.MouseEvent._creapStatic.ref(EVENT.pressmove.o, e);
 								t.emit(PRE_MOUSE_EVENT.pressup, ne);
 							}
 							
 							tappedList = [];
-							tappedTarget = null;
 						});
 						
-						this.stage.on(EVENT.pointerupoutside, f);
+						stage.on(EVENT.pointerupoutside, f);
+						
+						for (var i in this.content._defineVars) {
+							this.root[i] = this.content._defineVars[i];
+						}
 						
 						this.app.ticker.addOnce((function() {
-							var t = 0;
-							this.stage.addChild(this.root);
-							_stage = this.stage;
-							_exportRoot = this.root;
+							t = 0;
+							this.app.stage.addChild(this.root);
 							this.root._creap.exec();
 							
-							if (!this._isFirstPlay) {
-								return;
-							}
-							this._isFirstPlay = false;
-							
 							this.app.ticker.add((function(delta) {
-								if (!this.root || (t += delta) < 1) {
+								if ((t += delta) < 1) {
 									return;
 								}
-								
 								t -= 1;
-								_stage = this.stage;
-								_exportRoot = this.root;
 								this.root._creap.clear();
 								this.root._creap.exec();
 							}).bind(this));
 						}).bind(this));
 						
-						this.isStarted = true;
 						this.app.start();
 						this.emit(CREAP_EVENT.started);
-						
-						return this;
 					}
 				},
 				/**
-				 * Stop the content.
+				 * Restart the content.
+				 * 
+				 * @function Creap.Application#play
+				 */
+				play: {
+					value: function() {
+						this.app.start();
+					}
+				},
+				/**
+				 * Pause the content.
 				 * 
 				 * @function Creap.Application#stop
-				 * @fires Creap.stopped
-				 * @return {Creap.Application} Return a itself (can use method chaining).
 				 */
 				stop: {
 					value: function() {
-						if (!this.isInitialized || !this.isStarted) {
-							return this;
-						}
-						
-						this.emit(CREAP_EVENT.stopped);
-						this.stage.removeAllListeners();
-						this.stage.removeChildren();
-						this.app.ticker.update();
-						
-						this.root = null;
-						
-						this.pause(true);
-						this.hide();
-						this.isStarted = false;
-						this.isBuilt = false;
-						
-						return this;
-					}
-				},
-				/**
-				 * Pause or restart the content.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#pause
-				 * @param isPause {bool}
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				pause: {
-					value: function(flag) {
-						if (!this.isInitialized || !this.isStarted) {
-							return this;
-						}
-						
-						this.stage.interactive = !flag;
-						if (flag) {
-							this.app.stop();
-						} else {
-							this.app.start();
-						}
-						
-						return this;
-					}
-				},
-				/**
-				 * Show the content.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#show
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				show: {
-					value: function() {
-						this.wrapper.style.display = 'block';
-						
-						return this;
-					}
-				},
-				/**
-				 * Hide the content.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#hide
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				hide: {
-					value: function() {
-						this.wrapper.style.display = 'none';
-						
-						return this;
+						this.app.stop();
 					}
 				},
 				/**
 				 * Display the content in full screen.
 				 * 
 				 * @function Creap.Application#fullScreen
-				 * @return {Creap.Application} Return a itself (can use method chaining).
 				 */
 				fullScreen: {
 					value: function() {
 						if (windowWidth / windowHeight > this.content._lib.properties.width / this.content._lib.properties.height) {
-							this.adjustHeight(windowHeight).toCenter();
+							var m = (windowWidth - windowHeight / this.view.height * this.view.width) / 2;
+							this.view.style.width = windowHeight / this.content._lib.properties.height * this.content._lib.properties.width / (windowWidth - m) * 100 + '%';
+							this.wrapper.style.marginLeft = m + TAG_PX;
 						} else {
-							this.adjustWidth(windowWidth).toMiddle();
+							this.view.style.width = '100%';
+							this.wrapper.style.marginTop = (windowHeight - windowWidth / this.view.width * this.view.height) / 2 + TAG_PX;
 						}
-						
-						return this;
-					}
-				},
-				/**
-				 * Adjust width of the content.<br />
-				 * This function changes "canvas.style.width".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#adjustWidth
-				 * @param width {number} 
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				adjustWidth: {
-					value: function(width) {
-						var h = width / this.content._lib.properties.width * this.content._lib.properties.height;
-						this.view.style.width = width + TAG_PX;
-						this.view.style.height = h + TAG_PX;
-						this._rect.width = this._size.width = width;
-						this._rect.height = this._size.height = h;
-						return this;
-					}
-				},
-				/**
-				 * Adjust height of the content.<br />
-				 * This function changes "canvas.style.height".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#adjustHeight
-				 * @param width {number} 
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				adjustHeight: {
-					value: function(height) {
-						var w = height / this.content._lib.properties.height * this.content._lib.properties.width;
-						this.view.style.height = height + TAG_PX;
-						this.view.style.width = w + TAG_PX;
-						this._rect.width = this._size.width = w;
-						this._rect.height = this._size.height = height;
-						return this;
-					}
-				},
-				/**
-				 * Align the content to the left with respect to the horizontal direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.left".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#toLeft
-				 * @param [rect=new Rect(0, 0, windowWidth, windowHeight)] {Creap.Rect} Reference rectangle.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				toLeft: {
-					value: function(rect) {
-						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						this.wrapper.style.left = rect.x + TAG_PX;
-						this._rect.x = this._point.x = rect.x;
-						return this;
-					}
-				},
-				/**
-				 * Align the content to the right with respect to the horizontal direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.left".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#toRight
-				 * @param [rect=new Rect(0, 0, windowWidth, windowHeight)] {Creap.Rect} Reference rectangle.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				toRight: {
-					value: function(rect) {
-						var s, m;
-						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						s = this.getSize();
-						m = (rect.width - s.width);
-						this.wrapper.style.left = (m + rect.x) + TAG_PX;
-						this._rect.x = this._point.x = m + rect.x;
-						return this;
-					}
-				},
-				/**
-				 * Align the content to the center with respect to the horizontal direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.left".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#toCenter
-				 * @param [rect=new Rect(0, 0, windowWidth, windowHeight)] {Creap.Rect} Reference rectangle.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				toCenter: {
-					value: function(rect) {
-						var s, m;
-						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						s = this.getSize();
-						m = (rect.width - s.width) / 2;
-						this.wrapper.style.left = (m + rect.x) + TAG_PX;
-						this._rect.x = this._point.x = m + rect.x;
-						return this;
-					}
-				},
-				/**
-				 * Align the content to the top with respect to the vertical direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.top".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#toTop
-				 * @param [rect=new Rect(0, 0, windowWidth, windowHeight)] {Creap.Rect} Reference rectangle.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				toTop: {
-					value: function(rect) {
-						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						this.wrapper.style.top = rect.y + TAG_PX;
-						this._rect.y = this._point.y = rect.y;
-						return this;
-					}
-				},
-				/**
-				 * Align the content to the bottom with respect to the vertical direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.top".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#toBottom
-				 * @param [rect=new Rect(0, 0, windowWidth, windowHeight)] {Creap.Rect} Reference rectangle.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				toBottom: {
-					value: function(rect) {
-						var s, m;
-						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						s = this.getSize();
-						m = (rect.height - s.height);
-						this.wrapper.style.top = (m + rect.y) + TAG_PX;
-						this._rect.y = this._point.y = m + rect.y;
-						return this;
-					}
-				},
-				/**
-				 * Align the content to the center with respect to the vertical direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.top".
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#toMiddle
-				 * @param [rect=new Rect(0, 0, windowWidth, windowHeight)] {Creap.Rect} Reference rectangle.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				toMiddle: {
-					value: function(rect) {
-						var s, m;
-						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						s = this.getSize();
-						m = (rect.height - s.height) / 2;
-						this.wrapper.style.top = (m + rect.y) + TAG_PX;
-						this._rect.y = this._point.y = m + rect.y;
-						return this;
-					}
-				},
-				/**
-				 * Get the top-left coordinates of the application.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#getPoint
-				 * @return {Creap.Point}
-				 */
-				getPoint: {
-					value: function() {
-						return this._point || new Point(
-							parseFloat(this.wrapper.style.left.replace(TAG_PX, '')),
-							parseFloat(this.wrapper.style.top.replace(TAG_PX, ''))
-						);
-					}
-				},
-				/**
-				 * Get the size of the application.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#getSize
-				 * @return {Creap.Size}
-				 */
-				getSize: {
-					value: function() {
-						return this._size || new Size(
-							parseFloat(this.view.style.width.replace(TAG_PX, '')),
-							parseFloat(this.view.style.height.replace(TAG_PX, ''))
-						);
-					}
-				},
-				/**
-				 * Gets a rectangle representing the display area of the application.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#getRect
-				 * @return {Creap.Rect}
-				 */
-				getRect: {
-					value: function() {
-						return this._rect || new Rect(
-							parseFloat(this.wrapper.style.left.replace(TAG_PX, '')),
-							parseFloat(this.wrapper.style.top.replace(TAG_PX, '')),
-							parseFloat(this.view.style.width.replace(TAG_PX, '')),
-							parseFloat(this.view.style.height.replace(TAG_PX, ''))
-						);
-					}
-				},
-				/**
-				 * Define variables to instance of root object.<br />
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#defineVars
-				 * @param obj {object<string, *>}
-				 *     key: Name of variable.<br >
-				 *     value: Value of variable.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				defineVars: {
-					value: function(obj) {
-						if (!this.isBuilt) {
-							this.on('built', function() {
-								this.defineVars(obj);
-								this.off('built', arguments.callee);
-							});
-							return this;
-						}
-						
-						for (var i in obj) {
-							this.root[i] = obj[i];
-						}
-						
-						return this;
-					}
-				},
-				/**
-				 * Define images to the content.<br />
-				 * If already defined, replace that definition.
-				 * 
-				 * @since 1.1.0
-				 * @function Creap.Application#defineImages
-				 * @param obj {object<string, string>}
-				 *     key: Image identifier<br >
-				 *     value: Images URL.
-				 * @param callback {function} Callback when images loaded.<br />
-				 *     Context 'this' in callback is Creap.Application.
-				 * @return {Creap.Application} Return a itself (can use method chaining).
-				 */
-				defineImages: {
-					value: function(obj, callback) {
-						var loader = new PIXI.loaders.Loader();
-						var count = 0;
-						
-						obj = obj || {};
-						for (var i in obj) {
-							++count;
-							if (i in this.content._ssMetadata) {
-								loader.add(i, obj[i].replace(/(\.gif|\.png|\.jpg)($|\?.*)/, CPJSON + '$2'), {
-									crossOrigin: true
-								});
-							} else {
-								loader.add(i, obj[i], {
-									crossOrigin: true
-								});
-							}
-						}
-						
-						callback = callback || function() {}
-						if (count) {
-							loader.load((function(loader, resources) {
-								for (i in resources) {
-									this.content._ss[i] = this.content._img[i] = resources[i];
-								}
-								callback.call(this);
-							}).bind(this));
-						} else {
-							callback.call(this);
-						}
-						
-						return this;
 					}
 				}
 			});
 		})();
-		
-		/**
-		 * @constructor Creap.Rect
-		 * @classdesc Class related to rectangle data.
-		 * @param [x=0] {number} X coordinate of upper left corner of rectangle.
-		 * @param [y=0] {number} Y coordinate of upper left corner of rectangle.
-		 * @param [width=0] {number} Rectangle width.
-		 * @param [height=0] {number} Rectangle height.
-		 */
-		(Rect = function(x, y, width, height) {
-			this.x = x || 0;
-			this.y = y || 0;
-			this.width = width || 0;
-			this.height = height || 0;
-		});
-		
-		/**
-		 * @constructor Creap.Point
-		 * @classdesc Class related to Point data.
-		 * @param [x=0] {number} X coordinate.
-		 * @param [y=0] {number} Y coordinate.
-		 */
-		(Point = function(x, y) {
-			this.x = x || 0;
-			this.y = y || 0;
-		});
-		
-		/**
-		 * @constructor Creap.Size
-		 * @classdesc Class related to rectangle data.
-		 * @param [width=0] {number} Width.
-		 * @param [height=0] {number} Height.
-		 */
-		(Size = function(width, height) {
-			this.width = width || 0;
-			this.height = height || 0;
-		});
 		
 		/**
 		 * @constructor Creap.ReplaceData
@@ -1856,7 +1126,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			}), {
 				/**
 				 * @function Creap~SsJsonParser.parse
-				 * @param ssMetadata {array<object>} Sprite sheets data created by animate CC.
+				 * @param ssMetadata {array} Sprite sheets data created by animate CC.
 				 * @return {array<SsJsonParser~SsJson>}
 				 */
 				parse: {
@@ -1876,12 +1146,6 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		})();
 		
 		return Object.defineProperties({}, {
-			Emitter: {
-				value: Emitter
-			},
-			Loader: {
-				value: Loader
-			},
 			Application: {
 				value: Application
 			},
@@ -1890,86 +1154,6 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			},
 			ReplaceData: {
 				value: ReplaceData
-			},
-			Rect: {
-				value: Rect
-			},
-			Point: {
-				value: Point
-			},
-			Size: {
-				value: Size
-			},
-			/**
-			 * @namespace Creap.encoding
-			 */
-			encoding: {
-				value: Object.defineProperties({}, {
-					/**
-					 * @constant Creap.encoding#SJIS {string}
-					 */
-					SJIS: {
-						value: 'SJIS'
-					},
-					/**
-					 * @constant Creap.encoding#UTF8 {string}
-					 */
-					UTF8: {
-						value: 'UTF-8'
-					}
-				})
-			},
-			/**
-			 * @namespace Creap.options
-			 */
-			options: {
-				value: Object.defineProperties({}, {
-					/**
-					 * Whether set accurate target when fires mouse/touch event.<br />
-					 * <br />
-					 * When code like the following...
-					 * ```js
-					 * exportRoot.addEventListener("mousedown", function(e) {
-					 *     console.log(e.currentTarget);
-					 *     console.log(e.target);
-					 * })
-					 * ```
-					 * <li>isAccurateTarget = true;</li>
-					 * <img src="../img/accurateTrue.jpg" />
-					 * ```js
-					 * console.log(e.currentTarget); // exportRoot
-					 * console.log(e.target); // Bitmap
-					 * ```
-					 * This specification is the same as createjs, but performance tends to decline instead.<br />
-					 * It is especially noticeable when many mousemove event fires on the browser for PC.<br />
-					 * 
-					 * <li>isAccurateTarget = false;</li>
-					 * <img src="../img/accurateFalse.jpg" />
-					 * ```js
-					 * console.log(e.currentTarget); // exportRoot
-					 * console.log(e.target); // exportRoot
-					 * ```
-					 * If you don't need an accurate target, please use this setting.<br />
-					 * <br />
-					 * In createjs, the conditions under which pressmove, pressup events can fire.<br />
-					 * <li>"e.currentTarget" that when the mousedown event fires. ( = instance with the event listener)</li>
-					 * <li>"e.target" that when the mousedown event fires.</li>
-					 * <li>Instance containing "e.target" when the mousedown event fires.</li>
-					 * <br />
-					 * Therefore, if isAccurateTarget is false, please be aware that pressmove and pressup may not behave as expected.
-					 * 
-					 * @member Creap.options#isAccurateTarget {bool}
-					 * @default true
-					 */
-					isAccurateTarget: {
-						get: function() {
-							return isAccurateTarget;
-						},
-						set: function(v) {
-							isAccurateTarget = v;
-						}
-					}
-				})
 			}
 		});
 	})();
@@ -1987,20 +1171,66 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		var NONE_EASE = createjs.Ease.get(0);
 		
 		var CJS_MOUSE_EVENT = {
-			mousedown: EVENT.mousedown,
-			pressup: EVENT.pressup,
-			pressmove: EVENT.pressmove,
-			click: EVENT.click
+			mousedown: {
+				o: EVENT.mousedown,
+				p: EVENT.pointerdown
+			},
+			pressup: {
+				o: EVENT.pressup,
+				p: EVENT.pointerup
+			},
+			pressmove: {
+				o: EVENT.pressmove,
+				p: EVENT.pointermove
+			},
+			click: {
+				o: EVENT.click,
+				p: EVENT.click
+			}
 		};
 		
 		var SYSTEM_EVENT = {
-			pointerdown: EVENT.pointerdown,
-			pointerup: EVENT.pointerup,
-			pointermove: EVENT.pointermove,
-			pointerupoutside: EVENT.pointerupoutside
+			pointerdown: EVENT.PointerDown,
+			pointerup: EVENT.PointerUp,
+			pointermove: EVENT.PointerMove,
+			pointerupoutside: EVENT.PointerUpOutside
 		};
 		
 		var currentDefiner = null;
+		
+		// Add accessors like a createjs to event prototype.
+		var eventPrototype = Object.getPrototypeOf((new PIXI.interaction.InteractionManager(document.createElement('canvas'))).eventData);
+		
+		Object.defineProperties(eventPrototype, {
+			stageX: {
+				get: function() {
+					return this.data.global.x;
+				},
+				set: function(v) {
+				}
+			},
+			stageY: {
+				get: function() {
+					return this.data.global.y;
+				},
+				set: function(v) {
+				}
+			},
+			rawX: {
+				get: function() {
+					return this.data.global.x;
+				},
+				set: function(v) {
+				}
+			},
+			rawY: {
+				get: function() {
+					return this.data.global.y;
+				},
+				set: function(v) {
+				}
+			}
+		});
 		
 		(function() {
 			var DisplayObjectCreapData;
@@ -2119,7 +1349,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				this.bindProp = new BindProp();
 				
 				/**
-				 * Whether this instance has removed in the timeline of the parent instance.
+				 * Whether this instance is removed in the timeline of the parent instance.
 				 * 
 				 * @member createjs~DisplayObjectCreapData#empty {bool}
 				 * @default false
@@ -2221,6 +1451,96 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					
 					this._creap = this._creap || new DisplayObjectCreapData(this);
 					PIXI.Container.call(this);
+					
+					/*
+					this.on("pointerdown", function(e) {
+						e.stopPropagation();
+						console.log(e.currentTarget, e.target)
+					})
+					
+					this.on("pointermove", function(e) {
+						e.stopPropagation();
+					//	console.log(e.currentTarget, e.target)
+					})*/
+					/*
+					this.on(EVENT.pointerdown, function(e) {
+						this._creap.tapped = e.target;
+						e.type = EVENT.mousedown;
+						e.timeStamp = Date.now();
+						this.emit(PRE_MOUSE_EVENT.mousedown, e);
+					});
+					
+					this.on(EVENT.pointermove, function(e) {
+						if (!this._creap.tapped) {
+							return;
+						}
+						
+						e.target = this._creap.tapped;
+						e.type = EVENT.pressmove;
+						e.timeStamp = Date.now();
+						this.emit(PRE_MOUSE_EVENT.pressmove, e);
+					});
+					
+					this.on(EVENT.pointerup, f = function(e) {
+						var t = e.target;
+						if (!this._creap.tapped) {
+							return;
+						}
+						
+						if (e.target === this._creap.tapped) {
+							e.type = EVENT.click;
+							this.emit(PRE_MOUSE_EVENT.click, e);
+						}
+						
+						e.target = this._creap.tapped;
+						e.type = EVENT.pressup;
+						e.timeStamp = Date.now();
+						this.emit(PRE_MOUSE_EVENT.pressup, e);
+						this._creap.tapped = null;
+						e.target = t;
+					});
+					*/
+					
+					/*
+					this.on(CJS_MOUSE_EVENT.mousedown.p, function(e) {
+						var ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+						this._creap.tapped = e.target;
+						this.emit(PRE_MOUSE_EVENT.mousedown, ne);
+					});
+					
+					this.on(CJS_MOUSE_EVENT.pressmove.p, function(e) {
+						var ne;
+						
+						if (!this._creap.tapped) {
+							return;
+						}
+						
+						ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+						ne.target = this._creap.tapped;
+						this.emit(PRE_MOUSE_EVENT.pressmove, ne);
+					});
+					
+					this.on(CJS_MOUSE_EVENT.pressup.p, f = function(e) {
+						var ne, n;
+						
+						if (!this._creap.tapped) {
+							return;
+						}
+						
+						if (e.target === this._creap.tapped) {
+							n = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+							this.emit(PRE_MOUSE_EVENT.click, n);
+						}
+						
+						ne = MouseEvent._creapStatic.ref(CJS_MOUSE_EVENT.mousedown.o, e);
+						ne.target = this._creap.tapped;
+						this.emit(PRE_MOUSE_EVENT.pressup, ne);
+						this._creap.tapped = null;
+					});
+					
+					this.on(EVENT.pointerupoutside, f);
+					
+					this.interactive = true;*/
 				}).prototype = Object.defineProperties(Object.create(PIXI.Container.prototype), {
 					constructor: {
 						value: DisplayObject
@@ -2236,8 +1556,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					 * @param [rotation=0] {number} Rotation amount (degree).
 					 * @param [skewX=0] {number} X skew factor (degree).
 					 * @param [skewY=0] {number} Y skew factor (degree).
-					 * @param [regX=0] {number} X coordinate of the rotation reference point.
-					 * @param [regY=0] {number} Y coordinate of the rotation reference point.
+					 * @param [regX=0] {number} X coodinate of the rotation reference point.
+					 * @param [regY=0] {number} Y coodinate of the rotation reference point.
 					 */
 					setTransform: {
 						value: function(x, y, scaleX, scaleY, rotation, skewX, skewY, regX, regY) {
@@ -2337,8 +1657,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					 * 
 					 * @function createjs~DisplayObject#addEventListener
 					 * @param type {string} Event type.
-					 * @param func {function} Callback when the event fires.<br />
-					 *     Context 'this' in callback is window.
+					 * @param func {function} Callback when the event fires.
 					 * @param [isCapture=false] {bool} <span style="color:#F00;">Defined for compatibility. Creap.js always ignores it.</span>
 					 * @return {function} Referece of argument 'func'.
 					 */
@@ -2347,7 +1666,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 							if (type in CJS_MOUSE_EVENT) {
 								this.interactive = true;
 							}
-							this.on(PRE_MOUSE_EVENT[type] || type, func, window);
+							this.on(PRE_MOUSE_EVENT[type] || type, func);
 							return func;
 						}
 					},
@@ -2518,7 +1837,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						}
 					},
 					/**
-					 * X coordinate of the rotation reference point.
+					 * X coodinate of the rotation reference point.
 					 * 
 					 * @member createjs~DisplayObject#regY {number}
 					 * @default 0
@@ -2536,7 +1855,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						}
 					},
 					/**
-					 * Y coordinate of the rotation reference point.
+					 * Y coodinate of the rotation reference point.
 					 * 
 					 * @member createjs~DisplayObject#regY {number}
 					 * @default 0
@@ -2786,7 +2105,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 							this.isDone = false;
 							this.preFrame = -1;
 							this.isGoto = false;
-							this.prevScriptFrame = -1;
+							//this.prevScriptFrame = -1;
 							s = this.target.children;
 							for (var i = 0; i < s.length; i++) {
 								if (s[i] instanceof MovieClip) {
@@ -2820,7 +2139,6 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 									}
 								} else {*/
 									if (this.currentFrame === this.preFrame && this.isAttached) {
-										this.isGoto = false;
 										return;
 									}
 									
@@ -3034,7 +2352,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					 * 
 					 * @function createjs.MovieClip#addChildAt
 					 * @param child {createjs~DisplayObject}
-					 * @param index {number} Index of to insert.
+					 * @param index {number}
 					 * @return {createjs~DisplayObject} Added instance.
 					 */
 					addChildAt: {
@@ -3068,7 +2386,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					 * <span style="color:#F00;">This funcion not supported multi instances.</span>
 					 * 
 					 * @function createjs.MovieClip#removeChildAt
-					 * @param index {number} Index of child.
+					 * @param index {number}
 					 * @return {createjs~DisplayObject} Removed instance.
 					 */
 					removeChildAt: {
@@ -3148,31 +2466,25 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			 * @param [color='#000000'] {string} String of "color" in CSS format.
 			 */
 			(Text = function(value, style, color) {
-				var s, f;
-				var t = style.split(/\'/);
+				var s = style.split(/\s/);
+				var f;
 				var styles = {};
 				
 				DisplayObject.call(this);
 				
+				if (!s[0].match(TAG_PX)) {
+					styles.fontWeight = s.shift();
+				}
+				f = parseInt(s.shift().replace(TAG_PX, ''));
+				styles.fontSize = f * 10 + TAG_PX;
+				styles.fontFamily = s.join(' ');
 				styles.fill = color || 0;
-				styles.fontFamily = t[1];
-				s = t[0].split(/\s/);
-				s.pop();
-				f = parseInt(s.pop().replace(TAG_PX, ''));
-				styles.fontSize = f * TEXT_SIZE_MAG;
-				if (s.length) {
-					styles.fontWeight = s.pop();
-				}
-				if (s.length) {
-					styles.fontStyle = s.pop();
-				}
-				styles.textBaseline = 'top';
-				styles.wordWrap = true;
 				
 				this.instance = new PIXI.Text(value, styles);
+				this.instance.scale.x = this.instance.scale.y = 1 / 10;
+				this.instance.y = f / 10 / 6;
 				this.addChild(this.instance);
-				this.text = this.text;
-				this.instance.y = -this._measureText.fontProperties.ascent;
+				
 				this.interactive = isAccurateTarget;
 			}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 				constructor: {
@@ -3188,8 +2500,12 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.style.lineHeight;
 					},
 					set: function(v) {
-						this.instance.style.lineHeight = v
-						this.text = this.text;
+						this.instance.style.lineHeight = v / this.instance.scale.y / 10;
+						if (v <= 0) {
+							this.instance.style.padding = (-v + 10) * this.instance.scale.y / 10;
+						} else {
+							this.instance.style.padding = 10 * this.instance.scale.y / 10;
+						}
 					}
 				},
 				/**
@@ -3225,10 +2541,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					set: function(v) {
 						switch (v) {
 							case 'center':
-								this.instance.x = -(this.width - this.instance.style.padding * 2) / 2;
+								this.instance.x = -this.width / 2;
 								break;
 							case 'right':
-								this.instance.x = -(this.width - this.instance.style.padding * 2);
+								this.instance.x = -this.width;
 								break;
 							default:
 								v = 'left';
@@ -3248,43 +2564,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.text;
 					},
 					set: function(v) {
-						var l, h, s, u;
-						v = v || '';
-						l = v.split('\n').length;
-						this.instance.text = v;
+						this.instance.text = v || '';
 						this.textAlign = this.textAlign;
-						
-						//this.instance.text = "pppp pppp pppp\npppp"
-						//this.instanupdateTransform()
-						
-							this._measureText = PIXI.TextMetrics.measureText(v, this.instance.style);
-							console.log(this._measureText.fontProperties)
-							setTimeout((function() {
-							console.log(this.instance.getBounds())
-							console.log("h",this.height, this.instance.height, this._measureText.height,this.instance.style.padding)
-							console.log("w",this.width, this.instance.width, this._measureText.width,this.instance.style.padding)
-							}).bind(this),1)
-							this.instance.style.padding.top = 100;
-							//this.instance.style.padding = 60;
-						return;
-						
-					
-						s = this._measureText.fontProperties.fontSize;
-						
-						if (this.lineHeight < s) {
-							h = s + this.lineHeight * (l - 1);
-							if (this.lineHeight >= 0) {
-								this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, h);
-							} else {
-								u = h - s;
-								this.hitArea = new PIXI.Rectangle(0, u, this.instance.width, s - u);
-							}
-						} else {
-							this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, this.instance.height);
-						}
-						this.instance.style.padding = this.hitArea.height;
-						
-						console.log(this.width - this.instance.style.padding * 2, this._measureText.width, this.width, this._measureText.width,this._measureText.height)
 					}
 				},
 				/**
@@ -3986,25 +3267,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					 * Whether current path is line.
 					 * 
 					 * @member createjs.Graphics~CreapData#isLine {bool}
-					 * @default false
 					 */
 					this.isLine = false;
-					
-					/**
-					 * Whether path is closed.
-					 * 
-					 * @member createjs.Graphics~CreapData#isClose {bool}
-					 * @default false
-					 */
-					this.isClose = false;
-					
-					/**
-					 * Index of the coordinates of the bottom-right corner in the graphic.
-					 * 
-					 * @member createjs.Graphics~CreapData#isLine {bool}
-					 * @default false
-					 */
-					this.maxPointIndex = 0;
 				});
 				
 				/**
@@ -4015,83 +3279,15 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				(Graphics = function(obj) {
 					this._creap = new CreapData();
 					PIXI.Graphics.call(this);
-					//this.beginFill(DEFAULT_COLOR);
+					this.beginFill(DEFAULT_COLOR);
 				}).prototype = Object.defineProperties(Object.create(PIXI.Graphics.prototype), {
 					constructor: {
 						value: Graphics
 					},
-					/**
-					 * Closes the current path.
-					 * 
-					 * @function createjs.Graphics#closePath
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
-					closePath: {
-						value: function() {
-							var points;
-							var currentX, currentY, prevX, prevY, nextX, nextY;
-							var sx, sy, acos;
-							
-							PIXI.Graphics.prototype.closePath.call(this);
-							this._creap.isClose = true;
-							if (this._creap.isLine) {
-								return this;
-							}
-							
-							points = this.currentPath.shape.points;
-							currentX = points[this._creap.maxPointIndex];
-							currentY = points[this._creap.maxPointIndex + 1];
-							
-							if (this._creap.maxPointIndex === 0) {
-								prevX = points[points.length - 4];
-								prevY = points[points.length - 3];
-								nextX = points[this._creap.maxPointIndex + 2];
-								nextY = points[this._creap.maxPointIndex + 3];
-							} else {
-								prevX = points[this._creap.maxPointIndex - 2];
-								prevY = points[this._creap.maxPointIndex - 1];
-								nextX = points[this._creap.maxPointIndex + 2];
-								nextY = points[this._creap.maxPointIndex + 3];
-							}
-							
-							if (prevY >= currentY && nextY <= currentY) {
-								this.addHole();
-							} else if (prevY <= currentY && nextY <= currentY) {
-								sx = currentX - prevX;
-								sy = currentY - prevY;
-								acos = sx / Math.sqrt(sx * sx + sy * sy);
-								
-								sx = currentX - nextX;
-								sy = currentY - nextY;
-								if (acos > sx / Math.sqrt(sx * sx + sy * sy)) {
-									this.addHole();
-								}
-							} else if (prevY >= currentY && nextY >= currentY) {
-								sx = currentX - prevX;
-								sy = currentY - prevY;
-								acos = sx / Math.sqrt(sx * sx + sy * sy);
-								
-								sx = currentX - nextX;
-								sy = currentY - nextY;
-								if (acos < sx / Math.sqrt(sx * sx + sy * sy)) {
-									this.addHole();
-								}
-							}
-							
-							return this;
-						}
-					},
-					/**
-					 * Start drawing of single color fill.
-					 * 
-					 * @function createjs.Graphics#beginFill
-					 * @param color {string} String of "color" in CSS format.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
 					beginFill: {
 						value: function(color) {
 							var c;
-							//PIXI.Graphics.prototype.closePath.call(this);
+							this.closePath();
 							if (color) {
 								c = toColorAndAlpha(color);
 								PIXI.Graphics.prototype.beginFill.call(this, c.color, c.alpha);
@@ -4101,171 +3297,27 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 							return this;
 						}
 					},
-					/**
-					 * Start drawing of linear gradient color fill.<br />
-					 * <span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginFill with the color of the end of the gradation.</span>
-					 * 
-					 * @since 1.1.1
-					 * @function createjs.Graphics#beginLinearGradientFill
-					 * @param colors {array<string>} String(s) of "color" in CSS format.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
-					beginLinearGradientFill: {
-						value: function(colors) {
-							return this.beginFill(colors[colors.length - 1]);
-						}
-					},
-					/**
-					 * Start drawing of radial gradient color fill.<br />
-					 * <span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginFill with the color of the end of the gradation.</span>
-					 * 
-					 * @since 1.1.1
-					 * @function createjs.Graphics#beginRadialGradientFill
-					 * @param colors {array<string>} String(s) of "color" in CSS format.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
-					beginRadialGradientFill: {
-						value: function(colors) {
-							return this.beginFill(colors[colors.length - 1]);
-						}
-					},
-					/**
-					 * Start drawing of single color line.
-					 * 
-					 * @function createjs.Graphics#beginStroke
-					 * @param color {string} String of "color" in CSS format.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
 					beginStroke: {
 						value: function(color) {
 							var c;
-							if (!color) {
-								return this;
+							if (color) {
+								this._creap.isLine = true;
+								c = toColorAndAlpha(color);
+								this.lineStyle(1, c.color, c.alpha);
 							}
-							
-							this._creap.isLine = true;
-							c = toColorAndAlpha(color);
-							this.lineStyle(1, c.color, c.alpha);
 							return this;
 						}
 					},
-					/**
-					 * Start drawing of linear gradient color line.<br />
-					 * <span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginStroke with the color of the end of the gradation.</span>
-					 * 
-					 * @function createjs.Graphics#beginLinearGradientStroke
-					 * @since 1.1.1
-					 * @param color {string} String of "color" in CSS format.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
-					beginLinearGradientStroke: {
-						value: function(colors) {
-							return this.beginStroke(colors[colors.length - 1]);
-						}
-					},
-					/**
-					 * Start drawing of radial gradient color line.<br />
-					 * <span style="color:#F00;">Defined for compatibility. In Creap.js, execute createjs.Graphics#beginStroke with the color of the end of the gradation.</span>
-					 * 
-					 * @function createjs.Graphics#beginRadialGradientStroke
-					 * @since 1.1.1
-					 * @param color {string} String of "color" in CSS format.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
-					beginRadialGradientStroke: {
-						value: function(colors) {
-							return this.beginStroke(colors[colors.length - 1]);
-						}
-					},
-					/**
-					 * Specify the style of the line.
-					 * 
-					 * @function createjs.Graphics#setStrokeStyle
-					 * @param thickness {string} Width of line.
-					 * @param [caps=0] {number} <span style="color:#F00;">Defined for compatibility. In Creap.js, this parameter doesn't have valid function.</span>
-					 * @param [joints=0] {number} <span style="color:#F00;">Defined for compatibility. In Creap.js, this parameter doesn't have valid function.</span>
-					 * @param [miterLimit=10] {number} <span style="color:#F00;">Defined for compatibility. In Creap.js, this parameter doesn't have valid function.</span>
-					 * @param [ignoreScale=false] Whether the stroke will be drawn at the specified thickness regardless of active transformations.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
 					setStrokeStyle: {
-						value: function(thickness, caps, joints, miterLimit, ignoreScale) {
-							this.nativeLines = ignoreScale;
-							this.lineWidth = thickness;
+						value: function(width, endStyle, joinStyle, e, isNativeLines) {
+							this.nativeLines = isNativeLines || false;
+							this.lineWidth = width;
 							return this;
 						}
 					},
-					/**
-					 * Move current drawing point.
-					 * 
-					 * @function createjs.Graphics#moveTo
-					 * @param x {number} X coordinate.
-					 * @param y {number} Y coordinate.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
-					moveTo: {
-						value: function(x, y) {
-							if (!this._creap.isClose && this.currentPath && !this._creap.isLine) {
-								PIXI.Graphics.prototype.lineTo.call(this, x, y);
-							} else {
-								this._creap.maxPointIndex = 0;
-								PIXI.Graphics.prototype.moveTo.call(this, x, y);
-							}
-							
-							return this;
-						}
-					},
-					/**
-					 * Draw line from current drawing point.
-					 * 
-					 * @function createjs.Graphics#lineTo
-					 * @param x {number} X coordinate of end point.
-					 * @param y {number} Y coordinate of end point.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
-					lineTo: {
-						value: function(x, y) {
-							var points = this.currentPath.shape.points;
-							
-							PIXI.Graphics.prototype.lineTo.call(this, x, y);
-							
-							if (points[this._creap.maxPointIndex] <= x || (points[this._creap.maxPointIndex] === x && points[this._creap.maxPointIndex + 1] <= y)) {
-								this._creap.maxPointIndex = points.length - 2;
-							}
-							return this;
-						}
-					},
-					/**
-					 * Draw curved line from current drawing point.
-					 * 
-					 * @function createjs.Graphics#curveTo
-					 * @param cpX {number} X coordinate of control point.
-					 * @param cpY {number} Y coordinate of control point.
-					 * @param cpX2 {number} X coordinate of second control point.<br />
-					 *     If aruguments length is 4, this is considered to be "toX".
-					 * @param cpY2 {number} Y coordinate of second control point.<br />
-					 *     If aruguments length is 4, this is considered to be "toY".
-					 * @param [toX=null] {number} X coordinate of end point.
-					 * @param [toY=null] {number} Y coordinate of end point.
-					 * @return {createjs.Graphics} Return a itself (can use method chaining).
-					 */
 					curveTo: {
-						value: function(cpX, cpY, cpX2, cpY2, toX, toY) {
-							var vx, vy;
-							var points = this.currentPath.shape.points;
-							var s = points.length;
-							
-							if (arguments.length > 4) {
-								this.bezierCurveTo(cpX, cpY, cpX2, cpY2, toX, toY);
-							} else {
-								this.quadraticCurveTo(cpX, cpY, cpX2, cpY2);
-							}
-							
-							for (var i = s; i < points.length; i += 2) {
-								if (points[this._creap.maxPointIndex] < points[i] || (points[this._creap.maxPointIndex] === points[i] && points[this._creap.maxPointIndex + 1] < points[i + 1])) {
-									this._creap.maxPointIndex = i;
-								}
-							}
+						value: function(cpX, cpY, toX, toY, cpX2, cpY2) {
+							this.bezierCurveTo(this.currentPath.shape.points[this.currentPath.shape.points.length - 2], this.currentPath.shape.points[this.currentPath.shape.points.length - 1], cpX, cpY, toX, toY);
 							return this;
 						}
 					}
@@ -4275,7 +3327,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			/**
 			 * @constructor createjs.Rectangle
 			 * @classdesc Class related to rectangle.<br />
-			 * <span style="color:#F00;">Defined for compatibility. In Creap.js, this class doesn't have valid function.</span>
+			 *            <span style="color:#F00;">Defined for compatibility. In Creap.js, this class doesn't have valid function.</span>
 			 */
 			(Rectangle = function() {
 				// not use
@@ -4641,7 +3693,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 			}), {
 				/**
 				 * Change status on validity of touch event.<br />
-				 * <span style="color:#F00;">Defined for compatibility. In Creap.js, don't need to execute this function.</span>
+				 * <span style="color:#F00;">Defined for compatibility. In Creap.js, don't need to execute this function.</span><br />
 				 * 
 				 * @function createjs.Touch#enable
 				 * @param flag {bool} Whether to enable.
@@ -4655,31 +3707,6 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 					value: Touch
 				}
 			});
-			
-			
-			
-			/**
-			 * @constructor createjs~Stage
-			 * @classdesc Class related to top level container.
-			 * @extends createjs.MovieClip
-			 */
-			(Stage = function() {
-				this.initialize();
-				
-				/**
-				 * X coordinate of mouse.
-				 * 
-				 * @member createjs~Stage#mouseX
-				 */
-				this.mouseX = 0;
-				
-				/**
-				 * Y coordinate of mouse.
-				 * 
-				 * @member createjs~Stage#mouseY
-				 */
-				this.mouseY = 0;
-			}).prototype = new MovieClip();
 		})();
 		
 		return Object.defineProperties(createjs || {}, {

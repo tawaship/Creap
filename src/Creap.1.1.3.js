@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.1.4
+ * Creap.js - v1.1.3
  * 
  * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,7 +11,7 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.3  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
@@ -133,14 +133,13 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 		 * <span style="color:red;">Be careful when using multiple contents simultaneously.</span><br />
 		 * In Creap.js, the variable "exportRoot" re-refers to the root instance managed by the application when the application's ticker is updated.<br />
 		 * In other words, you can refer to exportRoot successfully on a script(ie frame script) that is handled synchronously by ticker.<br />
-		 * However, if you refer to the variable "exportRoot" from a function that is asynchronous and not managed by the framework as follows, you will not know whether it is a reference to the expected root instance.<br />
+		 * However, note that if you reference the variable "exportRoot" from a function that is processed asynchronously as follows, you do not know whether it is a reference to the expected root instance.<br />
 		 * ```js
 		 * setTimeout(function() {
 		 *     console.log(exportRoot); // ???
 		 * ), 1000);
-		 * The following code can be acquired normally from v1.1.4.
 		 * this.addEventListener("mousedown", function() {
-		 *     console.log(exportRoot); // OK
+		 *     console.log(exportRoot); // ???
 		 * ));
 		 * ```
 		 * The same is true for the variable "stage".
@@ -901,15 +900,9 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				this.view = view;
 				
-				this.wrapper.style.position = 'absolute';
-				this.wrapper.style.left = 0 + TAG_PX;
-				this.wrapper.style.top = 0 + TAG_PX;
-				
-				this._rect = this.getRect();
-				this._size = this.getSize();
-				this._point = this.getPoint();
-				
 				this.adjustWidth(w);
+				this.wrapper.style.marginLeft = 0 + TAG_PX;
+				this.wrapper.style.marginTop = 0 + TAG_PX;
 				
 				/**
 				 * Top level container in application.
@@ -1227,7 +1220,6 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						var f;
 						var tappedList, tappedTarget;
 						var i;
-						var self = this;
 						
 						if (!this.isInitialized) {
 							this.on(CREAP_EVENT.initialized, function() {
@@ -1239,8 +1231,6 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						if (this.isStarted) {
 							return this;
 						}
-						
-						this.stage.app = this.content;
 						
 						this.show();
 						this.root = new this.content._root();
@@ -1258,9 +1248,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 							var ne;
 							var t = tappedTarget = e.target;
 							var p;
-							_stage = this;
 							
-							this.mouseX = e.data.global.x
+							this.mouseX = e.data.global.x;
 							this.mouseY = e.data.global.y;
 							
 							if (t === this) {
@@ -1289,9 +1278,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						
 						this.stage.on(EVENT.pointermove, function(e) {
 							var ne, t;
-							_stage = this;
-							
-							this.mouseX = e.data.global.x
+							this.mouseX = e.data.global.x;
 							this.mouseY = e.data.global.y;
 							e.target = tappedTarget;
 							for (i = 0; i < tappedList.length; i++) {
@@ -1308,7 +1295,6 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						this.stage.on(EVENT.pointerup, f = function(e) {
 							var ne, t;
 							var ft = e.target;
-							_stage = this;
 							e.target = tappedTarget;
 							for (i = 0; i < tappedList.length; i++) {
 								t = tappedList[i];
@@ -1470,11 +1456,8 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				adjustWidth: {
 					value: function(width) {
-						var h = width / this.content._lib.properties.width * this.content._lib.properties.height;
 						this.view.style.width = width + TAG_PX;
-						this.view.style.height = h + TAG_PX;
-						this._rect.width = this._size.width = width;
-						this._rect.height = this._size.height = h;
+						this.view.style.height = width / this.content._lib.properties.width * this.content._lib.properties.height + TAG_PX;
 						return this;
 					}
 				},
@@ -1489,17 +1472,14 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				adjustHeight: {
 					value: function(height) {
-						var w = height / this.content._lib.properties.height * this.content._lib.properties.width;
 						this.view.style.height = height + TAG_PX;
-						this.view.style.width = w + TAG_PX;
-						this._rect.width = this._size.width = w;
-						this._rect.height = this._size.height = height;
+						this.view.style.width = height / this.content._lib.properties.height * this.content._lib.properties.width + TAG_PX;
 						return this;
 					}
 				},
 				/**
 				 * Align the content to the left with respect to the horizontal direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.left".
+				 * This function changes "canvas.parentNode.style.marginLeft".
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#toLeft
@@ -1509,14 +1489,13 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				toLeft: {
 					value: function(rect) {
 						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						this.wrapper.style.left = rect.x + TAG_PX;
-						this._rect.x = this._point.x = rect.x;
+						this.wrapper.style.marginLeft = rect.x + TAG_PX;
 						return this;
 					}
 				},
 				/**
 				 * Align the content to the right with respect to the horizontal direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.left".
+				 * This function changes "canvas.parentNode.style.marginLeft".
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#toRight
@@ -1529,14 +1508,13 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
 						s = this.getSize();
 						m = (rect.width - s.width);
-						this.wrapper.style.left = (m + rect.x) + TAG_PX;
-						this._rect.x = this._point.x = m + rect.x;
+						this.wrapper.style.marginLeft = (m + rect.x) + TAG_PX;
 						return this;
 					}
 				},
 				/**
 				 * Align the content to the center with respect to the horizontal direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.left".
+				 * This function changes "canvas.parentNode.style.marginLeft".
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#toCenter
@@ -1549,14 +1527,13 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
 						s = this.getSize();
 						m = (rect.width - s.width) / 2;
-						this.wrapper.style.left = (m + rect.x) + TAG_PX;
-						this._rect.x = this._point.x = m + rect.x;
+						this.wrapper.style.marginLeft = (m + rect.x) + TAG_PX;
 						return this;
 					}
 				},
 				/**
 				 * Align the content to the top with respect to the vertical direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.top".
+				 * This function changes "canvas.parentNode.style.marginTop".
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#toTop
@@ -1566,14 +1543,13 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				toTop: {
 					value: function(rect) {
 						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
-						this.wrapper.style.top = rect.y + TAG_PX;
-						this._rect.y = this._point.y = rect.y;
+						this.wrapper.style.marginTop = rect.y + TAG_PX;
 						return this;
 					}
 				},
 				/**
 				 * Align the content to the bottom with respect to the vertical direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.top".
+				 * This function changes "canvas.parentNode.style.marginTop".
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#toBottom
@@ -1586,14 +1562,13 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
 						s = this.getSize();
 						m = (rect.height - s.height);
-						this.wrapper.style.top = (m + rect.y) + TAG_PX;
-						this._rect.y = this._point.y = m + rect.y;
+						this.wrapper.style.marginTop = (m + rect.y) + TAG_PX;
 						return this;
 					}
 				},
 				/**
 				 * Align the content to the center with respect to the vertical direction of the reference rectangle.<br />
-				 * This function changes "canvas.parentNode.style.top".
+				 * This function changes "canvas.parentNode.style.marginTop".
 				 * 
 				 * @since 1.1.0
 				 * @function Creap.Application#toMiddle
@@ -1606,8 +1581,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						rect = rect || new Rect(0, 0, windowWidth, windowHeight);
 						s = this.getSize();
 						m = (rect.height - s.height) / 2;
-						this.wrapper.style.top = (m + rect.y) + TAG_PX;
-						this._rect.y = this._point.y = m + rect.y;
+						this.wrapper.style.marginTop = (m + rect.y) + TAG_PX;
 						return this;
 					}
 				},
@@ -1620,9 +1594,9 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				getPoint: {
 					value: function() {
-						return this._point || new Point(
-							parseFloat(this.wrapper.style.left.replace(TAG_PX, '')),
-							parseFloat(this.wrapper.style.top.replace(TAG_PX, ''))
+						return new Point(
+							parseFloat(this.wrapper.style.marginLeft.replace(TAG_PX, '')),
+							parseFloat(this.wrapper.style.marginTop.replace(TAG_PX, ''))
 						);
 					}
 				},
@@ -1635,7 +1609,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				getSize: {
 					value: function() {
-						return this._size || new Size(
+						return new Size(
 							parseFloat(this.view.style.width.replace(TAG_PX, '')),
 							parseFloat(this.view.style.height.replace(TAG_PX, ''))
 						);
@@ -1650,9 +1624,9 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				getRect: {
 					value: function() {
-						return this._rect || new Rect(
-							parseFloat(this.wrapper.style.left.replace(TAG_PX, '')),
-							parseFloat(this.wrapper.style.top.replace(TAG_PX, '')),
+						return new Rect(
+							parseFloat(this.wrapper.style.marginLeft.replace(TAG_PX, '')),
+							parseFloat(this.wrapper.style.marginTop.replace(TAG_PX, '')),
 							parseFloat(this.view.style.width.replace(TAG_PX, '')),
 							parseFloat(this.view.style.height.replace(TAG_PX, ''))
 						);
@@ -3170,9 +3144,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				styles.wordWrap = true;
 				
 				this.instance = new PIXI.Text(value, styles);
+				this._fontProp = PIXI.TextMetrics.measureText(value, this.instance.style).fontProperties;
+				this.instance.style.padding = this._fontProp.fontSize * value.split('\n').length;
+				this.instance.y = -this._fontProp.ascent;
 				this.addChild(this.instance);
-				this.text = this.text;
-				this.instance.y = -this._measureText.fontProperties.ascent;
 				this.interactive = isAccurateTarget;
 			}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 				constructor: {
@@ -3188,7 +3163,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.style.lineHeight;
 					},
 					set: function(v) {
-						this.instance.style.lineHeight = v
+						this.instance.style.lineHeight = v;
 						this.text = this.text;
 					}
 				},
@@ -3248,43 +3223,23 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.text;
 					},
 					set: function(v) {
-						var l, h, s, u;
+						var l, h;
 						v = v || '';
 						l = v.split('\n').length;
 						this.instance.text = v;
 						this.textAlign = this.textAlign;
 						
-						//this.instance.text = "pppp pppp pppp\npppp"
-						//this.instanupdateTransform()
-						
-							this._measureText = PIXI.TextMetrics.measureText(v, this.instance.style);
-							console.log(this._measureText.fontProperties)
-							setTimeout((function() {
-							console.log(this.instance.getBounds())
-							console.log("h",this.height, this.instance.height, this._measureText.height,this.instance.style.padding)
-							console.log("w",this.width, this.instance.width, this._measureText.width,this.instance.style.padding)
-							}).bind(this),1)
-							this.instance.style.padding.top = 100;
-							//this.instance.style.padding = 60;
-						return;
-						
-					
-						s = this._measureText.fontProperties.fontSize;
-						
-						if (this.lineHeight < s) {
-							h = s + this.lineHeight * (l - 1);
+						if (this.lineHeight < this._fontProp.fontSize) {
+							h = this._fontProp.fontSize + this.lineHeight * (l - 1);
 							if (this.lineHeight >= 0) {
 								this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, h);
 							} else {
-								u = h - s;
-								this.hitArea = new PIXI.Rectangle(0, u, this.instance.width, s - u);
+								this.hitArea = new PIXI.Rectangle(0, h - this._fontProp.fontSize, this.instance.width, this._fontProp.fontSize - (h - this._fontProp.fontSize));
 							}
 						} else {
 							this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, this.instance.height);
 						}
 						this.instance.style.padding = this.hitArea.height;
-						
-						console.log(this.width - this.instance.style.padding * 2, this._measureText.width, this.width, this._measureText.width,this._measureText.height)
 					}
 				},
 				/**

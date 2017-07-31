@@ -99,18 +99,18 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 
 	// timeline functions:
 	this.frame_0 = function() {
-		this.a.text = "A\nA\nA\nA\nA\nA\nA\nA"
+		//this.a.text = "A\nA\nA\nA\nA\nA\nA\nA"
 	}
 
 	// actions tween:
 	this.timeline.addTween(cjs.Tween.get(this).call(this.frame_0).wait(1));
 
 	// レイヤー 1
-	this.text = new cjs.Text("A\nA\nA\nA\nA\nA", "24px 'Yu Gothic UI Light'", "#0000FF");
-	this.text.lineHeight = -70;
-	this.text.lineWidth = 100;
+	this.text = new cjs.Text("AAA PPP\nPPP\nPPP\nPPP\nPPP\nVVV", "24px 'Yu Gothic UI'", "#0000FF");
+	this.text.lineHeight = -28;
+	this.text.lineWidth = 55;
 	this.text.parent = this;
-	this.text.setTransform(55,85);
+	this.text.setTransform(-49,27.8);
 
 	this.t = new lib.Ball();
 	this.t.parent = this;
@@ -120,16 +120,9 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 	this.r.parent = this;
 	this.r.setTransform(136,21,1,1,0,0,0,21,21);
 
-	this.a = new cjs.Text("p\nY", "24px 'Times New Roman'", "#0000FF");
-	this.a.name = "a";
-	this.a.lineHeight = 27;
-	this.a.lineWidth = 100;
-	this.a.parent = this;
-	this.a.setTransform(-33.2,-110);
+	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.r},{t:this.t},{t:this.text}]}).wait(1));
 
-	this.timeline.addTween(cjs.Tween.get({}).to({state:[{t:this.a},{t:this.r},{t:this.t},{t:this.text}]}).wait(1));
-
-}).prototype = getMCSymbolPrototype(lib.Symbom0, new cjs.Rectangle(-35.2,-112,198.5,390.4), null);
+}).prototype = getMCSymbolPrototype(lib.Symbom0, new cjs.Rectangle(-51,0,214.3,349.2), null);
 
 
 // stage content:
@@ -178,7 +171,7 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 	this.timeline.addTween(cjs.Tween.get(this.a).wait(1));
 
 }).prototype = p = new cjs.MovieClip();
-p.nominalBounds = new cjs.Rectangle(140.8,173.1,198.5,390.4);
+p.nominalBounds = new cjs.Rectangle(125,285.1,214.3,349.2);
 // library properties:
 lib.properties = {
 	width: 240,
@@ -187,7 +180,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/test_atlas_.png?1501225438188", id:"test_atlas_"}
+		{src:"images/test_atlas_.png?1501247340479", id:"test_atlas_"}
 	],
 	preloads: []
 };

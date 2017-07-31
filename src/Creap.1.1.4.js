@@ -3170,9 +3170,10 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 				styles.wordWrap = true;
 				
 				this.instance = new PIXI.Text(value, styles);
+				this._fontProp = PIXI.TextMetrics.measureText(value, this.instance.style).fontProperties;
+				this.instance.style.padding = this._fontProp.fontSize * value.split('\n').length;
+				this.instance.y = -this._fontProp.ascent;
 				this.addChild(this.instance);
-				this.text = this.text;
-				this.instance.y = -this._measureText.fontProperties.ascent;
 				this.interactive = isAccurateTarget;
 			}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 				constructor: {
@@ -3188,7 +3189,7 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.style.lineHeight;
 					},
 					set: function(v) {
-						this.instance.style.lineHeight = v
+						this.instance.style.lineHeight = v;
 						this.text = this.text;
 					}
 				},
@@ -3248,43 +3249,23 @@ console.log('\r\n%c  Creap.js %c v1.1.4  %c\r\n\r\n', 'color: #FFF; background: 
 						return this.instance.text;
 					},
 					set: function(v) {
-						var l, h, s, u;
+						var l, h;
 						v = v || '';
 						l = v.split('\n').length;
 						this.instance.text = v;
 						this.textAlign = this.textAlign;
 						
-						//this.instance.text = "pppp pppp pppp\npppp"
-						//this.instanupdateTransform()
-						
-							this._measureText = PIXI.TextMetrics.measureText(v, this.instance.style);
-							console.log(this._measureText.fontProperties)
-							setTimeout((function() {
-							console.log(this.instance.getBounds())
-							console.log("h",this.height, this.instance.height, this._measureText.height,this.instance.style.padding)
-							console.log("w",this.width, this.instance.width, this._measureText.width,this.instance.style.padding)
-							}).bind(this),1)
-							this.instance.style.padding.top = 100;
-							//this.instance.style.padding = 60;
-						return;
-						
-					
-						s = this._measureText.fontProperties.fontSize;
-						
-						if (this.lineHeight < s) {
-							h = s + this.lineHeight * (l - 1);
+						if (this.lineHeight < this._fontProp.fontSize) {
+							h = this._fontProp.fontSize + this.lineHeight * (l - 1);
 							if (this.lineHeight >= 0) {
 								this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, h);
 							} else {
-								u = h - s;
-								this.hitArea = new PIXI.Rectangle(0, u, this.instance.width, s - u);
+								this.hitArea = new PIXI.Rectangle(0, h - this._fontProp.fontSize, this.instance.width, this._fontProp.fontSize - (h - this._fontProp.fontSize));
 							}
 						} else {
 							this.hitArea = new PIXI.Rectangle(0, 0 , this.instance.width, this.instance.height);
 						}
 						this.instance.style.padding = this.hitArea.height;
-						
-						console.log(this.width - this.instance.style.padding * 2, this._measureText.width, this.width, this._measureText.width,this._measureText.height)
 					}
 				},
 				/**
