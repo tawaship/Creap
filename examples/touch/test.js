@@ -2,7 +2,7 @@
 
 var p; // shortcut to reference prototypes
 lib.ssMetadata = [
-		{name:"test_atlas_", frames: [[0,21,19,19],[0,0,19,19]]}
+		{name:"test_atlas_", frames: [[0,0,19,19],[0,21,19,19]]}
 ];
 
 
@@ -140,7 +140,6 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 			console.log("down",e);
 		}, false);
 		
-		
 		this.a.addEventListener("pressmove", (function(e) {
 			console.log("move", e);
 		}).bind(this));
@@ -151,8 +150,8 @@ function getMCSymbolPrototype(symbol, nominalBounds, frameBounds) {
 		
 		this.a.t.addEventListener("click", function(e) {
 			console.log("click", e);
-			self.dispatchEvent("userevent");
-			self.dispatchEvent(new createjs.Event("userevent"));
+			self.a.dispatchEvent("userevent");
+			self.a.dispatchEvent(new createjs.Event("userevent"));
 		});
 		
 		this.a.addEventListener("userevent", function(e) {
@@ -180,7 +179,7 @@ lib.properties = {
 	color: "#FFFFFF",
 	opacity: 1.00,
 	manifest: [
-		{src:"images/test_atlas_.png?1501466717506", id:"test_atlas_"}
+		{src:"images/test_atlas_.png?1501578896294", id:"test_atlas_"}
 	],
 	preloads: []
 };

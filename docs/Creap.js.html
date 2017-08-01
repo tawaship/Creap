@@ -92,7 +92,7 @@
     <article>
         <pre
             class="sunlight-highlight-javascript linenums">/*!
- * Creap.js - v1.1.7.1
+ * Creap.js - v1.1.8
  * 
  * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
@@ -104,7 +104,7 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.8  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
@@ -203,21 +203,18 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 	};
 	
 	var PRE_MOUSE_EVENT = {
-		mousedown: '_' + EVENT.mousedown,
-		pressup: '_' + EVENT.pressup,
-		pressmove: '_' + EVENT.pressmove,
-		click: '_' + EVENT.click
+		mousedown: '___' + EVENT.mousedown,
+		pressup: '___' + EVENT.pressup,
+		pressmove: '___' + EVENT.pressmove,
+		click: '___' + EVENT.click
 	};
 	
-	var autoLoadCss;
-	var FONT_EXT = {
-		'.eot#iefix': 'embedded-opentype',
-		'.woff': 'woff',
-		'.ttf': 'truetype',
-		'.otf': 'opentype',
-		'.svg': 'svg',
-		'.svgx': 'svg'
-	}
+	var REV_MOUSE_EVENT = {
+		___mousedown: EVENT.mousedown,
+		___pressup: EVENT.pressup,
+		___pressmove: EVENT.pressmove,
+		___click: EVENT.click
+	};
 	
 	Object.defineProperties(window, {
 		/**
@@ -1088,8 +1085,8 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 									if (h.prototype instanceof createjs.Sprite || h.prototype instanceof createjs.Bitmap) {
 										h = new s._lib[j]();
 										h.x = 99999;
-										h._creap.emit(CREAP_EVENT.attach);
 										this.stage.addChild(h);
+										h._creap.emit(CREAP_EVENT.attach);
 									}
 								}
 							}
@@ -2338,6 +2335,13 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 				 * @member createjs~DisplayObjectCreapData#targetParent {createjs.MovieClip}
 				 */
 				this.targetParent = null;
+				
+				/**
+				 * State of ancestor's display#interactive.
+				 * 
+				 * @member createjs~DisplayObjectCreapData#propagationalInteractive {bool}
+				 */
+				this.propagationalInteractive = false;
 			}).prototype = Object.defineProperties(Object.create(EmitterCreapData.prototype), {
 				/**
 				 * &lt;span style="color:#F00;">Defined for compatibility.&lt;/span>
@@ -2346,6 +2350,31 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 				 */
 				reset: {
 					value: function() {
+					}
+				},
+				/**
+				 * Changes the touch judgment of a child element having an entity.&lt;br />
+				 * Elements are recursively scanned to the bottom layer.
+				 * 
+				 * @function createjs~DisplayObjectCreapData#setInteractive
+				 * @since 1.1.8
+				 p @param flag {bool} Whether to accept touch event.
+				 */
+				setInteractive: {
+					value: function(flag) {
+						var c, i;
+						for (i = 0; i &lt; this.target.children.length; i++) {
+							c = this.target.children[i];
+							if (c instanceof MovieClip) {
+								if (c.interactive) {
+									continue;
+								}
+								c._creap.propagationalInteractive = flag;
+								c._creap.setInteractive(flag);
+							} else if (c instanceof Bitmap || c instanceof Sprite || c instanceof Shape || c instanceof Text) {
+								c.interactive = flag;
+							}
+						}
 					}
 				},
 				/**
@@ -2506,8 +2535,14 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 						value: function(type, func, isCapture) {
 							if (type in CJS_MOUSE_EVENT) {
 								this.interactive = true;
+								if (isAccurateTarget) {
+									this._creap.propagationalInteractive = true;
+									this._creap.setInteractive(true);
+								}
 							}
+							
 							this.on(PRE_MOUSE_EVENT[type] || type, func, window);
+							
 							return func;
 						}
 					},
@@ -2522,6 +2557,21 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 					removeEventListener: {
 						value: function(type, func, isCapture) {
 							this.off(PRE_MOUSE_EVENT[type] || type, func);
+							if (isAccurateTarget) {
+								if (type in CJS_MOUSE_EVENT &amp;&amp; !this.parent._creap.propagationalInteractive) {
+									for (var i in REV_MOUSE_EVENT) {
+										if (i in this._events) {
+											return;
+										}
+									}
+									
+									this.interactive = false;
+									this._creap.propagationalInteractive = false;
+									this._creap.setInteractive(false);
+								}
+							} else {
+								this.interactive = false;
+							}
 						}
 					},
 					/**
@@ -2762,7 +2812,7 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 				gotoAndStop: {
 					value: function(num) {
 						DisplayObject.call(this);
-						this.interactive = isAccurateTarget;
+						//this.interactive = isAccurateTarget;
 						
 						if (!this.spriteSheet) {
 							return;
@@ -2774,6 +2824,14 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 							sp = new PIXI.Sprite(this.spriteSheet.textures['_' + num]);
 						}
 						*/
+						
+						if (isAccurateTarget) {
+							this._creap.on(CREAP_EVENT.attach, function() {
+								if (!this.interactive) {
+									this.interactive = this.parent._creap.propagationalInteractive;
+								}
+							});
+						}
 						
 						this._creap.on(CREAP_EVENT.attach, function() {
 							this._creap.off(CREAP_EVENT.attach, arguments.callee);
@@ -2802,9 +2860,17 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 				initialize: {
 					value: function(resource) {
 						DisplayObject.call(this);
-						this.interactive = isAccurateTarget;
+						//this.interactive = isAccurateTarget;
 						if (!resource) {
 							return;
+						}
+						
+						if (isAccurateTarget) {
+							this._creap.on(CREAP_EVENT.attach, function() {
+								if (!this.interactive) {
+									this.interactive = this.parent._creap.propagationalInteractive;
+								}
+							});
 						}
 						
 						this._creap.on(CREAP_EVENT.attach, function() {
@@ -2855,7 +2921,14 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 					this._creap = new CreapData(this);
 					DisplayObject.call(this);
 					this.parent = currentDefiner;
-					this.interactive = isAccurateTarget;
+					//this.interactive = isAccurateTarget;
+					if (isAccurateTarget) {
+						this._creap.on(CREAP_EVENT.attach, function() {
+							if (!this.interactive) {
+								this.interactive = this.parent._creap.propagationalInteractive;
+							}
+						});
+					}
 				}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 					constructor: {
 						value: Shape
@@ -2915,15 +2988,16 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 					addLayerAt: {
 						value: function(child, offset) {
 							this.removeLayer(child);
-							child._creap.emit(CREAP_EVENT.attach);
 							for (var i = 0; i &lt; child._creap.targetParent.children.length; i++) {
 								if (offset > child._creap.targetParent.children[i]._creap.depthOffset) {
 									PIXI.Container.prototype.addChildAt.call(child._creap.targetParent, child, i);
+									child._creap.emit(CREAP_EVENT.attach);
 									child._creap.targetParent._creap.onLayerCount++;
 									return;
 								}
 							}
 							PIXI.Container.prototype.addChild.call(child._creap.targetParent, child);
+							child._creap.emit(CREAP_EVENT.attach);
 							child._creap.targetParent._creap.onLayerCount++;
 						}
 					},
@@ -3148,6 +3222,17 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 							this.tickEnabled = true;
 							this.paused = false;
 							currentDefiner = this;
+							if (isAccurateTarget) {
+								this._creap.on(CREAP_EVENT.attach, function() {
+									if (!this.interactive) {
+										this._creap.propagationalInteractive = this.parent._creap.propagationalInteractive;
+									} else {
+										this._creap.propagationalInteractive = true;
+									}
+									
+									this._creap.setInteractive(this._creap.propagationalInteractive);
+								});
+							}
 						}
 					},
 					/**
@@ -3189,8 +3274,9 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 								return;
 							}
 							
+							var c = PIXI.Container.prototype.addChild.call(this, child);
 							child._creap.emit(CREAP_EVENT.attach);
-							return PIXI.Container.prototype.addChild.call(this, child);
+							return c;
 						}
 					},
 					/**
@@ -3208,8 +3294,9 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 								return;
 							}
 							
+							var c = PIXI.Container.prototype.addChildAt.call(this, child, Math.min(index + this._creap.onLayerCount, this.children.length));
 							child._creap.emit(CREAP_EVENT.attach);
-							return PIXI.Container.prototype.addChildAt.call(this, child, Math.min(index + this._creap.onLayerCount, this.children.length));
+							return c;
 						}
 					},
 					/**
@@ -3339,7 +3426,15 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 				this.instance.y = -this._fontProp.ascent;
 				this.addChild(this.instance);
 				this.text = this.text;
-				this.interactive = isAccurateTarget;
+				
+				if (isAccurateTarget) {
+					this._creap.on(CREAP_EVENT.attach, function() {
+						if (!this.interactive) {
+							this.interactive = this.parent._creap.propagationalInteractive;
+						}
+					});
+				}
+				//this.interactive = isAccurateTarget;
 			}).prototype = Object.defineProperties(Object.create(DisplayObject.prototype), {
 				constructor: {
 					value: Text
@@ -4928,7 +5023,7 @@ console.log('\r\n%c  Creap.js %c v1.1.7  %c\r\n\r\n', 'color: #FFF; background: 
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a>
 	
-		on August 1st 2017, 1:04:51 pm
+		on August 1st 2017, 8:34:59 pm
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

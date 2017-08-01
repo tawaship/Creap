@@ -7,6 +7,9 @@ By using webGL rendering you can render faster than regular createjs content.
 
 ## Rerease note
 
+### v1.1.8 (08/01/2017)
+- [fix] Fixed an issue that when an object not related to an event is on the front, the event does not pass through to the object on the back.
+
 ### v1.1.7 (07/31/2017)
 - [add] Creap.Application#defineBitmap
 	
