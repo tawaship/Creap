@@ -1,5 +1,5 @@
 /*!
- * Creap.js - v1.1.8
+ * Creap.js - v1.1.8.1
  * 
  * @requires pixi.js 4.5.1
  * @requires howler.core.js v2.0.1
@@ -11,7 +11,7 @@
 
 var createjs, Creap;
 
-console.log('\r\n%c  Creap.js %c v1.1.8  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
+console.log('\r\n%c  Creap.js %c v1.1.8.1  %c\r\n\r\n', 'color: #FFF; background: #06F; padding: 5px; border-radius:12px 0 0 12px;', 'color: #FFF; background: #F33; padding: 5px;  border-radius:0 12px 12px 0;', 'padding: 5px;');
 
 (function() {
 	var Emitter, EmitterCreapData, Stage;
@@ -3247,9 +3247,15 @@ console.log('\r\n%c  Creap.js %c v1.1.8  %c\r\n\r\n', 'color: #FFF; background: 
 					removeAllChildren: {
 						value: function() {
 							var list = [];
-							for (var i = 0; i < this.children.length; i++) {
-								list.push(this.removeChild(this.children[i]));
+							var i;
+							
+							for (i = 0; i < this.children.length; i++) {
+								list.push(this.children[i]);
 							}
+							for (i = 0; i < list.length; i++) {
+								this.removeChild(list[i]);
+							}
+							
 							return list;
 						}
 					},
